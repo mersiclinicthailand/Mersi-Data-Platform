@@ -168,7 +168,7 @@ header{padding-top:calc(10px + env(safe-area-inset-top))}
 
 <div class="hint" id="hint" hidden><span id="hintTxt"></span><button id="hintX" aria-label="ปิด">×</button></div>
 
-<script src="config.js?v=6"></script>
+<script src="config.js?v=7"></script>
 <script>
 /* ================= ตัวโหลดแอป: ล็อกอิน · เก็บข้อมูลในเครื่อง · อัปเดตเบื้องหลัง ================= */
 const API = window.MERSI_API || '';
@@ -182,7 +182,8 @@ let started = false, deferredInstall = null;
 async function api(body) {
   const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body), redirect: 'follow' });
   if (!r.ok) throw new Error('HTTP ' + r.status);
-  return r.json();
+  const t = await r.text();
+  try { return JSON.parse(t); } catch (e) { throw new Error('เซิร์ฟเวอร์ตอบกลับผิดรูปแบบ: ' + t.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80)); }
 }
 function showLogin(msg) { show('scLogin'); el('lMsg').textContent = msg || ''; setTimeout(() => (el('lUser').value ? el('lPass') : el('lUser')).focus(), 50); }
 function showLoad(msg, err) { show('scLoad'); el('loadMsg').innerHTML = msg; el('scLoad').querySelector('.spin').style.display = err ? 'none' : ''; }
@@ -210,14 +211,14 @@ async function refresh(bg) {
 const esc2 = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 el('fLogin').addEventListener('submit', async e => {
-  e.preventDefault(); el('lBtn').disabled = true; el('lMsg').textContent = '';
+  e.preventDefault(); el('lBtn').disabled = true; el('lBtn').textContent = 'กำลังเข้าสู่ระบบ…'; el('lMsg').textContent = '';
   try {
     const r = await api({ action: 'login', username: el('lUser').value.trim(), password: el('lPass').value });
     if (!r.ok) { el('lMsg').textContent = r.error; return; }
     LS.set('mersi_tok', r.token); LS.set('mersi_user', el('lUser').value.trim());
     el('lPass').value = ''; showLoad('กำลังโหลดข้อมูล…'); await refresh(false);
-  } catch (err) { el('lMsg').textContent = 'เชื่อมต่อไม่ได้ ตรวจอินเทอร์เน็ตแล้วลองใหม่'; }
-  finally { el('lBtn').disabled = false; }
+  } catch (err) { el('lMsg').textContent = 'เชื่อมต่อไม่ได้ ตรวจอินเทอร์เน็ตแล้วลองใหม่ (' + (err && err.message || err) + ')'; }
+  finally { el('lBtn').disabled = false; el('lBtn').textContent = 'เข้าสู่ระบบ'; }
 });
 el('lShow').onclick = () => { const p = el('lPass'); p.type = p.type === 'password' ? 'text' : 'password'; el('lShow').textContent = p.type === 'password' ? 'แสดง' : 'ซ่อน'; };
 

@@ -1,6 +1,6 @@
 /* Mersi Dashboard — เก็บหน้าแอปไว้ในเครื่อง ให้เปิดเร็วและเปิดได้ตอนเน็ตไม่ดี (ข้อมูลตัวเลขเก็บแยกในแอป) */
-const CACHE = 'mersi-app-v6';
-const SHELL = ['./', 'index.html', 'config.js?v=6', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'logo.png'];
+const CACHE = 'mersi-app-v7';
+const SHELL = ['./', 'index.html', 'config.js?v=7', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'logo.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => Promise.all(SHELL.map(u => c.add(u).catch(() => {})))).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', e => {
