@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mersi Dashboard</title>
+<meta name="theme-color" content="#E8EBE1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mersi">
+<meta name="robots" content="noindex, nofollow">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F4EE;--card:#FFFFFF;--line:#E4E2D8;--ink:#2F3A2F;--mute:#7A8275;--sage:#6B7757;--brand:#8B9677;--sage2:#E8EBE1;--gold:#B89B5E;
+  --good:#2E7D4F;--goodbg:#E3F1E8;--ok:#7A9A3A;--okbg:#EEF3DE;--warn:#B7791F;--warnbg:#FBF1DD;--bad:#B23A3A;--badbg:#F8E3E1;--r:14px}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai',system-ui,sans-serif;font-size:15px;-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:5;background:var(--sage2);border-bottom:1px solid var(--line);padding:10px 16px}
+.hrow{display:flex;align-items:center;gap:10px;max-width:1180px;margin:0 auto}
+.brand{display:flex;align-items:flex-end;gap:6px;white-space:nowrap}.blogo{height:26px;width:auto;display:block}.brand small{color:var(--gold);font-weight:500;font-size:12px;margin-left:4px}
+.who{margin-left:auto;font-size:12px;color:var(--mute);text-align:right;line-height:1.3;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 10px;border-radius:99px;background:#fff;border:1px solid var(--line);white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--good)}.dot.warn{background:var(--warn)}.dot.bad{background:var(--bad)}
+main{max-width:1180px;margin:0 auto;padding:12px 16px 90px}
+.filters{display:flex;flex-direction:column;gap:8px;margin:2px 0 6px}
+.presets{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;scrollbar-width:none}.presets::-webkit-scrollbar{display:none}
+.presets button{font:inherit;font-size:13px;white-space:nowrap;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:99px;padding:7px 13px;cursor:pointer}
+.presets button.on{background:var(--sage);border-color:var(--sage);color:#fff}
+.frow{display:grid;grid-template-columns:1fr 1.3fr;gap:8px}.frow .pg{grid-column:1/-1}
+@media(min-width:640px){.frow{grid-template-columns:120px 150px 1fr}.frow .pg{grid-column:auto}}
+.rrow{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}.rrow span{color:var(--mute)}
+select,input[type=date]{font:inherit;font-size:14px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);min-height:40px;width:100%;-webkit-appearance:none;appearance:none}
+select{background-image:linear-gradient(45deg,transparent 50%,#7A8275 50%),linear-gradient(135deg,#7A8275 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:28px}
+.seg{display:flex;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;width:max-content;max-width:100%}
+.seg button{font:inherit;font-size:13px;border:0;background:none;padding:8px 12px;color:var(--mute);min-height:38px;cursor:pointer}
+.seg button.on{background:var(--sage);color:#fff}
+h2{font-size:15px;margin:22px 0 10px;font-weight:600;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}h2 small{font-weight:400;color:var(--mute);font-size:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.grid2{display:grid;grid-template-columns:1fr;gap:10px}.grid6{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:720px){.grid2{grid-template-columns:1fr 1fr}.grid6{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1080px){.grid6{grid-template-columns:repeat(6,1fr)}}
+.tgt .lbl{font-size:13px;color:var(--mute)}.tgt .big{font-size:24px;font-weight:700;margin:2px 0}.tgt .of{font-size:13px;color:var(--mute);font-weight:400}
+.bar{height:10px;border-radius:99px;background:#EFEDE4;position:relative;overflow:hidden;margin:8px 0}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px}.bar b{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);opacity:.5}
+.tgt .meta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--mute)}.tgt .meta strong{color:var(--ink);font-weight:600}
+.kpi .lbl{font-size:12.5px;color:var(--mute)}.kpi .v{font-size:21px;font-weight:700;margin:3px 0 2px;white-space:nowrap}
+.kpi .sub{font-size:12px;color:var(--mute);min-height:16px}.d{font-size:12px;font-weight:600;padding:1px 7px;border-radius:99px;display:inline-block;margin-top:4px}
+.d.up{background:var(--goodbg);color:var(--good)}.d.dn{background:var(--badbg);color:var(--bad)}.d.na{background:#F0EFE9;color:var(--mute);font-weight:500}
+.roas{font-weight:700}.r4{color:var(--good)}.r3{color:var(--ok)}.r2{color:var(--warn)}.r1{color:var(--bad)}
+.pill{font-size:11.5px;padding:2px 8px;border-radius:99px;font-weight:600}.p4{background:var(--goodbg);color:var(--good)}.p3{background:var(--okbg);color:var(--ok)}.p2{background:var(--warnbg);color:var(--warn)}.p1{background:var(--badbg);color:var(--bad)}
+.chartbox{position:relative;height:250px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}th{font-weight:500;color:var(--mute);font-size:12px;text-align:right;padding:6px;border-bottom:1px solid var(--line)}
+td{padding:9px 6px;border-bottom:1px solid #F0EEE6;text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.sec-h{font-size:12.5px;font-weight:600;margin:4px 0 6px}.sec-h.g{color:var(--good)}.sec-h.b{color:var(--bad)}
+.more{font:inherit;font-size:13px;color:var(--sage);background:none;border:0;padding:10px 0 0;cursor:pointer}
+.todo{list-style:none;margin:0;padding:0}.todo li{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #F0EEE6;font-size:14px;line-height:1.45}.todo li:last-child{border:0}
+.todo .ic{flex:0 0 22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700}
+.ic.bad{background:var(--badbg);color:var(--bad)}.ic.warn{background:var(--warnbg);color:var(--warn)}.ic.ok{background:var(--goodbg);color:var(--good)}
+.adm{display:flex;align-items:center;gap:10px;padding:8px 0}.av{width:34px;height:34px;border-radius:50%;background:var(--sage2);display:grid;place-items:center;font-weight:600;color:var(--sage)}
+.adm .n{font-weight:600}.adm .s{font-size:12px;color:var(--mute)}.adm .amt{margin-left:auto;font-weight:600}
+.note{font-size:12px;color:var(--mute);margin-top:18px;line-height:1.6}
+.approx{font-size:11px;color:var(--warn);margin-left:4px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:6}
+nav a{font-size:11px;color:var(--mute);text-decoration:none;text-align:center;padding:4px 8px;flex:1}nav a.on{color:var(--sage);font-weight:600}nav a span{display:block;font-size:18px;line-height:1.1}nav a.soon{opacity:.45}
+@media(min-width:900px){nav{position:static;justify-content:flex-start;gap:4px;border:0;background:none;padding:0;max-width:1180px;margin:0 auto}nav a{flex:0;white-space:nowrap;font-size:13px;padding:8px 12px}nav a span{display:inline;font-size:14px;margin-right:4px}}
+
+.who{margin-left:auto}
+.ubtn{font:inherit;display:flex;align-items:center;gap:8px;background:none;border:0;cursor:pointer;color:var(--ink);padding:2px;text-align:right}
+.ubtn .t{font-size:12px;line-height:1.25;color:var(--mute)}.ubtn .t b{display:block;color:var(--ink);font-weight:600;font-size:13px}
+.ubtn .av2{width:32px;height:32px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:600}
+.menu{position:absolute;right:16px;top:54px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.08);min-width:210px;z-index:20;overflow:hidden}
+.menu button{display:block;width:100%;text-align:left;font:inherit;font-size:14px;padding:12px 16px;border:0;background:none;color:var(--ink);cursor:pointer}
+.menu button+button{border-top:1px solid #F0EEE6}.menu .danger{color:var(--bad)}
+header{padding-top:calc(10px + env(safe-area-inset-top))}
+.screen{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px 16px}
+.login{width:100%;max-width:360px}
+.login .logo{width:180px;max-width:70%;height:auto;display:block;margin:0 auto 18px}.login .logo.sq{width:72px;height:72px;border-radius:18px}
+.login h1{text-align:center;font-size:20px;margin:0 0 4px;color:var(--sage)}.login p.sub{text-align:center;color:var(--mute);font-size:13px;margin:0 0 20px}
+.fld{display:block;margin-bottom:12px}.fld span{display:block;font-size:13px;color:var(--mute);margin-bottom:4px}
+.fld input{font:inherit;font-size:16px;width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.pw{position:relative}.pw button{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--mute);font:inherit;font-size:13px;cursor:pointer;padding:6px}
+.btn{font:inherit;font-size:16px;font-weight:600;width:100%;padding:12px;border-radius:10px;border:0;background:var(--sage);color:#fff;cursor:pointer;min-height:48px}
+.btn:disabled{opacity:.6}.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:500}
+.msg{font-size:13px;margin:10px 0 0;min-height:18px;text-align:center}.msg.err{color:var(--bad)}.msg.ok{color:var(--good)}
+.hint{position:fixed;left:12px;right:12px;bottom:calc(70px + env(safe-area-inset-bottom));background:var(--ink);color:#fff;border-radius:12px;padding:12px 40px 12px 14px;font-size:13px;line-height:1.5;z-index:30}
+.hint button{position:absolute;right:6px;top:6px;background:none;border:0;color:#fff;font-size:18px;cursor:pointer;padding:4px 8px}
+.modal{position:fixed;inset:0;background:rgba(47,58,47,.35);display:grid;place-items:center;z-index:40;padding:16px}
+.modal .card{width:100%;max-width:360px}
+.spin{width:28px;height:28px;border:3px solid var(--sage2);border-top-color:var(--sage);border-radius:50%;animation:s .8s linear infinite;margin:0 auto 10px}@keyframes s{to{transform:rotate(360deg)}}
+.offline{background:var(--warnbg);color:var(--warn)}
+</style>
+</head>
+<body>
+
+<!-- ล็อกอิน -->
+<section class="screen" id="scLogin" hidden>
+  <form class="login" id="fLogin" autocomplete="on">
+    <img class="logo" src="logo.png" alt="Mersi Clinic" onerror="this.onerror=null;this.src='icon-192.png';this.classList.add('sq')">
+    <h1>Data Dashboard</h1>
+    <p class="sub">เข้าสู่ระบบด้วยชื่อผู้ใช้และรหัสผ่าน</p>
+    <label class="fld"><span>ชื่อผู้ใช้</span><input id="lUser" name="username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required></label>
+    <label class="fld"><span>รหัสผ่าน</span><div class="pw"><input id="lPass" name="password" type="password" autocomplete="current-password" required><button type="button" id="lShow">แสดง</button></div></label>
+    <button class="btn" id="lBtn" type="submit">เข้าสู่ระบบ</button>
+    <p class="msg err" id="lMsg"></p>
+    <p class="msg" style="color:var(--mute)">ลืมรหัสผ่าน? ติดต่อทีม Digital Marketing</p>
+  </form>
+</section>
+
+<!-- กำลังโหลด / ข้อผิดพลาด -->
+<section class="screen" id="scLoad" hidden><div style="text-align:center;color:var(--mute)"><div class="spin"></div><div id="loadMsg">กำลังโหลดข้อมูล…</div></div></section>
+
+<!-- แอป -->
+<div id="scApp" hidden>
+<header>
+  <div class="hrow">
+    <div class="brand"><img src="logo.png" alt="Mersi Clinic" class="blogo"><small>Data</small></div>
+    <span class="chip" id="stat"><i class="dot"></i>…</span>
+    <div class="who"><button class="ubtn" id="uBtn" aria-label="เมนูผู้ใช้"><span class="t"><b id="whoName"></b><span id="whoRole"></span></span><span class="av2" id="whoAv">M</span></button></div>
+  </div>
+  <div class="menu" id="uMenu" hidden>
+    <button id="mRefresh">↻ รีเฟรชข้อมูล</button>
+    <button id="mInstall" hidden>⬇ ติดตั้งเป็นแอป</button>
+    <button id="mPass">🔑 เปลี่ยนรหัสผ่าน</button>
+    <button id="mOut" class="danger">ออกจากระบบ</button>
+  </div>
+</header>
+<main>
+  <div class="filters">
+    <div class="presets" id="pre">
+      <button data-p="thism">เดือนนี้</button><button data-p="lastm">เดือนก่อน</button><button data-p="d7">7 วันล่าสุด</button>
+      <button data-p="d30">30 วันล่าสุด</button><button data-p="year">ปีนี้</button><button data-p="range">กำหนดช่วงวัน</button>
+    </div>
+    <div class="frow">
+      <select id="fY" aria-label="ปี"></select>
+      <select id="fM" aria-label="เดือน"></select>
+      <select id="fPage" class="pg" aria-label="เพจ/สาขา"></select>
+    </div>
+    <div class="rrow" id="rrow" hidden>
+      <input type="date" id="fFrom" aria-label="จากวันที่"><span>ถึง</span><input type="date" id="fTo" aria-label="ถึงวันที่">
+    </div>
+    <div class="seg" id="fCmp"><button data-v="prev">เทียบช่วงก่อน</button><button data-v="yoy">เทียบปีก่อน</button><button data-v="none">ไม่เทียบ</button></div>
+  </div>
+  <div id="app"></div>
+</main>
+<nav>
+  <a class="on"><span>◉</span>ภาพรวม</a><a class="soon"><span>▦</span>สาขา</a><a class="soon"><span>◈</span>ครีเอทีฟ</a>
+  <a class="soon" id="navAdm"><span>☺</span>แอดมิน</a><a class="soon"><span>≡</span>รายงาน</a>
+</nav>
+</div>
+
+<!-- เปลี่ยนรหัสผ่าน -->
+<div class="modal" id="pwModal" hidden>
+  <form class="card" id="fPass">
+    <h2 style="margin-top:0">เปลี่ยนรหัสผ่าน</h2>
+    <label class="fld"><span>รหัสผ่านเดิม</span><input type="password" id="pOld" autocomplete="current-password" required></label>
+    <label class="fld"><span>รหัสผ่านใหม่ (อย่างน้อย 6 ตัว)</span><input type="password" id="pNew" autocomplete="new-password" minlength="6" required></label>
+    <label class="fld"><span>ยืนยันรหัสผ่านใหม่</span><input type="password" id="pNew2" autocomplete="new-password" minlength="6" required></label>
+    <button class="btn" type="submit" id="pBtn">บันทึก</button>
+    <button class="btn ghost" type="button" id="pCancel" style="margin-top:8px">ยกเลิก</button>
+    <p class="msg" id="pMsg"></p>
+  </form>
+</div>
+
+<div class="hint" id="hint" hidden><span id="hintTxt"></span><button id="hintX" aria-label="ปิด">×</button></div>
+
+<script src="config.js"></script>
+<script>
+/* ================= ตัวโหลดแอป: ล็อกอิน · เก็บข้อมูลในเครื่อง · อัปเดตเบื้องหลัง ================= */
+const API = window.MERSI_API || '';
+const LS = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set: (k, v) => { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } },
+  del: k => { try { localStorage.removeItem(k); } catch (e) {} } };
+const el = id => document.getElementById(id);
+const show = id => ['scLogin', 'scLoad', 'scApp'].forEach(x => el(x).hidden = x !== id);
+let started = false, deferredInstall = null;
+
+async function api(body) {
+  const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body), redirect: 'follow' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+function showLogin(msg) { show('scLogin'); el('lMsg').textContent = msg || ''; setTimeout(() => (el('lUser').value ? el('lPass') : el('lUser')).focus(), 50); }
+function showLoad(msg, err) { show('scLoad'); el('loadMsg').innerHTML = msg; el('scLoad').querySelector('.spin').style.display = err ? 'none' : ''; }
+function logout(msg) { LS.del('mersi_tok'); LS.del('mersi_data'); started = false; el('lPass').value = ''; showLogin(msg); }
+
+function start(d) {
+  if (started) return; started = true; show('scApp');
+  el('whoAv').textContent = String(d.user.name || 'M').slice(0, 1);
+  startDash(d.base, d.adm, d.user);
+}
+async function refresh(bg) {
+  const tok = LS.get('mersi_tok'); if (!tok) return logout();
+  let have = ''; try { have = (JSON.parse(LS.get('mersi_data') || '{}').ver) || ''; } catch (e) {}
+  try {
+    const r = await api({ action: 'data', token: tok, have: bg ? have : '' });
+    if (!r.ok) { if (r.auth === false) return logout(r.error); if (!bg) showLoad(esc2(r.error) + '<br><br><button class="btn ghost" onclick="location.reload()">ลองใหม่</button>', true); return; }
+    if (r.same) return;
+    const saved = LS.set('mersi_data', JSON.stringify(r));
+    if (!started) start(r); else if (saved) location.reload();
+  } catch (e) {
+    if (!bg) showLoad('เชื่อมต่อไม่ได้ ตรวจอินเทอร์เน็ตแล้วลองใหม่<br><br><button class="btn ghost" onclick="location.reload()">ลองใหม่</button>', true);
+    else { const c = el('stat'); c.classList.add('offline'); c.innerHTML = '<i class="dot warn"></i>ออฟไลน์ · ข้อมูลล่าสุดในเครื่อง'; }
+  }
+}
+const esc2 = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+el('fLogin').addEventListener('submit', async e => {
+  e.preventDefault(); el('lBtn').disabled = true; el('lMsg').textContent = '';
+  try {
+    const r = await api({ action: 'login', username: el('lUser').value.trim(), password: el('lPass').value });
+    if (!r.ok) { el('lMsg').textContent = r.error; return; }
+    LS.set('mersi_tok', r.token); LS.set('mersi_user', el('lUser').value.trim());
+    el('lPass').value = ''; showLoad('กำลังโหลดข้อมูล…'); await refresh(false);
+  } catch (err) { el('lMsg').textContent = 'เชื่อมต่อไม่ได้ ตรวจอินเทอร์เน็ตแล้วลองใหม่'; }
+  finally { el('lBtn').disabled = false; }
+});
+el('lShow').onclick = () => { const p = el('lPass'); p.type = p.type === 'password' ? 'text' : 'password'; el('lShow').textContent = p.type === 'password' ? 'แสดง' : 'ซ่อน'; };
+
+// เมนูผู้ใช้
+el('uBtn').onclick = e => { e.stopPropagation(); el('uMenu').hidden = !el('uMenu').hidden; };
+document.addEventListener('click', () => el('uMenu').hidden = true);
+el('mRefresh').onclick = () => { LS.del('mersi_data'); location.reload(); };
+el('mOut').onclick = () => logout('ออกจากระบบแล้ว');
+el('mPass').onclick = () => { el('pwModal').hidden = false; el('pMsg').textContent = ''; el('fPass').reset(); };
+el('pCancel').onclick = () => el('pwModal').hidden = true;
+el('fPass').addEventListener('submit', async e => {
+  e.preventDefault(); const m = el('pMsg'); m.className = 'msg err';
+  if (el('pNew').value !== el('pNew2').value) { m.textContent = 'รหัสผ่านใหม่ 2 ช่องไม่ตรงกัน'; return; }
+  el('pBtn').disabled = true;
+  try {
+    const r = await api({ action: 'passwd', token: LS.get('mersi_tok'), old: el('pOld').value, password: el('pNew').value });
+    if (!r.ok) { if (r.auth === false) return logout(r.error); m.textContent = r.error; return; }
+    LS.set('mersi_tok', r.token); m.className = 'msg ok'; m.textContent = 'เปลี่ยนรหัสผ่านแล้ว ✓'; setTimeout(() => el('pwModal').hidden = true, 1200);
+  } catch (err) { m.textContent = 'เชื่อมต่อไม่ได้'; } finally { el('pBtn').disabled = false; }
+});
+
+// ติดตั้งเป็นแอป
+const standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; el('mInstall').hidden = false; });
+el('mInstall').onclick = async () => { if (!deferredInstall) return; deferredInstall.prompt(); await deferredInstall.userChoice; deferredInstall = null; el('mInstall').hidden = true; };
+function installHint() {
+  if (standalone || LS.get('mersi_hint')) return;
+  const ua = navigator.userAgent; let t = '';
+  if (/ Line\//i.test(ua)) t = 'เปิดใน LINE อยู่ — ถ้าต้องการติดตั้งเป็นแอป แตะ ⋯ มุมขวาบน › เปิดในเบราว์เซอร์';
+  else if (/iPhone|iPad|iPod/.test(ua)) t = 'ติดตั้งเป็นแอป: แตะปุ่มแชร์ ⬆︎ ด้านล่าง › “เพิ่มไปยังหน้าจอโฮม”';
+  else if (/Android/.test(ua)) t = 'ติดตั้งเป็นแอป: แตะ ⋮ มุมขวาบน › “เพิ่มลงในหน้าจอหลัก” (หรือเมนูผู้ใช้ › ติดตั้งเป็นแอป)';
+  if (!t) return; el('hintTxt').textContent = t; el('hint').hidden = false;
+}
+el('hintX').onclick = () => { el('hint').hidden = true; LS.set('mersi_hint', '1'); };
+if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+
+// เริ่ม
+function init() {
+  if (!/^https:\/\/script\.google(usercontent)?\.com\//.test(API)) { showLoad('ยังไม่ได้ตั้งค่า API — แก้ไฟล์ config.js ใส่ลิงก์ Apps Script ที่ลงท้าย /exec', true); return; }
+  const u = LS.get('mersi_user'); if (u) el('lUser').value = u;
+  if (!LS.get('mersi_tok')) return showLogin();
+  let c = null; try { c = JSON.parse(LS.get('mersi_data') || 'null'); } catch (e) {}
+  if (c && c.base) { start(c); refresh(true); } else { showLoad('กำลังโหลดข้อมูล…'); refresh(false); }
+  setTimeout(installHint, 1500);
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else setTimeout(init, 0);
+</script>
+<script>
+/* ================= Dashboard (ภาพรวม) ================= */
+function startDash(SNAP, ADM, BOOT) {
+
+/* ---------- helpers ---------- */
+const TH_MON = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+const dim = m => new Date(Date.UTC(+m.slice(0, 4), +m.slice(5), 0)).getUTCDate();
+const addD = (iso, n) => { const d = new Date(iso + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const addM = (m, n) => new Date(Date.UTC(+m.slice(0, 4), +m.slice(5) - 1 + n, 1)).toISOString().slice(0, 7);
+const nDays = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / 864e5) + 1;
+const mEnd = m => m + '-' + pad(dim(m));
+const yBE = y => String(+y + 543);
+const monTH = m => TH_MON[+m.slice(5) - 1] + ' ' + yBE(m.slice(0, 4)).slice(2);
+const dTH = d => (+d.slice(8)) + ' ' + TH_MON[+d.slice(5, 7) - 1];
+const rangeTH = (a, b) => a.slice(0, 7) === b.slice(0, 7) ? (a.slice(8) === '01' && (b === mEnd(b.slice(0, 7)) || b === SNAP.last && b.slice(0,7) === SNAP.cur)
+    ? monTH(a.slice(0, 7)) + (b !== mEnd(b.slice(0, 7)) ? ` (1–${+b.slice(8)})` : '') : `${+a.slice(8)}–${dTH(b)} ${yBE(b.slice(0, 4)).slice(2)}`)
+  : `${dTH(a)} ${yBE(a.slice(0, 4)).slice(2)} – ${dTH(b)} ${yBE(b.slice(0, 4)).slice(2)}`;
+const baht = n => '฿' + (Math.abs(n) >= 1e6 ? (n / 1e6).toFixed(2) + ' ล.' : Math.round(n || 0).toLocaleString('th-TH'));
+const int = n => Math.round(n || 0).toLocaleString('th-TH');
+const rLv = r => r >= 2 ? 4 : r >= 1.5 ? 3 : r >= 1 ? 2 : 1;
+const rTxt = r => ['', 'ขาดทุน', 'เสมอตัว', 'พอใช้', 'ดี'][rLv(r)];
+const minS = (a, b) => a < b ? a : b, maxS = (a, b) => a > b ? a : b;
+const yShift = (d, n) => { let s = (+d.slice(0, 4) + n) + d.slice(4); if (s.slice(5) === '02-29') s = s.slice(0, 8) + '28'; return s; };
+
+const LAST = SNAP.last, CUR = SNAP.cur, FIRST = '2025-01-01';
+const MONTHS = [...new Set(Object.keys(SNAP.M).concat(Object.keys(SNAP.cov)))].filter(m => m >= '2025-01' && m <= CUR).sort();
+const YEARS = [...new Set(MONTHS.map(m => m.slice(0, 4)))];
+
+/* ---------- ตัวเลขของช่วงวันใดๆ ----------
+   เดือนที่อยู่ในช่วงเต็มเดือน → ใช้ยอดรายเดือน (ค่าแอดตาม TSM) · ไม่เต็มเดือน → รวมรายวัน · ไม่มีรายวัน → เฉลี่ยจากรายเดือน (≈) */
+function sumRange(a, b, pi) {
+  const o = new Array(10).fill(0); let approx = false, has = false;
+  if (!a || !b || b < a) return { o, approx, has };
+  const addM_ = (mm, f) => { const x = mm.slice(); x[1] = x[1] || x[8]; x[3] = x[3] || x[9]; x[8] = x[9] = 0;   // แชต = Meta หรือ inbox ใหม่ (TSM) · บิล = บิลจริง หรือเคส (TSM)
+    x.forEach((v, i) => o[i] += v * f); has = true; };
+  for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) {
+    const ms = m + '-01', me = mEnd(m), s = maxS(a, ms), e = minS(b, me);
+    const lastEff = m === CUR ? LAST : me;
+    const mm = (SNAP.M[m] || {})[pi < 0 ? 'a' : pi], cv = SNAP.cov[m] || {};
+    if (s === ms && e >= lastEff && mm) { addM_(mm, 1); continue; }
+    const f = nDays(s, e) / (m === CUR ? nDays(ms, LAST) : dim(m));
+    if (cv.d) {
+      const x = new Array(6).fill(0); let hit = false;
+      for (let d = s; d <= e; d = addD(d, 1)) (SNAP.D[d] || []).forEach(r => { if (pi < 0 || r[0] === pi) { for (let i = 0; i < 6; i++) x[i] += r[i + 1]; hit = true; } });
+      if (mm) { const y = mm.slice(); y[1] = y[1] || y[8]; y[3] = y[3] || y[9];                    // ช่องที่ไม่มีรายวัน (เช่นค่าแอดก่อน BACKFILL) → เฉลี่ยจากรายเดือน
+        for (let i = 0; i < 6; i++) if (!x[i] && y[i]) { x[i] = y[i] * f; approx = true; } }
+      x.forEach((v, i) => o[i] += v); if (hit) has = true;
+    } else if (mm) { addM_(mm, f); approx = true; }
+  }
+  return { o, approx, has };
+}
+function kpis(o) {
+  const spend = o[0], online = o[2], branch = o[5], chats = o[1], bills = o[3], newp = o[4];
+  return { spend, online, branch, chats, bills, newp, roas: spend ? online / spend : 0, roasT: spend ? (online + branch) / spend : 0,
+    cpc: chats ? spend / chats : 0, cr: chats && o[3] ? o[3] / chats : 0, cac: newp ? spend / newp : 0, spb: bills ? online / bills : 0 };
+}
+function target(a, b, pi) {
+  let on = 0, br = 0;
+  for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) {
+    const f = nDays(maxS(a, m + '-01'), minS(b, mEnd(m))) / dim(m); const t = pi < 0 ? SNAP.T : SNAP.P[pi];
+    on += (t.on || 0) * f; br += (t.br || 0) * f;
+  }
+  return { on, br };
+}
+
+/* ---------- state ---------- */
+const S = { mode: 'month', y: CUR.slice(0, 4), m: CUR, from: '', to: '', page: -1, cmp: 'prev', showAllBr: false, preset: 'thism' };
+try { const p = JSON.parse(localStorage.getItem('mersi_ov2') || '{}'); if (p.cmp) S.cmp = p.cmp; if (p.page != null && SNAP.P[p.page]) S.page = p.page; } catch (e) {}
+
+function period() {
+  if (S.mode === 'month') return [S.m + '-01', minS(mEnd(S.m), LAST)];
+  if (S.mode === 'year') return [S.y + '-01-01', minS(S.y + '-12-31', LAST)];
+  let a = S.from || addD(LAST, -29), b = minS(S.to || LAST, LAST); if (a > b) [a, b] = [b, a]; return [maxS(a, FIRST), b];
+}
+function refPeriod(a, b) {
+  if (S.cmp === 'none') return null;
+  if (S.cmp === 'yoy' || S.mode === 'year') return [yShift(a, -1), yShift(b, -1)];
+  if (S.mode === 'month') { const pm = addM(S.m, -1); const full = b === mEnd(S.m); return [pm + '-01', full ? mEnd(pm) : pm + '-' + pad(Math.min(+b.slice(8), dim(pm)))]; }
+  const n = nDays(a, b); return [addD(a, -n), addD(a, -1)];
+}
+
+/* ---------- filters ---------- */
+function fillFilters() {
+  $('fY').innerHTML = YEARS.slice().reverse().map(y => `<option value="${y}">${yBE(y)}</option>`).join('');
+  $('fY').value = S.y;
+  const ms = MONTHS.filter(m => m.slice(0, 4) === S.y).reverse();
+  $('fM').innerHTML = `<option value="year">ทั้งปี ${yBE(S.y)}</option>` + ms.map(m => `<option value="${m}">${TH_MON[+m.slice(5) - 1]}${m === CUR ? ' (เดือนนี้)' : ''}</option>`).join('');
+  $('fM').value = S.mode === 'year' ? 'year' : S.mode === 'month' ? S.m : '';
+  if ($('fPage').options.length === 0) {
+    const P = SNAP.P.map((p, i) => ({ ...p, i })).filter(p => p.b || (SNAP.M[CUR] || {})[p.i] || (SNAP.M[addM(CUR, -1)] || {})[p.i]);
+    $('fPage').innerHTML = '<option value="-1">ทุกเพจ · ทุกสาขา</option>' + P.sort((x, y) => y.b - x.b || x.n.localeCompare(y.n, 'th')).map(p => `<option value="${p.i}">${esc(p.n)}</option>`).join('');
+  }
+  $('fPage').value = String(S.page);
+  const [a, b] = period(); $('fFrom').value = a; $('fTo').value = b;
+  $('fFrom').min = $('fTo').min = FIRST; $('fFrom').max = $('fTo').max = LAST;
+  $('rrow').hidden = S.mode !== 'range';
+  [...$('pre').children].forEach(x => x.classList.toggle('on', x.dataset.p === S.preset));
+  [...$('fCmp').children].forEach(x => x.classList.toggle('on', x.dataset.v === S.cmp));
+  $('fCmp').children[0].textContent = S.mode === 'month' ? 'เทียบเดือนก่อน' : S.mode === 'year' ? 'เทียบปีก่อน' : 'เทียบช่วงก่อน';
+  $('fCmp').children[1].style.display = S.mode === 'year' ? 'none' : '';
+}
+$('pre').addEventListener('click', e => {
+  const p = e.target.closest('button'); if (!p) return; S.preset = p.dataset.p;
+  if (p.dataset.p === 'thism') { S.mode = 'month'; S.m = CUR; }
+  else if (p.dataset.p === 'lastm') { S.mode = 'month'; S.m = addM(CUR, -1); }
+  else if (p.dataset.p === 'd7') { S.mode = 'range'; S.from = addD(LAST, -6); S.to = LAST; }
+  else if (p.dataset.p === 'd30') { S.mode = 'range'; S.from = addD(LAST, -29); S.to = LAST; }
+  else if (p.dataset.p === 'year') { S.mode = 'year'; S.y = CUR.slice(0, 4); }
+  else { const [a, b] = period(); S.mode = 'range'; S.from = a; S.to = b; }
+  S.y = (S.mode === 'month' ? S.m : S.mode === 'range' ? S.to : S.y).slice(0, 4);
+  go();
+});
+$('fY').addEventListener('change', e => { S.y = e.target.value; const ms = MONTHS.filter(m => m.slice(0, 4) === S.y); S.mode = 'month'; S.m = ms.includes(S.y + S.m.slice(4)) ? S.y + S.m.slice(4) : ms[ms.length - 1]; S.preset = ''; go(); });
+$('fM').addEventListener('change', e => { if (e.target.value === 'year') S.mode = 'year'; else { S.mode = 'month'; S.m = e.target.value; } S.preset = ''; go(); });
+$('fPage').addEventListener('change', e => { S.page = +e.target.value; go(); });
+['fFrom', 'fTo'].forEach(id => $(id).addEventListener('change', () => { S.mode = 'range'; S.preset = 'range'; S.from = $('fFrom').value; S.to = $('fTo').value; go(); }));
+$('fCmp').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.cmp = b.dataset.v; go(); });
+
+function go() {
+  try { localStorage.setItem('mersi_ov2', JSON.stringify({ cmp: S.cmp, page: S.page })); } catch (e) {}
+  if (S.mode === 'month') S.preset = S.m === CUR ? 'thism' : S.m === addM(CUR, -1) ? 'lastm' : '';
+  else if (S.mode === 'year') S.preset = S.y === CUR.slice(0, 4) ? 'year' : '';
+  fillFilters(); render();
+}
+
+/* ---------- render ---------- */
+let chart;
+function delta(cur, ref, invert) {
+  if (S.cmp === 'none') return '';
+  if (ref == null || !ref) return '<span class="d na">— ไม่มีตัวเทียบ</span>';
+  const p = (cur - ref) / Math.abs(ref), up = p >= 0, good = invert ? !up : up;
+  return `<span class="d ${good ? 'up' : 'dn'}">${up ? '▲' : '▼'} ${Math.abs(p * 100).toFixed(1)}%</span>`;
+}
+function render() {
+  const [a, b] = period(), pi = S.page, isCurMonth = S.mode === 'month' && S.m === CUR;
+  const R = sumRange(a, b, pi), K = kpis(R.o);
+  const rp = refPeriod(a, b), RR = rp ? sumRange(rp[0], rp[1], pi) : null, KR = RR && RR.has ? kpis(RR.o) : null;
+  const pName = pi < 0 ? 'ทั้งเครือ' : SNAP.P[pi].n;
+  const ax = R.approx ? '<span class="approx">≈ ประมาณจากยอดรายเดือน</span>' : '';
+  let h = `<h2>${esc(rangeTH(a, b))} · ${esc(pName)} <small>${nDays(a, b)} วัน · ข้อมูลถึง ${dTH(LAST)}${rp ? ` · เทียบ ${esc(rangeTH(rp[0], rp[1]))}` : ''}</small>${ax}</h2>`;
+  if (!R.has) { $('app').innerHTML = h + '<div class="card">ยังไม่มีข้อมูลในช่วงนี้</div>'; drawChart(null); return; }
+
+  // เป้า
+  const full = S.mode === 'month' ? target(S.m + '-01', mEnd(S.m), pi) : target(a, b, pi);
+  const dayN = nDays(a, b), dimN = S.mode === 'month' ? dim(S.m) : dayN, pace = isCurMonth ? dayN / dimN : 1;
+  h += '<div class="grid2">' + [['ยอดออนไลน์', K.online, full.on], ['ยอดหน้าสาขา', K.branch, full.br]].map(([n, v, t]) => {
+    const pct = t ? v / t : 0, left = dimN - dayN;
+    return `<div class="card tgt"><div class="lbl">${n}${S.mode === 'month' ? '' : ' <span style="font-size:11px">(เป้าเฉลี่ยตามจำนวนวัน)</span>'}</div>
+      <div class="big">${baht(v)} <span class="of">/ เป้า ${t ? baht(t) : '—'}</span></div>
+      <div class="bar"><i style="width:${Math.min(100, pct * 100)}%;background:${pct >= pace * 0.97 ? 'var(--sage)' : 'var(--warn)'}"></i>${isCurMonth ? `<b style="left:${pace * 100}%"></b>` : ''}</div>
+      <div class="meta"><span>ทำได้ <strong>${t ? (pct * 100).toFixed(1) + '%' : '—'}</strong></span>
+      ${isCurMonth && t ? `<span>คาดปิดเดือน <strong>${baht(v / dayN * dimN)}</strong></span><span>ต้องได้วันละ <strong>${baht(left > 0 ? Math.max(0, (t - v) / left) : 0)}</strong></span><span>ตอนนี้เฉลี่ย ${baht(v / dayN)}/วัน</span>` : ''}</div></div>`;
+  }).join('') + '</div>';
+
+  // KPI
+  const r = K.roas;
+  h += '<h2>ตัวชี้วัดหลัก</h2><div class="grid6">' + [
+    ['ค่าโฆษณา', baht(K.spend), '', delta(K.spend, KR && KR.spend, true)],
+    ['ROAS ออนไลน์', `<span class="roas r${rLv(r)}">${r ? r.toFixed(2) : '—'}</span>`, r ? `<span class="pill p${rLv(r)}">${rTxt(r)}</span> รวมสาขา ${K.roasT ? K.roasT.toFixed(2) : '—'}` : '', delta(K.roas, KR && KR.roas)],
+    ['แชตใหม่', K.chats ? int(K.chats) : '—', K.cpc ? `฿${int(K.cpc)} / แชต` : '', delta(K.chats, KR && KR.chats)],
+    ['บิลออนไลน์', K.bills ? int(K.bills) : '—', K.cr ? `ปิดได้ ${(K.cr * 100).toFixed(1)}% ของแชต` : '', delta(K.bills, KR && KR.bills)],
+    ['ลูกค้าใหม่', K.newp ? int(K.newp) : '—', K.cac ? `CAC ฿${int(K.cac)}` : '', delta(K.newp, KR && KR.newp)],
+    ['ยอด / บิล', K.spb ? baht(K.spb) : '—', '', delta(K.spb, KR && KR.spb)]
+  ].map(([l, v, s, d]) => `<div class="card kpi"><div class="lbl">${l}</div><div class="v">${v}</div><div class="sub">${s}</div>${d}</div>`).join('') + '</div>';
+
+  // กราฟ
+  const T = trend(a, b, pi);
+  h += `<h2>${esc(T.title)} <small>${esc(T.sub)}</small></h2><div class="card"><div class="chartbox"><canvas id="cTrend"></canvas></div></div>`;
+
+  // สาขา
+  const br = SNAP.P.map((p, i) => ({ p, i })).filter(x => x.p.b).map(x => { const k = kpis(sumRange(a, b, x.i).o), t = target(a, b, x.i).br;
+    return { name: x.p.n, ...k, pct: t ? k.branch / t : null }; }).filter(x => x.branch || x.online || x.spend).sort((x, y) => (y.pct || 0) - (x.pct || 0));
+  if (pi < 0 && br.length) {
+    const row = x => `<tr><td>${esc(x.name)}</td><td>${baht(x.branch)}</td><td>${x.pct != null ? (x.pct * 100).toFixed(0) + '%' : '—'}</td><td>${baht(x.online)}</td><td class="roas r${rLv(x.roas)}">${x.roas ? x.roas.toFixed(2) : '—'}</td><td>${x.roasT ? x.roasT.toFixed(2) : '—'}</td></tr>`;
+    const head = '<tr><th>สาขา</th><th>หน้าสาขา</th><th>% เป้า</th><th>ออนไลน์</th><th>ROAS</th><th>รวม</th></tr>';
+    h += '<h2>สาขา <small>เรียงตาม % เป้าหน้าสาขา (เป้าตามจำนวนวันในช่วง)</small></h2><div class="card">';
+    if (S.showAllBr || br.length <= 6) h += `<div class="tbl"><table>${head}${br.map(row).join('')}</table></div>`;
+    else h += `<div class="sec-h g">▲ นำ 3 สาขา</div><div class="tbl"><table>${head}${br.slice(0, 3).map(row).join('')}</table></div>
+      <div class="sec-h b" style="margin-top:12px">▼ ต้องช่วย 3 สาขา</div><div class="tbl"><table>${head}${br.slice(-3).reverse().map(row).join('')}</table></div>`;
+    if (br.length > 6) h += `<button class="more" id="moreBr">${S.showAllBr ? 'ย่อ' : 'ดูทั้ง ' + br.length + ' สาขา'} ›</button>`;
+    h += '</div>';
+  }
+
+  // แอดมิน
+  if (ADM && pi < 0) {
+    const g = {}; for (let d = a; d <= b; d = addD(d, 1)) (ADM.D[d] || []).forEach(x => { const o = g[x[0]] || (g[x[0]] = { s: 0, b: 0 }); o.s += x[1]; o.b += x[2]; });
+    const rows = Object.keys(g).map(i => ({ ...ADM.L[i], s: g[i].s, b: g[i].b })).filter(x => x.rk).sort((x, y) => y.s - x.s);
+    if (rows.length) {
+      const av = x => `<div class="adm"><div class="av">${esc(String(x.n).slice(0, 1))}</div><div><div class="n">${esc(x.n)}</div><div class="s">${int(x.b)} บิล</div></div><div class="amt">${baht(x.s)}</div></div>`;
+      h += `<h2>แอดมิน <small>ยอดขายออนไลน์ ${rows.length} คน</small></h2><div class="grid2"><div class="card"><div class="sec-h g">ยอดสูงสุด</div>${rows.slice(0, 2).map(av).join('')}</div>
+        <div class="card"><div class="sec-h b">ต้องช่วยดู</div>${rows.length > 4 ? rows.slice(-2).reverse().map(av).join('') : '<div class="s" style="padding:8px 0;color:var(--mute)">—</div>'}</div></div>`;
+    }
+  }
+
+  // สิ่งที่ต้องทำ
+  const todo = [];
+  if (isCurMonth && full.on) { const need = (full.on - K.online) / Math.max(1, dimN - dayN), avg = K.online / dayN;
+    if (need > avg * 1.1) todo.push(['warn', `ยอดออนไลน์ต้องได้วันละ ${baht(need)} (ตอนนี้เฉลี่ย ${baht(avg)}) จึงจะถึงเป้า`]); }
+  br.filter(x => x.spend > 20000 && x.roas && x.roas < 1).slice(0, 4).forEach(x => todo.push(['bad', `${x.name}: ROAS ออนไลน์ ${x.roas.toFixed(2)} ต่ำกว่า 1.0 — ตรวจแคมเปญ/ครีเอทีฟ`]));
+  if (SNAP.cr && SNAP.cr.kill) todo.push(['bad', `ครีเอทีฟสถานะ Kill ${SNAP.cr.kill} ชิ้น (รอบ ${SNAP.cr.period}) — หยุดแล้วย้ายงบไปชิ้น Scale ${SNAP.cr.scale} ชิ้น`]);
+  (SNAP.st || []).filter(s => s.status === 'FAIL').forEach(s => todo.push(['bad', `ท่อข้อมูล ${s.job} ล้มเหลวล่าสุด ${s.at} — แจ้งทีม Digital`]));
+  for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) { const c = SNAP.cov[m] || {}, need = m === CUR ? nDays(m + '-01', LAST) : dim(m);
+    if (!c.t && m >= '2026-01' && (c.a || 0) < need - 1) todo.push(['warn', `ค่าโฆษณา ${monTH(m)} มีข้อมูล ${c.a || 0}/${need} วัน — ตัวเลขค่าแอด/ROAS ยังไม่ครบ`]); }
+  if (!todo.length) todo.push(['ok', 'ทุกตัวชี้วัดอยู่ในเกณฑ์ ไม่มีเรื่องเร่งด่วน']);
+  h += '<h2>สิ่งที่ต้องทำ</h2><div class="card"><ul class="todo">' + todo.map(t => `<li><span class="ic ${t[0]}">${t[0] === 'ok' ? '✓' : '!'}</span><span>${esc(t[1])}</span></li>`).join('') + '</ul></div>';
+  h += `<div class="note">เดือนที่เลือกเต็มเดือน: ค่าโฆษณาตาม Total Sale Monitoring · ช่วงวันบางส่วน: ค่าโฆษณาจาก Meta รายวัน<br>ROAS: ≥2.0 ดี · 1.5–1.99 พอใช้ · 1.0–1.49 เสมอตัว · &lt;1.0 ขาดทุน · อัปเดตข้อมูล ${esc(SNAP.built)}</div>`;
+  $('app').innerHTML = h;
+  if ($('moreBr')) $('moreBr').onclick = () => { S.showAllBr = !S.showAllBr; render(); };
+  drawChart(T);
+}
+
+function trend(a, b, pi) {
+  const pts = [];
+  if (S.mode === 'range' && nDays(a, b) <= 92) {
+    for (let d = a; d <= b; d = addD(d, 1)) { const k = kpis(sumRange(d, d, pi).o); pts.push({ l: dTH(d), on: k.online, br: k.branch, roas: k.roas }); }
+    return { title: 'รายวัน', sub: 'ยอดออนไลน์ + หน้าสาขา', pts, daily: true };
+  }
+  let ms;
+  if (S.mode === 'month') ms = [0, 1, 2, 3].map(i => addM(S.m, -i));
+  else { ms = []; for (let m = b.slice(0, 7); m >= a.slice(0, 7) && ms.length < 24; m = addM(m, -1)) ms.push(m); }
+  ms.forEach(m => { const k = kpis(sumRange(m + '-01', minS(mEnd(m), LAST), pi).o); pts.push({ l: monTH(m) + (m === CUR ? '*' : ''), on: k.online, br: k.branch, roas: k.roas }); });
+  return { title: S.mode === 'month' ? 'เทียบ 4 เดือน' : 'รายเดือน', sub: 'ล่าสุดอยู่ซ้าย', pts };
+}
+
+let chartLib = null;
+function drawChart(T) {
+  if (chart) { chart.destroy(); chart = null; }
+  if (!T || !$('cTrend')) return;
+  if (!window.Chart) { if (!chartLib) { chartLib = document.createElement('script'); chartLib.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'; chartLib.onload = () => render(); document.head.appendChild(chartLib); } return; }
+  const p = T.pts;
+  chart = new Chart($('cTrend'), {
+    data: { labels: p.map(x => x.l), datasets: [
+      { type: 'bar', label: 'ออนไลน์', data: p.map(x => x.on), backgroundColor: '#8B9677', stack: 's', borderRadius: 3, yAxisID: 'y' },
+      { type: 'bar', label: 'หน้าสาขา', data: p.map(x => x.br), backgroundColor: '#CDD4C2', stack: 's', borderRadius: 3, yAxisID: 'y' },
+      { type: 'line', label: 'ROAS ออนไลน์', data: p.map(x => x.roas || null), borderColor: '#B89B5E', backgroundColor: '#B89B5E', tension: .3, pointRadius: T.daily ? 0 : 3, yAxisID: 'y2' } ] },
+    options: { responsive: true, maintainAspectRatio: false, animation: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } },
+        tooltip: { callbacks: { label: c => c.dataset.yAxisID === 'y2' ? ` ROAS ${c.raw ? c.raw.toFixed(2) : '—'}` : ` ${c.dataset.label} ${baht(c.raw)}` } } },
+      scales: { y: { stacked: true, ticks: { callback: v => v >= 1e6 ? (v / 1e6).toFixed(0) + ' ล.' : (v / 1e3).toFixed(0) + 'k' }, grid: { color: '#EFEDE4' } },
+        y2: { position: 'right', beginAtZero: true, grid: { display: false } }, x: { stacked: true, grid: { display: false }, ticks: { maxRotation: 0, autoSkip: true } } } }
+  });
+}
+
+/* ---------- start ---------- */
+$('whoName').textContent = BOOT.name; $('whoRole').textContent = BOOT.roleLabel;
+$('navAdm').style.display = ADM ? '' : 'none';
+(() => { const st = SNAP.st || [], fail = st.some(s => s.status === 'FAIL'), warn = st.some(s => s.status === 'WARN');
+  $('stat').innerHTML = `<i class="dot ${fail ? 'bad' : warn ? 'warn' : ''}"></i>ข้อมูลถึง ${dTH(LAST)}`; })();
+fillFilters(); render();
+
+}
+</script>
+</body>
+</html>
