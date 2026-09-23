@@ -168,7 +168,7 @@ header{padding-top:calc(10px + env(safe-area-inset-top))}
 
 <div class="hint" id="hint" hidden><span id="hintTxt"></span><button id="hintX" aria-label="ปิด">×</button></div>
 
-<script src="config.js"></script>
+<script src="config.js?v=6"></script>
 <script>
 /* ================= ตัวโหลดแอป: ล็อกอิน · เก็บข้อมูลในเครื่อง · อัปเดตเบื้องหลัง ================= */
 const API = window.MERSI_API || '';
@@ -256,7 +256,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.se
 
 // เริ่ม
 function init() {
-  if (!/^https:\/\/script\.google(usercontent)?\.com\//.test(API)) { showLoad('ยังไม่ได้ตั้งค่า API — แก้ไฟล์ config.js ใส่ลิงก์ Apps Script ที่ลงท้าย /exec', true); return; }
+  if (!/^https:\/\/script\.google(usercontent)?\.com\//.test(API)) { showLoad('ยังไม่ได้ตั้งค่า API — แก้ไฟล์ config.js ใส่ลิงก์ Apps Script ที่ลงท้าย /exec<br><br><button class="btn ghost" onclick="location.reload()">โหลดใหม่</button>', true); return; }
   const u = LS.get('mersi_user'); if (u) el('lUser').value = u;
   if (!LS.get('mersi_tok')) return showLogin();
   let c = null; try { c = JSON.parse(LS.get('mersi_data') || 'null'); } catch (e) {}
