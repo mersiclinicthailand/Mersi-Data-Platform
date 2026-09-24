@@ -93,6 +93,28 @@ header{padding-top:calc(10px + env(safe-area-inset-top))}
 .modal .card{width:100%;max-width:360px}
 .spin{width:28px;height:28px;border:3px solid var(--sage2);border-top-color:var(--sage);border-radius:50%;animation:s .8s linear infinite;margin:0 auto 10px}@keyframes s{to{transform:rotate(360deg)}}
 .offline{background:var(--warnbg);color:var(--warn)}
+
+nav a{cursor:pointer}
+.bsum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.bsum .card{padding:12px}.bsum .n{font-size:20px;font-weight:700}.bsum .l{font-size:12px;color:var(--mute)}
+.sortbar{display:flex;gap:6px;overflow-x:auto;margin:12px 0 10px;scrollbar-width:none}.sortbar::-webkit-scrollbar{display:none}
+.sortbar button{font:inherit;font-size:12.5px;white-space:nowrap;border:1px solid var(--line);background:#fff;color:var(--mute);border-radius:99px;padding:6px 12px;cursor:pointer}.sortbar button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.blist{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:720px){.blist{grid-template-columns:1fr 1fr}}@media(min-width:1080px){.blist{grid-template-columns:1fr 1fr 1fr}}
+.bcard{cursor:pointer;position:relative}.bcard .top{display:flex;align-items:baseline;gap:8px}.bcard .rk{font-size:12px;color:var(--mute);min-width:22px}
+.bcard .nm{font-weight:600;font-size:15px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bcard .pc{font-weight:700;font-size:15px}
+.bcard .amt{font-size:20px;font-weight:700;margin:4px 0 0}.bcard .amt small{font-size:12px;color:var(--mute);font-weight:400}
+.bcard .row{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--mute);margin-top:6px}.bcard .row b{color:var(--ink);font-weight:600}
+.bcard .go{position:absolute;right:12px;bottom:10px;color:var(--mute);font-size:12px}
+.pc.g{color:var(--good)}.pc.w{color:var(--warn)}.pc.b{color:var(--bad)}
+
+.pgl{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:720px){.pgl{grid-template-columns:1fr 1fr}}
+.pcard .top{display:flex;align-items:baseline;gap:8px}.pcard .nm{font-weight:600;flex:1}.pcard .sh{font-size:12px;color:var(--mute)}
+.pcard .big{font-size:19px;font-weight:700;margin-top:2px}.pcard .row{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--mute);margin-top:6px}.pcard .row b{color:var(--ink);font-weight:600}
+.crtabs{display:flex;gap:6px;overflow-x:auto;margin:0 0 10px;scrollbar-width:none}.crtabs::-webkit-scrollbar{display:none}
+.crtabs button{font:inherit;font-size:13px;white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 12px;cursor:pointer;color:var(--ink)}
+.crtabs button.on{color:#fff}.crtabs .Kill.on{background:var(--bad);border-color:var(--bad)}.crtabs .Scale.on{background:var(--good);border-color:var(--good)}.crtabs .Refresh.on{background:var(--warn);border-color:var(--warn)}.crtabs .Keep.on{background:var(--sage);border-color:var(--sage)}
+.crl{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:720px){.crl{grid-template-columns:1fr 1fr}}
+.cr{display:flex;gap:12px}.cr img{width:72px;height:72px;object-fit:cover;border-radius:10px;background:var(--sage2);flex:0 0 72px}
+.cr .ct{font-size:13.5px;font-weight:600;line-height:1.4}.cr .cm{font-size:12px;color:var(--mute);margin-top:2px}.cr .cw{font-size:12.5px;margin-top:6px;line-height:1.45}.cr .cw b{font-weight:600}
 </style>
 </head>
 <body>
@@ -148,7 +170,7 @@ header{padding-top:calc(10px + env(safe-area-inset-top))}
   <div id="app"></div>
 </main>
 <nav>
-  <a class="on"><span>◉</span>ภาพรวม</a><a class="soon"><span>▦</span>สาขา</a><a class="soon"><span>◈</span>ครีเอทีฟ</a>
+  <a class="on" id="navOv" data-v="ov"><span>◉</span>ภาพรวม</a><a id="navBr" data-v="br"><span>▦</span>สาขา</a><a id="navMk" data-v="mk"><span>◈</span>การตลาด</a>
   <a class="soon" id="navAdm"><span>☺</span>แอดมิน</a><a class="soon"><span>≡</span>รายงาน</a>
 </nav>
 </div>
@@ -335,7 +357,7 @@ function target(a, b, pi) {
 }
 
 /* ---------- state ---------- */
-const S = { mode: 'month', y: CUR.slice(0, 4), m: CUR, from: '', to: '', page: -1, cmp: 'prev', showAllBr: false, preset: 'thism' };
+const S = { mode: 'month', y: CUR.slice(0, 4), m: CUR, from: '', to: '', page: -1, cmp: 'prev', showAllBr: false, preset: 'thism', view: 'ov', bsort: 'pct', ctab: 'Kill' };
 try { const p = JSON.parse(localStorage.getItem('mersi_ov2') || '{}'); if (p.cmp) S.cmp = p.cmp; if (p.page != null && SNAP.P[p.page]) S.page = p.page; } catch (e) {}
 
 function period() {
@@ -403,6 +425,13 @@ function delta(cur, ref, invert) {
   return `<span class="d ${good ? 'up' : 'dn'}">${up ? '▲' : '▼'} ${Math.abs(p * 100).toFixed(1)}%</span>`;
 }
 function render() {
+  document.querySelectorAll('nav a[data-v]').forEach(x => x.classList.toggle('on', x.dataset.v === S.view));
+  $('fPage').style.display = S.view === 'ov' ? '' : 'none';
+  if (S.view === 'br') return renderBranches();
+  if (S.view === 'mk') return renderMarketing();
+  renderOverview();
+}
+function renderOverview() {
   const [a, b] = period(), pi = S.page, isCurMonth = S.mode === 'month' && S.m === CUR;
   const R = sumRange(a, b, pi), K = kpis(R.o);
   const rp = refPeriod(a, b), RR = rp ? sumRange(rp[0], rp[1], pi) : null, KR = RR && RR.has ? kpis(RR.o) : null;
@@ -511,6 +540,96 @@ function drawChart(T) {
         y2: { position: 'right', beginAtZero: true, grid: { display: false } }, x: { stacked: true, grid: { display: false }, ticks: { maxRotation: 0, autoSkip: true } } } }
   });
 }
+
+/* ---------- หน้า สาขา ---------- */
+function renderBranches() {
+  const [a, b] = period(), rp = refPeriod(a, b), isCurMonth = S.mode === 'month' && S.m === CUR;
+  const rows = SNAP.P.map((p, i) => ({ p, i })).filter(x => x.p.b).map(x => {
+    const R = sumRange(a, b, x.i), k = kpis(R.o), t = target(a, b, x.i);
+    const RR = rp ? sumRange(rp[0], rp[1], x.i) : null, kr = RR && RR.has ? kpis(RR.o) : null;
+    return { i: x.i, name: x.p.n, ...k, tBr: t.br, tOn: t.on, pct: t.br ? k.branch / t.br : null, pctOn: t.on ? k.online / t.on : null,
+      dBr: kr && kr.branch ? (k.branch - kr.branch) / kr.branch : null, approx: R.approx };
+  }).filter(x => x.branch || x.online || x.spend);
+  const key = { pct: x => x.pct || 0, branch: x => x.branch, online: x => x.online, roas: x => x.roas, growth: x => x.dBr == null ? -9 : x.dBr }[S.bsort];
+  rows.sort((x, y) => key(y) - key(x));
+  const sum = rows.reduce((o, x) => { o.br += x.branch; o.on += x.online; o.sp += x.spend; o.t += x.tBr; return o; }, { br: 0, on: 0, sp: 0, t: 0 });
+  const onTrack = rows.filter(x => x.pct != null && x.pct >= 1).length;
+  let h = `<h2>${esc(rangeTH(a, b))} · ${rows.length} สาขา <small>${nDays(a, b)} วัน · ข้อมูลถึง ${dTH(LAST)}${rp ? ` · เทียบ ${esc(rangeTH(rp[0], rp[1]))}` : ''}</small></h2>`;
+  if (!rows.length) { $('app').innerHTML = h + '<div class="card">ยังไม่มีข้อมูลในช่วงนี้</div>'; drawChart(null); return; }
+  h += `<div class="bsum"><div class="card"><div class="l">ยอดหน้าสาขารวม</div><div class="n">${baht(sum.br)}</div><div class="l">${sum.t ? (sum.br / sum.t * 100).toFixed(0) + '% ของเป้า' : ''}</div></div>
+    <div class="card"><div class="l">ถึงเป้า${isCurMonth ? 'ตามจำนวนวัน' : ''}</div><div class="n">${onTrack}/${rows.length}</div><div class="l">สาขา</div></div>
+    <div class="card"><div class="l">ROAS ออนไลน์รวม</div><div class="n roas r${rLv(sum.sp ? sum.on / sum.sp : 0)}">${sum.sp ? (sum.on / sum.sp).toFixed(2) : '—'}</div><div class="l">รวมสาขา ${sum.sp ? ((sum.on + sum.br) / sum.sp).toFixed(1) : '—'}</div></div></div>`;
+  h += '<div class="sortbar" id="bsort">' + [['pct', '% เป้าหน้าสาขา'], ['branch', 'ยอดหน้าสาขา'], ['online', 'ยอดออนไลน์'], ['roas', 'ROAS'], ['growth', 'โตขึ้นมากสุด']]
+    .map(([k, l]) => `<button data-k="${k}" class="${S.bsort === k ? 'on' : ''}">${l}</button>`).join('') + '</div>';
+  h += '<div class="blist">' + rows.map((x, n) => {
+    const pc = x.pct == null ? '' : x.pct >= 1 ? 'g' : x.pct >= 0.9 ? 'w' : 'b';
+    return `<div class="card bcard" data-i="${x.i}"><div class="top"><span class="rk">${n + 1}</span><span class="nm">${esc(x.name)}</span><span class="pc ${pc}">${x.pct != null ? (x.pct * 100).toFixed(0) + '%' : '—'}</span></div>
+      <div class="amt">${baht(x.branch)} <small>/ เป้า ${x.tBr ? baht(x.tBr) : '—'}</small>${x.approx ? '<span class="approx">≈</span>' : ''}</div>
+      <div class="bar"><i style="width:${Math.min(100, (x.pct || 0) * 100)}%;background:${pc === 'g' ? 'var(--sage)' : pc === 'w' ? 'var(--warn)' : 'var(--bad)'}"></i></div>
+      <div class="row"><span>ออนไลน์ <b>${baht(x.online)}</b>${x.pctOn != null ? ` (${(x.pctOn * 100).toFixed(0)}%)` : ''}</span><span>ค่าแอด <b>${baht(x.spend)}</b></span>
+      <span>ROAS <b class="roas r${rLv(x.roas)}">${x.roas ? x.roas.toFixed(2) : '—'}</b></span>${x.chats ? `<span>แชต <b>${int(x.chats)}</b></span>` : ''}
+      ${S.cmp !== 'none' && x.dBr != null ? `<span>หน้าสาขา ${delta(x.branch, x.branch / (1 + x.dBr))}</span>` : ''}</div>
+      <span class="go">ดูรายละเอียด ›</span></div>`;
+  }).join('') + '</div>';
+  h += `<div class="note">% เป้า = ยอดหน้าสาขา ÷ เป้าตามจำนวนวันในช่วง (เขียว ≥ 100% · เหลือง 90–99% · แดง &lt; 90%) · แตะการ์ดเพื่อดูภาพรวมของสาขานั้น</div>`;
+  $('app').innerHTML = h; drawChart(null);
+  $('bsort').onclick = e => { const t = e.target.closest('button'); if (!t) return; S.bsort = t.dataset.k; render(); };
+  document.querySelectorAll('.bcard').forEach(c => c.onclick = () => { S.page = +c.dataset.i; S.view = 'ov'; go(); window.scrollTo(0, 0); });
+}
+
+/* ---------- หน้า การตลาด ---------- */
+function sumProg(a, b) {
+  const G = SNAP.G || [], out = G.map(() => [0, 0, 0, 0]); let approx = false, has = false;
+  if (!a || !b || b < a) return { out, approx, has };
+  for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) {
+    const ms = m + '-01', me = mEnd(m), s = maxS(a, ms), e = minS(b, me), lastEff = m === CUR ? LAST : me;
+    const mm = (SNAP.MG || {})[m], cv = SNAP.cov[m] || {};
+    if (s === ms && e >= lastEff && mm) { Object.keys(mm).forEach(g => { for (let i = 0; i < 4; i++) out[g][i] += mm[g][i]; }); has = true; continue; }
+    if (cv.d) { for (let d = s; d <= e; d = addD(d, 1)) ((SNAP.DG || {})[d] || []).forEach(r => { for (let i = 0; i < 4; i++) out[r[0]][i] += r[i + 1]; has = true; }); }
+    else if (mm) { const f = nDays(s, e) / dim(m); Object.keys(mm).forEach(g => { for (let i = 0; i < 4; i++) out[g][i] += mm[g][i] * f; }); approx = true; has = true; }
+  }
+  return { out, approx, has };
+}
+function renderMarketing() {
+  const [a, b] = period(), rp = refPeriod(a, b), G = SNAP.G || [];
+  const R = sumProg(a, b), RR = rp ? sumProg(rp[0], rp[1]) : null;
+  const rows = G.map((n, g) => { const o = R.out[g], r = RR && RR.has ? RR.out[g] : null;
+    return { n, sp: o[0], ch: o[1], on: o[2], bi: o[3], roas: o[0] ? o[2] / o[0] : 0, cpc: o[1] ? o[0] / o[1] : 0, rsp: r ? r[0] : null, ron: r ? r[2] : null, rroas: r && r[0] ? r[2] / r[0] : null }; })
+    .filter(x => x.sp || x.on).sort((x, y) => y.sp - x.sp);
+  const T = rows.reduce((o, x) => { o.sp += x.sp; o.ch += x.ch; o.on += x.on; return o; }, { sp: 0, ch: 0, on: 0 });
+  let h = `<h2>${esc(rangeTH(a, b))} · การตลาด <small>${nDays(a, b)} วัน · ข้อมูลถึง ${dTH(LAST)}${rp ? ` · เทียบ ${esc(rangeTH(rp[0], rp[1]))}` : ''}</small>${R.approx ? '<span class="approx">≈ ประมาณจากยอดรายเดือน</span>' : ''}</h2>`;
+  if (!rows.length) h += '<div class="card">ยังไม่มีข้อมูลโปรแกรมในช่วงนี้</div>';
+  else {
+    h += `<div class="bsum"><div class="card"><div class="l">ค่าโฆษณา (Meta)</div><div class="n">${baht(T.sp)}</div><div class="l">${rows.length} โปรแกรม</div></div>
+      <div class="card"><div class="l">แชตใหม่</div><div class="n">${T.ch ? int(T.ch) : '—'}</div><div class="l">${T.ch ? '฿' + int(T.sp / T.ch) + ' / แชต' : ''}</div></div>
+      <div class="card"><div class="l">ROAS ออนไลน์</div><div class="n roas r${rLv(T.sp ? T.on / T.sp : 0)}">${T.sp ? (T.on / T.sp).toFixed(2) : '—'}</div><div class="l">ยอด ${baht(T.on)}</div></div></div>`;
+    h += '<h2>แยกตามโปรแกรม <small>เรียงตามค่าโฆษณา</small></h2><div class="pgl">' + rows.map(x => `<div class="card pcard">
+      <div class="top"><span class="nm">${esc(x.n)}</span><span class="pill p${rLv(x.roas)}">ROAS ${x.roas ? x.roas.toFixed(2) : '—'}</span></div>
+      <div class="big">${baht(x.sp)} <span class="sh">ค่าแอด · ${T.sp ? (x.sp / T.sp * 100).toFixed(0) : 0}% ของทั้งหมด</span></div>
+      <div class="bar"><i style="width:${T.sp ? x.sp / T.sp * 100 : 0}%;background:var(--brand)"></i></div>
+      <div class="row"><span>ยอดออนไลน์ <b>${baht(x.on)}</b> ${S.cmp !== 'none' && x.ron ? delta(x.on, x.ron) : ''}</span>${x.ch ? `<span>แชต <b>${int(x.ch)}</b></span><span>฿/แชต <b>${int(x.cpc)}</b></span>` : ''}${x.bi ? `<span>บิล <b>${int(x.bi)}</b></span>` : ''}
+      ${S.cmp !== 'none' && x.rsp ? `<span>ค่าแอด ${delta(x.sp, x.rsp, true)}</span>` : ''}</div></div>`).join('') + '</div>';
+  }
+  // ครีเอทีฟรอบล่าสุด
+  const C = SNAP.CRL || {}, L = C.list || [];
+  if (L.length) {
+    const tabs = [['Kill', 'Kill — หยุด'], ['Scale', 'Scale — เพิ่มงบ'], ['Refresh', 'Refresh — ทำใหม่'], ['Keep', 'Keep ดีสุด']].map(([k, l]) => [k, l, L.filter(x => x.st === k).length]);
+    if (!L.some(x => x.st === S.ctab)) S.ctab = (tabs.find(t => t[2]) || tabs[0])[0];
+    h += `<h2>ครีเอทีฟ <small>รอบ ${dTH(C.period)}–${C.until ? dTH(C.until) : ''} · ตัดสินจาก ${int(C.n)} แอด (อัปเดตทุกวันจันทร์)</small></h2>`;
+    h += '<div class="crtabs" id="crtabs">' + tabs.map(([k, l, n]) => `<button data-k="${k}" class="${k}${S.ctab === k ? ' on' : ''}">${l} ${n}</button>`).join('') + '</div>';
+    h += '<div class="crl">' + L.filter(x => x.st === S.ctab).map(x => `<div class="card cr">${x.th ? `<img src="${esc(x.th)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">` : '<img alt="" style="visibility:hidden">'}
+      <div style="min-width:0"><div class="ct">${esc(x.t || 'แอด ' + x.id)}</div><div class="cm">${esc([x.g, x.pg].filter(Boolean).join(' · '))}${x.cpc ? ` · ฿${int(x.cpc)}/แชต` : ''}${x.fq ? ` · ความถี่ ${x.fq.toFixed(1)}` : ''}</div>
+      <div class="cw">${x.why ? esc(x.why) : ''}${x.act ? ` → <b>${esc(x.act)}</b>` : ''}${x.dg ? `<br><span style="color:var(--mute)">จุดที่ควรแก้: ${esc(x.dg)}</span>` : ''}</div></div></div>`).join('') + '</div>';
+  }
+  h += '<div class="note">ค่าโฆษณารายโปรแกรมตาม Meta (ไม่ปรับตาม Total Sale Monitoring) · ก่อน เม.ย. 2569 ใช้สรุปยิงแอดรายเดือน · ครีเอทีฟแสดงรอบล่าสุดเสมอ ไม่ขึ้นกับช่วงวันที่เลือก</div>';
+  $('app').innerHTML = h; drawChart(null);
+  if ($('crtabs')) $('crtabs').onclick = e => { const t = e.target.closest('button'); if (!t) return; S.ctab = t.dataset.k; render(); };
+}
+document.querySelector('nav').addEventListener('click', e => {
+  const a = e.target.closest('a'); if (!a) return;
+  if (!a.dataset.v) { a.animate && a.animate([{ opacity: .45 }, { opacity: .9 }, { opacity: .45 }], 400); return; }
+  S.view = a.dataset.v; if (S.view === 'br') S.page = -1; go(); window.scrollTo(0, 0);
+});
 
 /* ---------- start ---------- */
 $('whoName').textContent = BOOT.name; $('whoRole').textContent = BOOT.roleLabel;
