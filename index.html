@@ -108,6 +108,12 @@ nav a{cursor:pointer}
 .bcard .row{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--mute);margin-top:6px}.bcard .row b{color:var(--ink);font-weight:600}
 .bcard .go{position:absolute;right:12px;bottom:10px;color:var(--mute);font-size:12px}
 .pc.g{color:var(--good)}.pc.w{color:var(--warn)}.pc.b{color:var(--bad)}
+.mobar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:0 0 12px}.mobar .more{padding:0;margin-left:auto}
+.mx{padding:4px 0}.mx table{font-size:13px}.mx th,.mx td{padding:7px 10px}.mx th:first-child,.mx td:first-child{position:sticky;left:0;background:#fff;z-index:1;min-width:132px;box-shadow:1px 0 0 var(--line)}
+.mx tr.gh td{font-size:12px;font-weight:600;color:var(--sage);background:var(--sage2);padding:6px 10px}.mx tr.gh td:first-child{background:var(--sage2)}
+.mx tr.tot td{font-weight:600;border-top:1px solid var(--line)}.mx tr.dim td{color:var(--mute)}.mx td small{font-size:10.5px;color:var(--mute)}
+.md{font-size:10.5px;font-weight:600;line-height:1.2}.md.up{color:var(--good)}.md.dn{color:var(--bad)}
+.mx td.pc{font-weight:700}
 
 .pgl{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:720px){.pgl{grid-template-columns:1fr 1fr}}
 .pcard .top{display:flex;align-items:baseline;gap:8px}.pcard .nm{font-weight:600;flex:1}.pcard .sh{font-size:12px;color:var(--mute)}
@@ -181,7 +187,7 @@ nav a{cursor:pointer}
 </main>
 <nav>
   <a class="on" id="navOv" data-v="ov"><span>◉</span>ภาพรวม</a><a id="navBr" data-v="br"><span>▦</span>สาขา</a><a id="navMk" data-v="mk"><span>◈</span>การตลาด</a>
-  <a id="navAdm" data-v="ad"><span>☺</span>แอดมิน</a><a class="soon"><span>≡</span>รายงาน</a>
+  <a id="navAdm" data-v="ad"><span>☺</span>แอดมิน</a><a id="navMo" data-v="mo"><span>≡</span>รายเดือน</a>
 </nav>
 </div>
 
@@ -391,7 +397,7 @@ function target(a, b, pi) {
 }
 
 /* ---------- state ---------- */
-const S = { mode: 'month', y: CUR.slice(0, 4), m: CUR, from: '', to: '', page: -1, cmp: 'prev', showAllBr: false, preset: 'thism', view: 'ov', bsort: 'pct', ctab: 'Kill', attr: 'svc' };
+const S = { mode: 'month', y: CUR.slice(0, 4), m: CUR, from: '', to: '', page: -1, cmp: 'prev', showAllBr: false, preset: 'thism', view: 'ov', bsort: 'pct', ctab: 'Kill', attr: 'svc', mo: { n: 6, tab: 'kpi', bm: 'pBr' } };
 try { const p = JSON.parse(localStorage.getItem('mersi_ov2') || '{}'); if (p.cmp) S.cmp = p.cmp; if (p.attr === 'page') S.attr = 'page'; if (p.page != null && SNAP.P[p.page]) S.page = p.page; } catch (e) {}
 
 function period() {
@@ -471,8 +477,12 @@ function delta(cur, ref, invert) {
 }
 function render() {
   document.querySelectorAll('nav a[data-v]').forEach(x => x.classList.toggle('on', x.dataset.v === S.view));
-  $('fPage').style.display = S.view === 'ov' ? '' : 'none';
-  $('fAttrRow').style.display = SNAP.MB && (S.view === 'br' || (S.view === 'ov' && (S.page < 0 || SNAP.P[S.page].b))) ? '' : 'none';
+  const mo = S.view === 'mo';
+  $('fPage').style.display = S.view === 'ov' || (mo && S.mo.tab === 'kpi') ? '' : 'none';
+  ['pre', 'fY', 'fM', 'fM2', 'fCmp'].forEach(id => $(id).style.display = mo ? 'none' : '');
+  if (mo) $('rrow').hidden = true;
+  $('fAttrRow').style.display = SNAP.MB && (S.view === 'br' || (mo && S.mo.tab === 'br') || ((S.view === 'ov' || (mo && S.mo.tab === 'kpi')) && (S.page < 0 || SNAP.P[S.page].b))) ? '' : 'none';
+  if (mo) return renderMonthly();
   if (S.view === 'br') return renderBranches();
   if (S.view === 'mk') return renderMarketing();
   if (S.view === 'ad') return ADM ? renderAdmins() : (S.view = 'ov', renderOverview());
@@ -701,6 +711,82 @@ function renderAdmins() {
   if (other.length) h += '<h2>ไม่นับอันดับ <small>หัวหน้าแอดมิน / อดีตแอดมิน</small></h2><div class="alist">' + other.map(x => card(x, 0)).join('') + '</div>';
   h += '<div class="note">ยอดขายออนไลน์รายบิลตามรหัสผู้ขาย (ยืนยันการโอน) · เป้ารายคนจาก dim_admin (SET_TARGETS) · ข้อมูลรายแอดมินเห็นเฉพาะผู้บริหารและหัวหน้าแอดมิน</div>';
   $('app').innerHTML = h; drawChart(null);
+}
+/* ---------- หน้า เทียบรายเดือน ---------- */
+function moList() { const out = []; for (let i = 0; i < S.mo.n; i++) { const m = addM(CUR, -i); if (m < MONTHS[0]) break; out.push(m); } return out; }
+function moRange(m) { return [m + '-01', minS(mEnd(m), LAST)]; }
+function moRef(m) { const pm = addM(m, -1); if (m !== CUR) return [pm + '-01', mEnd(pm)]; return [pm + '-01', pm + '-' + pad(Math.min(+LAST.slice(8), dim(pm)))]; }
+function moK(a, b, pi) { const R = sumRange(a, b, pi), k = kpis(R.o), t = target(a, b, pi);
+  return { ...k, tot: k.online + k.branch, pOn: t.on ? k.online / t.on : null, pBr: t.br ? k.branch / t.br : null, pT: (t.on + t.br) ? (k.online + k.branch) / (t.on + t.br) : null, has: R.has, approx: R.approx }; }
+const MO_FMT = { b: v => baht(v), n: v => int(v), x: v => v ? v.toFixed(2) : '—', p: v => v == null ? '—' : (v * 100).toFixed(0) + '%', q: v => v ? (v * 100).toFixed(1) + '%' : '—' };
+const MO_ROWS = [
+  ['โฆษณา', [['ค่าโฆษณา (ไม่รวม VAT)', 'spend', 'b', 1], ['แชตใหม่', 'chats', 'n'], ['฿ / แชต', 'cpc', 'b', 1], ['ROAS ออนไลน์', 'roas', 'x']]],
+  ['ยอดขายออนไลน์', [['ยอดออนไลน์', 'online', 'b'], ['% เป้าออนไลน์', 'pOn', 'p'], ['บิลออนไลน์', 'bills', 'n'], ['ยอด / บิล', 'spb', 'b'], ['ปิดได้ % ของแชต', 'cr', 'q']]],
+  ['หน้าสาขา & ธุรกิจ', [['ยอดหน้าสาขา', 'branch', 'b'], ['% เป้าหน้าสาขา', 'pBr', 'p'], ['ยอดรวม (ออนไลน์ + สาขา)', 'tot', 'b'], ['% เป้ารวม', 'pT', 'p'], ['ลูกค้าใหม่', 'newp', 'n'], ['CAC', 'cac', 'b', 1], ['ROAS รวม', 'roasT', 'x']]]
+];
+const pcCls = v => v == null ? '' : v >= 1 ? 'g' : v >= .9 ? 'w' : 'b';
+function heat(v, lo, hi, inv) { if (!v || hi <= lo) return ''; let f = (v - lo) / (hi - lo); if (inv) f = 1 - f; return `background:rgba(107,119,87,${(0.05 + f * 0.3).toFixed(2)})`; }
+function moDelta(c, r, inv) { if (!r || !c || c / r > 20) return ''; const p = (c - r) / Math.abs(r), up = p >= 0, good = inv ? !up : up;
+  return `<div class="md ${good ? 'up' : 'dn'}">${up ? '▲' : '▼'}${Math.abs(p * 100).toFixed(0)}%</div>`; }
+function csvDown(name, rows) {
+  const s = '﻿' + rows.map(r => r.map(x => { x = x == null ? '' : String(x); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; }).join(',')).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([s], { type: 'text/csv;charset=utf-8' })); a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+function renderMonthly() {
+  const ms = moList(), pi = S.mo.tab === 'kpi' ? S.page : -1, tabs = [['kpi', 'ตัวชี้วัด'], ['br', 'สาขา × เดือน']].concat(ADM ? [['ad', 'แอดมิน × เดือน']] : []);
+  const head = ms.map(m => `<th>${monTH(m)}${m === CUR ? '*' : ''}</th>`).join('');
+  let h = `<h2>เทียบรายเดือน <small>${ms.length} เดือน · เดือนล่าสุดอยู่ซ้าย · * ${monTH(CUR)} ข้อมูลถึง ${dTH(LAST)} (เทียบกับช่วงวันเดียวกันของเดือนก่อน)</small></h2>
+    <div class="mobar"><div class="seg" id="moTab">${tabs.map(([k, l]) => `<button data-v="${k}" class="${S.mo.tab === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+    <div class="seg" id="moN">${[6, 12].map(n => `<button data-v="${n}" class="${S.mo.n === n ? 'on' : ''}">${n} เดือน</button>`).join('')}</div>
+    <button class="more" id="moCsv">⬇︎ ดาวน์โหลด CSV</button></div>`;
+  const csv = [];
+  if (S.mo.tab === 'kpi') {
+    const K = ms.map(m => { const [a, b] = moRange(m); return moK(a, b, pi); }), KR = ms.map(m => { const [a, b] = moRef(m); return moK(a, b, pi); });
+    h += `<div class="card tbl mx"><table><tr><th>${esc(pi < 0 ? 'ทั้งเครือ' : SNAP.P[pi].n)}</th>${head}</tr>`;
+    csv.push(['ตัวชี้วัด · ' + (pi < 0 ? 'ทั้งเครือ' : SNAP.P[pi].n)].concat(ms.map(monTH)));
+    MO_ROWS.forEach(([g, rows]) => {
+      h += `<tr class="gh"><td colspan="${ms.length + 1}">${g}</td></tr>`;
+      rows.forEach(([l, k, f, inv]) => {
+        const vs = K.map(x => x[k]), nz = vs.filter(v => v), lo = Math.min(...nz), hi = Math.max(...nz);
+        h += `<tr><td>${l}</td>` + vs.map((v, i) => `<td style="${f === 'p' ? '' : heat(v, lo, hi, inv)}" class="${f === 'p' ? 'pc ' + pcCls(v) : ''}">${K[i].has ? MO_FMT[f](v) : '—'}${K[i].approx ? '<span class="approx">≈</span>' : ''}${f === 'p' ? '' : moDelta(v, KR[i][k], inv)}</td>`).join('') + '</tr>';
+        csv.push([l].concat(vs.map(v => v == null ? '' : f === 'p' || f === 'q' ? (v * 100).toFixed(1) + '%' : f === 'x' ? v.toFixed(2) : Math.round(v))));
+      });
+    });
+    h += '</table></div><div class="note">สีเขียวเข้ม = ดีที่สุดในแถว (ค่าโฆษณา · ฿/แชต · CAC ยิ่งต่ำยิ่งเข้ม) · ▲▼ เทียบเดือนก่อน · % เป้า: เขียว ≥ 100% · เหลือง 90–99% · แดง &lt; 90% · เดือนปัจจุบันคิดเป้าตามจำนวนวัน · เลือกเพจ/สาขาได้ที่ตัวกรองด้านบน</div>';
+  } else if (S.mo.tab === 'br') {
+    const MET = [['pBr', '% เป้าหน้าสาขา', 'p'], ['branch', 'ยอดหน้าสาขา', 'b'], ['online', 'ยอดออนไลน์', 'b'], ['roas', 'ROAS ออนไลน์', 'x'], ['roasT', 'ROAS รวม', 'x'], ['spend', 'ค่าโฆษณา', 'b']];
+    const [k, lab, f] = MET.find(x => x[0] === S.mo.bm) || MET[0];
+    const rows = SNAP.P.map((p, i) => ({ p, i })).filter(x => x.p.b).map(x => ({ n: x.p.n, v: ms.map(m => { const [a, b] = moRange(m); return moK(a, b, x.i); }) }));
+    rows.forEach(r => { const vs = r.v.map(x => x[k]).filter(v => v != null); r.avg = vs.length ? vs.reduce((s, v) => s + v, 0) / vs.length : 0; });
+    rows.sort((x, y) => y.avg - x.avg);
+    const all = rows.flatMap(r => r.v.map(x => x[k])).filter(v => v), lo = Math.min(...all), hi = Math.max(...all);
+    h += `<div class="sortbar" id="moBm">${MET.map(([c, l]) => `<button data-k="${c}" class="${k === c ? 'on' : ''}">${l}</button>`).join('')}</div>`;
+    h += `<div class="card tbl mx"><table><tr><th>สาขา · ${lab}</th>${head}</tr>` + rows.map(r => `<tr><td>${esc(r.n)}</td>` + r.v.map(x => { const v = x[k];
+      const st = f === 'p' ? '' : f === 'x' ? '' : heat(v, lo, hi); const cl = f === 'p' ? 'pc ' + pcCls(v) : f === 'x' && v ? 'roas r' + rLv(v) : '';
+      return `<td style="${st}" class="${cl}">${x.has ? MO_FMT[f](v) : '—'}</td>`; }).join('') + '</tr>').join('');
+    if (f === 'b') { const tot = ms.map((m, j) => rows.reduce((s, r) => s + (r.v[j][k] || 0), 0)); h += `<tr class="tot"><td>รวม ${rows.length} สาขา</td>${tot.map(v => `<td>${baht(v)}</td>`).join('')}</tr>`; }
+    h += `</table></div><div class="note">เรียงตามค่าเฉลี่ยของช่วงที่แสดง · ยอดออนไลน์รายสาขา${S.attr === 'page' ? 'ตามเพจที่ลูกค้าทัก' : 'ตามสาขาที่ใช้บริการ'} (สลับได้ที่ตัวกรองด้านบน) · ROAS: เขียว ≥ 2.0 · เขียวอ่อน ≥ 1.5 · เหลือง ≥ 1.0 · แดง &lt; 1.0</div>`;
+    csv.push(['สาขา · ' + lab].concat(ms.map(monTH)));
+    rows.forEach(r => csv.push([r.n].concat(r.v.map(x => x[k] == null ? '' : f === 'p' ? (x[k] * 100).toFixed(1) + '%' : f === 'x' ? x[k].toFixed(2) : Math.round(x[k])))));
+  } else {
+    const per = ms.map(m => { const [a, b] = moRange(m); return { g: admSum(a, b), tf: target(a, b, -1).on / (SNAP.T.on || 1) }; });
+    const ids = [...new Set(per.flatMap(p => Object.keys(p.g)))];
+    const rows = ids.map(i => { const L = ADM.L[i] || {}; return { n: L.n || i, rk: L.rk, v: per.map(p => { const x = p.g[i], t = (L.t || 0) * p.tf; return { s: x ? x.s : 0, b: x ? x.b : 0, pct: t && x ? x.s / t : null }; }) }; })
+      .filter(r => r.rk || r.v.some(x => x.s)).sort((x, y) => y.rk - x.rk || y.v.reduce((s, q) => s + q.s, 0) - x.v.reduce((s, q) => s + q.s, 0));
+    h += `<div class="card tbl mx"><table><tr><th>แอดมิน · ยอดขาย (% เป้า)</th>${head}</tr>` + rows.map(r => `<tr${r.rk ? '' : ' class="dim"'}><td>${esc(r.n)}${r.rk ? '' : ' <small>ไม่นับอันดับ</small>'}</td>` +
+      r.v.map(x => `<td>${x.s ? baht(x.s) : '—'}${x.pct != null ? `<div class="md pc ${pcCls(x.pct)}">${(x.pct * 100).toFixed(0)}%</div>` : ''}</td>`).join('') + '</tr>').join('');
+    const tot = ms.map((m, j) => rows.reduce((s, r) => s + r.v[j].s, 0));
+    h += `<tr class="tot"><td>รวมทีม</td>${tot.map(v => `<td>${baht(v)}</td>`).join('')}</tr></table></div>
+      <div class="note">ยอดขายออนไลน์ตามรหัสผู้ขาย · % เป้าจากเป้ารายคน (เดือนปัจจุบันคิดตามจำนวนวัน) · Admin Score (CR% · ความเร็วตอบ) จะเพิ่มเมื่อมีข้อมูล Zaapi</div>`;
+    csv.push(['แอดมิน'].concat(ms.flatMap(m => [monTH(m) + ' ยอด', monTH(m) + ' % เป้า'])));
+    rows.forEach(r => csv.push([r.n].concat(r.v.flatMap(x => [Math.round(x.s), x.pct == null ? '' : (x.pct * 100).toFixed(1) + '%']))));
+  }
+  $('app').innerHTML = h; drawChart(null);
+  $('moTab').onclick = e => { const b = e.target.closest('button'); if (!b) return; S.mo.tab = b.dataset.v; go(); };
+  $('moN').onclick = e => { const b = e.target.closest('button'); if (!b) return; S.mo.n = +b.dataset.v; render(); };
+  if ($('moBm')) $('moBm').onclick = e => { const b = e.target.closest('button'); if (!b) return; S.mo.bm = b.dataset.k; render(); };
+  $('moCsv').onclick = () => csvDown(`mersi_รายเดือน_${S.mo.tab}_${CUR}.csv`, csv);
 }
 document.querySelector('nav').addEventListener('click', e => {
   const a = e.target.closest('a'); if (!a) return;
