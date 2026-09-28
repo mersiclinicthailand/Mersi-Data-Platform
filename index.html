@@ -108,6 +108,7 @@ main{padding:28px 40px 48px;display:flex;flex-direction:column;gap:20px;max-widt
 .help{display:flex;flex-direction:column;gap:4px;padding:10px 12px;background:#FBF3EF;border-radius:10px}.help .n{font-size:13px;color:#6B3A2E}
 .hm{display:grid;grid-template-columns:44px repeat(8,minmax(0,1fr)) 56px;gap:4px;font-size:12px}
 .hm span{height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px}.hm .hd{height:auto;color:var(--mute)}.hm .dn{justify-content:flex-start;color:var(--mute)}
+.evb{background:var(--warnbg);color:#5A3B0A;border-radius:12px;padding:12px 16px;font-size:14px;display:flex;flex-direction:column;gap:4px}.evb b{color:var(--warn)}.evb .sub{color:#7A5A2A}
 .note{font-size:12.5px;color:var(--mute);line-height:1.7}
 .approx{font-size:12px;color:var(--warn);font-weight:600}
 .chartbox{position:relative;height:260px}
@@ -546,10 +547,29 @@ function render() {
   ({ br: renderBranches, mk: renderMarketing, ad: renderAdmins, mo: renderMonthly }[S.view] || renderOverview)();
 }
 
+/* ================= บันทึกเหตุการณ์ (แท็บ dash_events) ================= */
+const EV = SNAP.EV || [], AD_OFF = ['ปิดแอด', 'ลดงบ', 'ปิดสาขา'];
+const evHit = (e, pi) => pi == null || pi < 0 || ((!e.p || e.p.includes(pi)) && !e.x.includes(pi));
+const evIn = (a, b, pi) => EV.filter(e => e.f <= b && e.t >= a && evHit(e, pi));
+const evDay = (d, pi) => EV.some(e => AD_OFF.includes(e.k) && e.f <= d && e.t >= d && (pi < 0 || evHit(e, pi)));
+const evCode = l => l.map(i => SNAP.P[i] ? SNAP.P[i].c : i).join(', ');
+const evTxt = e => `<b>⚑ ${esc(e.n || e.k)}</b> <span class="sub">· ${esc(e.k)} · ${dTH(e.f)}${e.ft ? ' ' + esc(e.ft) : ''}${e.t !== e.f || e.tt ? ' – ' + dTH(e.t) + (e.tt ? ' ' + esc(e.tt) : '') : ''} · ${e.p ? 'เฉพาะ ' + esc(evCode(e.p)) : 'ทุกเพจ'}${e.x.length ? ' ยกเว้น ' + esc(evCode(e.x)) : ''}${e.d ? ' · ' + esc(e.d) : ''}</span>`;
+function evBanner(a, b, pi, rp) {
+  const cur = evIn(a, b, pi), ref = rp ? evIn(rp[0], rp[1], pi).filter(e => !cur.includes(e)) : [];
+  if (!cur.length && !ref.length) return '';
+  return `<div class="evb">${cur.map(evTxt).join('<br>')}${ref.length ? (cur.length ? '<br>' : '') + ref.map(e => evTxt(e) + ' <span class="sub">(อยู่ในช่วงที่ใช้เทียบ)</span>').join('<br>') : ''}
+    <span class="sub" style="font-size:12px">ตัวเลขช่วงนี้อาจต่างจากปกติเพราะเหตุการณ์ด้านบน · แก้/เพิ่มเหตุการณ์ได้ที่แท็บ dash_events ใน DataHub_Core</span></div>`;
+}
+const evMark = (a, b, pi) => evIn(a, b, pi).length ? ' ⚑' : '';
+
 /* ================= ภาพรวม ================= */
 function pulse() {
-  const e = LAST, s = addD(LAST, -3), pe = addD(e, -7), ps = addD(s, -7), out = [];
-  const rows = SNAP.P.map((p, i) => ({ p, i })).filter(x => x.p.b || x.p.c === 'TH').map(x => ({ x, k: kpis(sumRange(s, e, x.i, 'page').o), kp: kpis(sumRange(ps, pe, x.i, 'page').o) }))
+  const out = [];
+  // 4 วันล่าสุดที่ "ไม่มีเหตุการณ์ปิดแอด/ลดงบ" (ทั้งวันนั้นและวันเดียวกันสัปดาห์ก่อน) — คิดแยกรายเพจ
+  const days = pi => { const r = []; for (let d = LAST; r.length < 4 && d >= addD(LAST, -28); d = addD(d, -1)) if (!evDay(d, pi) && !evDay(addD(d, -7), pi)) r.push(d); return r; };
+  const sumD = (ds, pi, sh) => { const o = new Array(10).fill(0); ds.forEach(d => { const x = addD(d, sh); sumRange(x, x, pi, 'page').o.forEach((v, i) => o[i] += v); }); return o; };
+  const net = days(-1), s = net[net.length - 1] || addD(LAST, -3), e = net[0] || LAST, ps = addD(s, -7), pe = addD(e, -7), skipped = net.length && (e !== LAST || nDays(s, e) > 4);
+  const rows = SNAP.P.map((p, i) => ({ p, i })).filter(x => x.p.b || x.p.c === 'TH').map(x => { const ds = days(x.i); return { x, k: kpis(sumD(ds, x.i, 0)), kp: kpis(sumD(ds, x.i, -7)) }; })
     .filter(r => r.k.spend >= 3000);
   const mc = med(rows.map(r => r.k.cpc));
   rows.forEach(({ x, k, kp }) => {
@@ -563,7 +583,7 @@ function pulse() {
   const sys = [];
   (SNAP.st || []).filter(x => x.status === 'FAIL').forEach(x => sys.push({ t: 'bad', l: 'ระบบ', nm: x.job === 'QA_MONTHLY' ? 'ตรวจยอดเทียบ TSM ไม่ผ่าน ±2%' : `ท่อข้อมูล ${x.job} ล้มเหลว`, det: String(x.at || ''), act: x.job === 'QA_MONTHLY' ? 'ดูแท็บ qa_monthly' : 'แจ้งทีม Digital' }));
   if (nDays(LAST, SNAP.today) > 2) sys.push({ t: 'warn', l: 'ข้อมูล', nm: `ข้อมูลล่าสุดถึง ${dTH(LAST)}`, det: 'ยังไม่อัปเดตเกิน 1 วัน', act: 'ตรวจการตั้งเวลา / Run BUILD_AGG' });
-  return { items: sys.concat(out).slice(0, 7), s, e, ps, pe };
+  return { items: sys.concat(out).slice(0, 7), s, e, ps, pe, skipped };
 }
 function renderOverview() {
   const [a, b] = period(), pi = S.page, R = sumRange(a, b, pi), K = kpis(R.o);
@@ -571,6 +591,7 @@ function renderOverview() {
   const title = (S.mode === 'month' ? `ภาพรวมเดือน${TH_FULL[+S.m.slice(5) - 1]} ${yBE(S.m.slice(0, 4))}` : S.mode === 'year' ? `ภาพรวมปี ${yBE(S.y)}` : `ภาพรวม ${rangeTH(a, b)}`) + (pi < 0 ? '' : ` · ${SNAP.P[pi].n}`);
   let h = ph(title, `ข้อมูล ${esc(rangeTH(a, b))}${rp ? ` · เทียบกับ ${esc(rangeTH(rp[0], rp[1]))} (${cmpLbl()})` : ''} · ข้อมูลถึง ${dTH(LAST)}`,
     [R.approx ? '<span class="mock">≈ บางส่วนประมาณจากยอดรายเดือน</span>' : '', '<span class="real">ค่าโฆษณาไม่รวม VAT · ตรง Ads Manager</span>']);
+  h += evBanner(a, b, pi, rp);
   if (!R.has) { $('app').innerHTML = h + empty('ยังไม่มีข้อมูลในช่วงนี้'); return; }
   // ---- ยอดขายเทียบเป้า ----
   const curM = S.mode === 'month' && S.m === CUR;
@@ -600,7 +621,7 @@ function renderOverview() {
   ].join('') + '</section>';
   // ---- สิ่งที่ต้องทำ + ทีมแอดมิน ----
   const P = pulse();
-  const todo = `<div class="card col">${cardH('สิ่งที่ต้องทำวันนี้', `Pulse ${esc(rangeTH(P.s, P.e))} เทียบ ${esc(rangeTH(P.ps, P.pe))}`)}
+  const todo = `<div class="card col">${cardH('สิ่งที่ต้องทำวันนี้', `Pulse ${esc(rangeTH(P.s, P.e))} เทียบ ${esc(rangeTH(P.ps, P.pe))}${P.skipped ? ' · ข้ามวันที่มีเหตุการณ์ปิดแอด' : ''}`)}
     <div>${P.items.length ? P.items.map(x => `<div class="row3"><span class="tag ${x.t}">${x.l}</span><div><div style="font-weight:600">${esc(x.nm)}</div><div class="sub">${esc(x.det)}</div></div><span style="font-size:14px">${esc(x.act)}</span></div>`).join('')
       : '<div class="sub" style="padding:12px 0">ไม่มีเรื่องเร่งด่วน — ทุกเพจที่ใช้งบ ROAS 1.0x ขึ้นไป</div>'}</div>
     <span class="sub" style="font-size:12px">ต่อเพจ · 4 วันล่าสุดเทียบวันเดียวกันสัปดาห์ก่อน · แก้ด่วน = ROAS &lt; 1.0 · เพิ่มงบ = ROAS ≥ 2.0 และ ฿/แชตไม่แพงกว่าค่ากลาง 30%</span></div>`;
@@ -643,13 +664,13 @@ function trendCard(a, b, pi) { const T = trend(a, b, pi); return `<section class
 function trend(a, b, pi) {
   const pts = [];
   if (S.mode === 'range' && nDays(a, b) <= 92) {
-    for (let d = a; d <= b; d = addD(d, 1)) { const k = kpis(sumRange(d, d, pi).o); pts.push({ l: dTH(d), on: k.online, br: k.branch, roas: k.roas }); }
+    for (let d = a; d <= b; d = addD(d, 1)) { const k = kpis(sumRange(d, d, pi).o); pts.push({ l: dTH(d) + evMark(d, d, pi), on: k.online, br: k.branch, roas: k.roas }); }
     return { title: 'รายวัน', sub: 'ยอดออนไลน์ + หน้าสาขา · เส้นทอง = ROAS ออนไลน์', pts, daily: true };
   }
   let ms = [];
   if (S.mode === 'month') ms = [5, 4, 3, 2, 1, 0].map(i => addM(S.m, -i)).filter(m => m >= MONTHS[0]);
   else for (let m = a.slice(0, 7); m <= b.slice(0, 7) && ms.length < 24; m = addM(m, 1)) ms.push(m);
-  ms.forEach(m => { const k = kpis(sumRange(m + '-01', minS(mEnd(m), LAST), pi).o); pts.push({ l: monTH(m) + (m === CUR ? '*' : ''), on: k.online, br: k.branch, roas: k.roas }); });
+  ms.forEach(m => { const k = kpis(sumRange(m + '-01', minS(mEnd(m), LAST), pi).o); pts.push({ l: monTH(m) + (m === CUR ? '*' : '') + evMark(m + '-01', mEnd(m), pi), on: k.online, br: k.branch, roas: k.roas }); });
   return { title: 'รายเดือน', sub: 'ยอดออนไลน์ + หน้าสาขา · เส้นทอง = ROAS ออนไลน์' + (ms.includes(CUR) ? ' · * เดือนปัจจุบันถึง ' + dTH(LAST) : ''), pts };
 }
 let chartLib = null;
@@ -686,6 +707,7 @@ function admChat(a, b) {
   return { g, per };
 }
 const ADM_W = { s: 30, cr: 25, sp: 20, up: 15, vol: 10 }, ADM_MIN = 100;
+const HAS_UP = !!ADM && Object.keys(ADM.D || {}).some(d => (ADM.D[d][0] || []).length >= 4);   // snapshot เก่าไม่มีข้อมูล Upsell
 const DIM_N = { s: 'ยอดขาย', cr: 'CR% (บิล ÷ แชตรับ)', sp: 'ความเร็วตอบ', up: 'Upsell%', vol: 'ปริมาณแชตรับ' };
 const DIM_TIP = { s: 'ยอดขายต่ำกว่าทีม → ดูโปรแกรมที่ขายและการเสนอแพ็กเกจ', cr: 'ปิดการขายได้น้อย → ทบทวนสคริปต์ปิดการขาย / การนัดหมาย', sp: 'ตอบช้า → ตรวจภาระงานในกะและตั้งข้อความตอบกลับเร็ว',
   up: 'Upsell ต่ำ → ฝึกเสนอบริการคู่ (เช่น Pico + Botox) ในแชตที่ปิดการขายแล้ว', vol: 'รับแชตน้อย → ตรวจการกระจายแชตในกะ' };
@@ -698,7 +720,7 @@ function admRows(a, b) {
   const tf = target(a, b, -1).on / (SNAP.T.on || 1), g = admSum(a, b), Z = admChat(a, b);
   const ids = [...new Set(Object.keys(g).concat(Object.keys(Z.g)))];
   const all = ids.map(i => { const L = ADM.L[i] || {}, x = g[i] || { s: 0, b: 0, u: 0 }, z = Z.g[i], t = (L.t || 0) * tf;
-    return { i: +i, n: L.n || i, rk: L.rk, s: x.s, b: x.b, u: x.u, t, pct: t ? x.s / t : null, up: x.b ? x.u / x.b : null, ch: z ? z.ch : 0, bw: z ? z.bw : 0,
+    return { i: +i, n: L.n || i, rk: L.rk, s: x.s, b: x.b, u: x.u, t, pct: t ? x.s / t : null, up: x.b && HAS_UP ? x.u / x.b : null, ch: z ? z.ch : 0, bw: z ? z.bw : 0,
       cr: z && z.ch ? z.bw / z.ch : null, r10: z && z.ch ? z.r10 / z.ch : null, fr: z && z.frn ? z.fr / z.frn : null, miss: z ? z.miss : 0, score: null, rank: null, dims: null }; })
     .filter(x => x.s || x.ch);
   const R = all.filter(x => x.rk && x.ch >= ADM_MIN);
@@ -742,7 +764,8 @@ function admTeam(A, AR) {
     kc('แชตพลาด (ไม่ตอบ 12 ชม.)', T.ch ? int(T.miss) : '—', '', TR && TR.ch && T.ch ? dlAbs(T.miss, TR.miss, 'แชต', true, 0) : '')
   ].join('') + '</section>';
   const refS = {}; if (AR) AR.all.forEach(x => refS[x.i] = x.s);
-  const key = { score: x => x.score != null ? x.score : -1, s: x => x.s, pct: x => x.pct != null ? x.pct : -1, cr: x => x.cr != null ? x.cr : -1, up: x => x.up != null ? x.up : -1, fr: x => x.fr ? -x.fr : -1e9 }[S.asort] || (x => x.score);
+  const sk = !hasS && S.asort === 'score' ? 'pct' : S.asort;
+  const key = { score: x => x.score != null ? x.score : -1, s: x => x.s, pct: x => x.pct != null ? x.pct : -1, cr: x => x.cr != null ? x.cr : -1, up: x => x.up != null ? x.up : -1, fr: x => x.fr ? -x.fr : -1e9 }[sk] || (x => x.score);
   const ranked = A.all.filter(x => x.rk).sort((x, y) => key(y) - key(x) || y.s - x.s), other = A.all.filter(x => !x.rk).sort((x, y) => y.s - x.s);
   const col = (v, m, inv) => v == null || !m ? '' : (inv ? v <= m : v >= m) ? 'c-g' : 'c-b';
   const tr = x => { const mom = refS[x.i] ? (x.s / refS[x.i] - 1) : null;
@@ -755,7 +778,7 @@ function admTeam(A, AR) {
     <td class="${mom == null ? '' : mom >= 0 ? 'c-g' : 'c-b'}" style="font-weight:600">${mom == null ? '—' : (mom >= 0 ? '▲ ' : '▼ ') + Math.abs(mom * 100).toFixed(1) + '%'}</td></tr>`; };
   h += `<section class="card col">${cardH('อันดับแอดมิน', '')}<div class="ch" style="margin-top:-8px"><span class="sub">สีของ CR% และเวลาตอบ = เทียบค่ากลางทีม · กดชื่อเพื่อดูผลงานรายบุคคล · แชตรับ &lt; ${ADM_MIN} = ไม่จัดอันดับ</span>
     <div class="pills" id="asort"><span class="sub" style="align-self:center;margin-right:4px">เรียงตาม</span>${[['score', 'Score'], ['s', 'ยอดขาย'], ['pct', '% เป้า'], ['cr', 'CR%'], ['up', 'Upsell%'], ['fr', 'ตอบเร็ว']].filter(z => hasS || !['score'].includes(z[0]))
-      .map(([k, l]) => `<button class="pill sm${S.asort === k ? ' on' : ''}" data-k="${k}">${l}</button>`).join('')}</div></div>
+      .map(([k, l]) => `<button class="pill sm${sk === k ? ' on' : ''}" data-k="${k}">${l}</button>`).join('')}</div></div>
     <div class="tw"><table class="tb stk" style="min-width:1180px"><tr><th>#</th><th class="l">แอดมิน</th><th class="l">Admin Score</th><th>แชตรับ</th><th>บิล</th><th>CR%</th><th>ยอดขาย</th><th>% เป้า</th><th>ยอด/บิล</th><th>Upsell%</th><th>ตอบเฉลี่ย</th><th>≤ 10 นาที</th><th>พลาด</th><th>ยอด ${cmpLbl()}</th></tr>
     ${ranked.map(tr).join('')}
     <tr class="md"><td></td><td class="l">ค่ากลางทีม</td><td></td><td>${M.ch ? int(M.ch) : '—'}</td><td>${M.b ? int(M.b) : '—'}</td><td>${pct1(M.cr || null)}</td><td>${M.s ? baht(M.s) : '—'}</td><td>${pct0(M.pct || null)}</td><td>—</td><td>${pct1(M.up || null)}</td><td>${M.fr ? M.fr.toFixed(1) + ' น.' : '—'}</td><td>${pct0(M.r10 || null)}</td><td>—</td><td>—</td></tr>
@@ -862,8 +885,9 @@ function signal(vs, kind) {   // vs: ล่าสุดก่อน
 function renderMonthly() {
   const ms = moList(), tabs = [['kpi', 'ตัวชี้วัด'], ['br', 'สาขา × เดือน']].concat(ADM ? [['ad', 'Admin Score × เดือน']] : []);
   if (S.mo.tab === 'ad' && !ADM) S.mo.tab = 'kpi';
-  const head = ms.map((m, i) => `<th${i ? '' : ' style="color:var(--ink);font-weight:600"'}>${monTH(m)}${m === CUR ? `<br><span class="sub" style="font-size:11px">1–${+LAST.slice(8)}</span>` : ''}</th>`).join('');
+  const head = ms.map((m, i) => `<th${i ? '' : ' style="color:var(--ink);font-weight:600"'}>${monTH(m)}${evMark(m + '-01', mEnd(m), -1)}${m === CUR ? `<br><span class="sub" style="font-size:11px">1–${+LAST.slice(8)}</span>` : ''}</th>`).join('');
   let h = ph('เทียบรายเดือน', `เดือนล่าสุดอยู่ซ้ายสุด · เดือนปัจจุบันเทียบวันที่เดียวกันของเดือนก่อน (1–${+LAST.slice(8)}) · เดือนอื่นเทียบทั้งเดือน`, ['<span class="real">เดือนที่ปิดแล้ว ล็อกตัวเลขทุกวันที่ 3</span>']);
+  h += evBanner(ms[ms.length - 1] + '-01', LAST, S.mo.tab === 'kpi' ? S.page : -1, null);
   h += `<nav class="stabs" id="moTab">${tabs.map(([k, l]) => `<a data-v="${k}" class="${S.mo.tab === k ? 'on' : ''}">${l}</a>`).join('')}</nav>`;
   const csv = []; let body = '';
   if (S.mo.tab === 'kpi') {
@@ -924,6 +948,7 @@ function renderBranches() {
   }).filter(x => x.branch || x.online || x.spend);
   let h = ph('สาขา', `${esc(rangeTH(a, b))} · ${rows.length} สาขา · ข้อมูลถึง ${dTH(LAST)}${rp ? ` · เทียบ ${esc(rangeTH(rp[0], rp[1]))}` : ''}`,
     [`<span class="real">ออนไลน์${S.attr === 'page' ? 'ตามเพจที่ลูกค้าทัก' : 'ตามสาขาที่ใช้บริการ'}</span>`]);
+  h += evBanner(a, b, -1, rp);
   if (!rows.length) { $('app').innerHTML = h + empty('ยังไม่มีข้อมูลในช่วงนี้'); return; }
   const key = { pct: x => x.pct || 0, branch: x => x.branch, online: x => x.online, roas: x => x.roas, growth: x => x.kr && x.kr.branch ? x.branch / x.kr.branch : -9 }[S.bsort] || (x => x.pct || 0);
   rows.sort((x, y) => key(y) - key(x));
@@ -982,6 +1007,7 @@ function renderMarketing() {
   const R = sumRange(a, b, -1), K = kpis(R.o), RR = rp ? sumRange(rp[0], rp[1], -1) : null, KR = RR && RR.has ? kpis(RR.o) : null;
   let h = ph('การตลาด', `เงินโฆษณาคุ้มไหม ควรเพิ่มหรือลดที่ไหน · ${esc(rangeTH(a, b))}${rp ? ` · เทียบ ${esc(rangeTH(rp[0], rp[1]))}` : ''} · ข้อมูลถึง ${dTH(LAST)}`,
     ['<span class="real">Meta · ค่าโฆษณาไม่รวม VAT</span>', a < '2026-05-01' ? '<span class="mock">ก่อน พ.ค. 2569 = TSM + ไฟล์สรุปยิงAds</span>' : '']);
+  h += evBanner(a, b, -1, rp);
   h += `<nav class="stabs" id="mtab">${[['roas', 'ภาพรวม & ROAS'], ['prog', 'โปรแกรม']].map(([k, l]) => `<a data-k="${k}" class="${S.mtab === k ? 'on' : ''}">${l}</a>`).join('')}</nav>`;
   h += '<section class="kpis k8">' + [
     kc('ค่าโฆษณา', baht(K.spend), '', dl(K.spend, KR && KR.spend, true)), kc('ยอดขายออนไลน์', baht(K.online), '', dl(K.online, KR && KR.online)),
