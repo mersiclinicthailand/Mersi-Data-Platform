@@ -38,6 +38,8 @@ select{background-image:linear-gradient(45deg,transparent 50%,#7A8275 50%),linea
 .seg{display:flex;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;width:max-content;max-width:100%}
 .seg button{font:inherit;font-size:13px;border:0;background:none;padding:8px 12px;color:var(--mute);min-height:38px;cursor:pointer}
 .seg button.on{background:var(--sage);color:#fff}
+.attr{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--mute)}
+.attr .seg button{font-size:12px;padding:6px 10px;min-height:34px}
 h2{font-size:15px;margin:22px 0 10px;font-weight:600;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}h2 small{font-weight:400;color:var(--mute);font-size:12px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px}
 .grid2,.grid3{display:grid;grid-template-columns:1fr;gap:10px}.grid6{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -115,6 +117,11 @@ nav a{cursor:pointer}
 .crl{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:720px){.crl{grid-template-columns:1fr 1fr}}
 .cr{display:flex;gap:12px}.cr img{width:72px;height:72px;object-fit:cover;border-radius:10px;background:var(--sage2);flex:0 0 72px}
 .cr .ct{font-size:13.5px;font-weight:600;line-height:1.4}.cr .cm{font-size:12px;color:var(--mute);margin-top:2px}.cr .cw{font-size:12.5px;margin-top:6px;line-height:1.45}.cr .cw b{font-weight:600}
+
+.alist{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:720px){.alist{grid-template-columns:1fr 1fr}}@media(min-width:1080px){.alist{grid-template-columns:1fr 1fr 1fr}}
+.acard .top{display:flex;align-items:center;gap:10px}.acard .av{width:38px;height:38px;border-radius:50%;background:var(--sage2);display:grid;place-items:center;font-weight:600;color:var(--sage);flex:0 0 38px}
+.acard .nm{font-weight:600;flex:1}.acard .rk{font-size:12px;color:var(--mute)}.acard .amt{font-size:19px;font-weight:700;margin-top:6px}.acard .amt small{font-size:12px;color:var(--mute);font-weight:400}
+.acard .row{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--mute);margin-top:6px}.acard .row b{color:var(--ink);font-weight:600}
 </style>
 </head>
 <body>
@@ -166,13 +173,14 @@ nav a{cursor:pointer}
     <div class="rrow" id="rrow" hidden>
       <input type="date" id="fFrom" aria-label="จากวันที่"><span>ถึง</span><input type="date" id="fTo" aria-label="ถึงวันที่">
     </div>
+    <div class="attr" id="fAttrRow"><span>ยอดออนไลน์รายสาขา</span><div class="seg" id="fAttr"><button data-v="svc">ตามสาขาที่ใช้บริการ</button><button data-v="page">ตามเพจที่ลูกค้าทัก</button></div></div>
     <div class="seg" id="fCmp"><button data-v="prev">เทียบช่วงก่อน</button><button data-v="yoy">เทียบปีก่อน</button><button data-v="none">ไม่เทียบ</button></div>
   </div>
   <div id="app"></div>
 </main>
 <nav>
   <a class="on" id="navOv" data-v="ov"><span>◉</span>ภาพรวม</a><a id="navBr" data-v="br"><span>▦</span>สาขา</a><a id="navMk" data-v="mk"><span>◈</span>การตลาด</a>
-  <a class="soon" id="navAdm"><span>☺</span>แอดมิน</a><a class="soon"><span>≡</span>รายงาน</a>
+  <a id="navAdm" data-v="ad"><span>☺</span>แอดมิน</a><a class="soon"><span>≡</span>รายงาน</a>
 </nav>
 </div>
 
@@ -345,7 +353,27 @@ function sumRange(a, b, pi) {
       x.forEach((v, i) => o[i] += v); if (hit) has = true;
     } else if (mm) { addM_(mm, f); approx = true; }
   }
+  if (pi >= 0 && SNAP.P[pi].b && S.attr !== 'page' && SNAP.MB) {                 // สาขา: ยอดออนไลน์ตามสาขาที่ใช้บริการ
+    const v = svcRange(a, b, pi); if (v.ok) { o[2] = v.on; o[3] = v.bi; if (v.approx) approx = true; if (v.on) has = true; }
+  }
   return { o, approx, has };
+}
+/* ยอดออนไลน์ + บิล ตาม "สาขาที่ใช้บริการ" (branch_code ของบิล) · ก่อน ก.ค. 2569 ยึด TSM รายสาขา */
+function svcRange(a, b, pi) {
+  let on = 0, bi = 0, approx = false, ok = false;
+  const day = (d1, d2) => { let x = 0, y = 0; for (let d = d1; d <= d2; d = addD(d, 1)) (SNAP.DB[d] || []).forEach(r => { if (r[0] === pi) { x += r[1]; y += r[2]; } }); return [x, y]; };
+  for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) {
+    const ms = m + '-01', me = mEnd(m), s = maxS(a, ms), e = minS(b, me), lastEff = m === CUR ? LAST : me;
+    const MBm = SNAP.MB[m], mb = (MBm || {})[pi] || [0, 0], cv = SNAP.cov[m] || {};
+    if (s === ms && e >= lastEff && MBm) { on += mb[0]; bi += mb[1]; ok = true; continue; }
+    const f = nDays(s, e) / (m === CUR ? nDays(ms, LAST) : dim(m));
+    if (cv.ob) {
+      let [x, y] = day(s, e);
+      if (cv.lgo && MBm) { const [fx, fy] = day(ms, me); x = fx ? x * mb[0] / fx : mb[0] * f; y = fy ? y * mb[1] / fy : mb[1] * f; }
+      on += x; bi += y; ok = true;
+    } else if (MBm) { on += mb[0] * f; bi += mb[1] * f; approx = true; ok = true; }
+  }
+  return { on, bi, approx, ok };
 }
 function kpis(o) {
   const spend = o[0], online = o[2], branch = o[5], chats = o[1], bills = o[3], newp = o[4];
@@ -362,8 +390,8 @@ function target(a, b, pi) {
 }
 
 /* ---------- state ---------- */
-const S = { mode: 'month', y: CUR.slice(0, 4), m: CUR, from: '', to: '', page: -1, cmp: 'prev', showAllBr: false, preset: 'thism', view: 'ov', bsort: 'pct', ctab: 'Kill' };
-try { const p = JSON.parse(localStorage.getItem('mersi_ov2') || '{}'); if (p.cmp) S.cmp = p.cmp; if (p.page != null && SNAP.P[p.page]) S.page = p.page; } catch (e) {}
+const S = { mode: 'month', y: CUR.slice(0, 4), m: CUR, from: '', to: '', page: -1, cmp: 'prev', showAllBr: false, preset: 'thism', view: 'ov', bsort: 'pct', ctab: 'Kill', attr: 'svc' };
+try { const p = JSON.parse(localStorage.getItem('mersi_ov2') || '{}'); if (p.cmp) S.cmp = p.cmp; if (p.attr === 'page') S.attr = 'page'; if (p.page != null && SNAP.P[p.page]) S.page = p.page; } catch (e) {}
 
 function period() {
   if (S.mode === 'month') return [S.m + '-01', minS(mEnd(S.m), LAST)];
@@ -399,6 +427,7 @@ function fillFilters() {
   $('rrow').hidden = S.mode !== 'range';
   [...$('pre').children].forEach(x => x.classList.toggle('on', x.dataset.p === S.preset));
   [...$('fCmp').children].forEach(x => x.classList.toggle('on', x.dataset.v === S.cmp));
+  [...$('fAttr').children].forEach(x => x.classList.toggle('on', x.dataset.v === S.attr));
   $('fCmp').children[0].textContent = S.mode === 'months' ? 'เทียบช่วงก่อน' : S.mode === 'month' ? 'เทียบเดือนก่อน' : S.mode === 'year' ? 'เทียบปีก่อน' : 'เทียบช่วงก่อน';
   $('fCmp').children[1].style.display = S.mode === 'year' ? 'none' : '';
 }
@@ -422,9 +451,10 @@ $('fM2').addEventListener('change', e => { const v = e.target.value;
 $('fPage').addEventListener('change', e => { S.page = +e.target.value; go(); });
 ['fFrom', 'fTo'].forEach(id => $(id).addEventListener('change', () => { S.mode = 'range'; S.preset = 'range'; S.from = $('fFrom').value; S.to = $('fTo').value; go(); }));
 $('fCmp').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.cmp = b.dataset.v; go(); });
+$('fAttr').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.attr = b.dataset.v; go(); });
 
 function go() {
-  try { localStorage.setItem('mersi_ov2', JSON.stringify({ cmp: S.cmp, page: S.page })); } catch (e) {}
+  try { localStorage.setItem('mersi_ov2', JSON.stringify({ cmp: S.cmp, page: S.page, attr: S.attr })); } catch (e) {}
   if (S.mode === 'month') S.preset = S.m === CUR ? 'thism' : S.m === addM(CUR, -1) ? 'lastm' : '';
   else if (S.mode === 'year') S.preset = S.y === CUR.slice(0, 4) ? 'year' : '';
   fillFilters(); render();
@@ -441,8 +471,10 @@ function delta(cur, ref, invert) {
 function render() {
   document.querySelectorAll('nav a[data-v]').forEach(x => x.classList.toggle('on', x.dataset.v === S.view));
   $('fPage').style.display = S.view === 'ov' ? '' : 'none';
+  $('fAttrRow').style.display = SNAP.MB && (S.view === 'br' || (S.view === 'ov' && (S.page < 0 || SNAP.P[S.page].b))) ? '' : 'none';
   if (S.view === 'br') return renderBranches();
   if (S.view === 'mk') return renderMarketing();
+  if (S.view === 'ad') return ADM ? renderAdmins() : (S.view = 'ov', renderOverview());
   renderOverview();
 }
 function renderOverview() {
@@ -472,7 +504,7 @@ function renderOverview() {
   // KPI
   const r = K.roas;
   h += '<h2>ตัวชี้วัดหลัก</h2><div class="grid6">' + [
-    ['ค่าโฆษณา', baht(K.spend), '', delta(K.spend, KR && KR.spend, true)],
+    ['ค่าโฆษณา <span class="cap">ไม่รวม VAT (ตรง Ads Manager)</span>', baht(K.spend), '', delta(K.spend, KR && KR.spend, true)],
     ['ROAS ออนไลน์ <span class="cap">ยอดขายออนไลน์ ÷ ค่าโฆษณา</span>', `<span class="roas r${rLv(r)}">${r ? r.toFixed(2) : '—'}</span>`, r ? `<span class="pill p${rLv(r)}">${rTxt(r)}</span>` : '', delta(K.roas, KR && KR.roas)],
     ['ROAS รวม <span class="cap">(ยอดออนไลน์ + ยอดหน้าสาขา) ÷ ค่าโฆษณา</span>', K.roasT ? K.roasT.toFixed(2) : '—', K.spend ? `ทุก ฿1 ค่าแอด ได้ยอดรวม ฿${K.roasT.toFixed(1)}` : '', delta(K.roasT, KR && KR.roasT)],
     ['แชตใหม่', K.chats ? int(K.chats) : '—', K.cpc ? `฿${int(K.cpc)} / แชต` : '', delta(K.chats, KR && KR.chats)],
@@ -491,7 +523,7 @@ function renderOverview() {
   if (pi < 0 && br.length) {
     const row = x => `<tr><td>${esc(x.name)}</td><td>${baht(x.branch)}</td><td>${x.pct != null ? (x.pct * 100).toFixed(0) + '%' : '—'}</td><td>${baht(x.online)}</td><td class="roas r${rLv(x.roas)}">${x.roas ? x.roas.toFixed(2) : '—'}</td><td>${x.roasT ? x.roasT.toFixed(2) : '—'}</td></tr>`;
     const head = '<tr><th>สาขา</th><th>หน้าสาขา</th><th>% เป้า</th><th>ออนไลน์</th><th>ROAS ออนไลน์</th><th>ROAS รวม</th></tr>';
-    h += '<h2>สาขา <small>เรียงตาม % เป้าหน้าสาขา (เป้าตามจำนวนวันในช่วง)</small></h2><div class="card">';
+    h += `<h2>สาขา <small>เรียงตาม % เป้าหน้าสาขา (เป้าตามจำนวนวันในช่วง) · ออนไลน์${S.attr === 'page' ? 'ตามเพจที่ลูกค้าทัก (ไม่รวมเพจหลัก TH)' : 'ตามสาขาที่ใช้บริการ'}</small></h2><div class="card">`;
     if (S.showAllBr || br.length <= 6) h += `<div class="tbl"><table>${head}${br.map(row).join('')}</table></div>`;
     else h += `<div class="sec-h g">▲ นำ 3 สาขา</div><div class="tbl"><table>${head}${br.slice(0, 3).map(row).join('')}</table></div>
       <div class="sec-h b" style="margin-top:12px">▼ ต้องช่วย 3 สาขา</div><div class="tbl"><table>${head}${br.slice(-3).reverse().map(row).join('')}</table></div>`;
@@ -522,8 +554,7 @@ function renderOverview() {
   if (isCurMonth && full.on) { const need = (full.on - K.online) / Math.max(1, dimN - dayN), avg = K.online / dayN;
     if (need > avg * 1.1) todo.push(['warn', `ยอดออนไลน์ต้องได้วันละ ${baht(need)} (ตอนนี้เฉลี่ย ${baht(avg)}) จึงจะถึงเป้า`]); }
   br.filter(x => x.spend > 20000 && x.roas && x.roas < 1).slice(0, 4).forEach(x => todo.push(['bad', `${x.name}: ROAS ออนไลน์ ${x.roas.toFixed(2)} ต่ำกว่า 1.0 — ตรวจแคมเปญ/ครีเอทีฟ`]));
-  if (SNAP.cr && SNAP.cr.kill) todo.push(['bad', `ครีเอทีฟสถานะ Kill ${SNAP.cr.kill} ชิ้น (รอบ ${SNAP.cr.period}) — หยุดแล้วย้ายงบไปชิ้น Scale ${SNAP.cr.scale} ชิ้น`]);
-  (SNAP.st || []).filter(s => s.status === 'FAIL').forEach(s => todo.push(['bad', `ท่อข้อมูล ${s.job} ล้มเหลวล่าสุด ${s.at} — แจ้งทีม Digital`]));
+  (SNAP.st || []).filter(s => s.status === 'FAIL').forEach(s => todo.push(['bad', s.job === 'QA_MONTHLY' ? `ตรวจยอดเทียบ Total Sale Monitoring ไม่ผ่าน ±2% (${s.at}) — ดูแท็บ qa_monthly` : `ท่อข้อมูล ${s.job} ล้มเหลวล่าสุด ${s.at} — แจ้งทีม Digital`]));
   for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) { const c = SNAP.cov[m] || {}, need = m === CUR ? nDays(m + '-01', LAST) : dim(m);
     if ((m === CUR || !c.t) && m >= '2026-01' && (c.a || 0) < need - 1) todo.push(['bad', `ค่าโฆษณา ${monTH(m)} มีข้อมูลแค่ ${c.a || 0}/${need} วัน — ตัวเลขค่าแอด/ROAS ต่ำกว่าจริง (แจ้งทีม Digital: Run BACKFILL_THIS_MONTH)`]); }
   if (!todo.length) todo.push(['ok', 'ทุกตัวชี้วัดอยู่ในเกณฑ์ ไม่มีเรื่องเร่งด่วน']);
@@ -597,7 +628,7 @@ function renderBranches() {
       ${S.cmp !== 'none' && x.dBr != null ? `<span>หน้าสาขา ${delta(x.branch, x.branch / (1 + x.dBr))}</span>` : ''}</div>
       <span class="go">ดูรายละเอียด ›</span></div>`;
   }).join('') + '</div>';
-  h += `<div class="note">ROAS ออนไลน์ = ยอดขายออนไลน์ ÷ ค่าโฆษณา · ROAS รวม = (ยอดออนไลน์ + ยอดหน้าสาขา) ÷ ค่าโฆษณา<br>% เป้า = ยอดหน้าสาขา ÷ เป้าตามจำนวนวันในช่วง (เขียว ≥ 100% · เหลือง 90–99% · แดง &lt; 90%) · แตะการ์ดเพื่อดูภาพรวมของสาขานั้น</div>`;
+  h += `<div class="note">ROAS ออนไลน์ = ยอดขายออนไลน์ ÷ ค่าโฆษณา · ROAS รวม = (ยอดออนไลน์ + ยอดหน้าสาขา) ÷ ค่าโฆษณา<br>% เป้า = ยอดหน้าสาขา ÷ เป้าตามจำนวนวันในช่วง (เขียว ≥ 100% · เหลือง 90–99% · แดง &lt; 90%) · แตะการ์ดเพื่อดูภาพรวมของสาขานั้น<br>${S.attr === 'page' ? 'ยอดออนไลน์ = ตามเพจที่ลูกค้าทัก — ยอดจากเพจหลัก TH แยกไว้ต่างหาก (ดูได้ที่หน้าภาพรวม › เลือกเพจหลัก TH)' : 'ยอดออนไลน์ = ตามสาขาที่ลูกค้าไปใช้บริการ (รวมลูกค้าที่ทักจากเพจหลัก TH · แบบ Total Sale Monitoring)'} · ค่าโฆษณา = ค่าแอดของเพจสาขานั้น ไม่รวม VAT</div>`;
   $('app').innerHTML = h; drawChart(null);
   $('bsort').onclick = e => { const t = e.target.closest('button'); if (!t) return; S.bsort = t.dataset.k; render(); };
   document.querySelectorAll('.bcard').forEach(c => c.onclick = () => { S.page = +c.dataset.i; S.view = 'ov'; go(); window.scrollTo(0, 0); });
@@ -637,20 +668,38 @@ function renderMarketing() {
       <div class="row"><span>ยอดออนไลน์ <b>${baht(x.on)}</b> ${S.cmp !== 'none' && x.ron ? delta(x.on, x.ron) : ''}</span>${x.ch ? `<span>แชต <b>${int(x.ch)}</b></span><span>฿/แชต <b>${int(x.cpc)}</b></span>` : ''}${x.bi ? `<span>บิล <b>${int(x.bi)}</b></span>` : ''}
       ${S.cmp !== 'none' && x.rsp ? `<span>ค่าแอด ${delta(x.sp, x.rsp, true)}</span>` : ''}</div></div>`).join('') + '</div>';
   }
-  // ครีเอทีฟรอบล่าสุด
-  const C = SNAP.CRL || {}, L = C.list || [];
-  if (L.length) {
-    const tabs = [['Kill', 'Kill — หยุด'], ['Scale', 'Scale — เพิ่มงบ'], ['Refresh', 'Refresh — ทำใหม่'], ['Keep', 'Keep ดีสุด']].map(([k, l]) => [k, l, L.filter(x => x.st === k).length]);
-    if (!L.some(x => x.st === S.ctab)) S.ctab = (tabs.find(t => t[2]) || tabs[0])[0];
-    h += `<h2>ครีเอทีฟ <small>รอบ ${dTH(C.period)}–${C.until ? dTH(C.until) : ''} · ตัดสินจาก ${int(C.n)} แอด (อัปเดตทุกวันจันทร์)</small></h2>`;
-    h += '<div class="crtabs" id="crtabs">' + tabs.map(([k, l, n]) => `<button data-k="${k}" class="${k}${S.ctab === k ? ' on' : ''}">${l} ${n}</button>`).join('') + '</div>';
-    h += '<div class="crl">' + L.filter(x => x.st === S.ctab).map(x => `<div class="card cr">${x.th ? `<img src="${esc(x.th)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">` : '<img alt="" style="visibility:hidden">'}
-      <div style="min-width:0"><div class="ct">${esc(x.t || 'แอด ' + x.id)}</div><div class="cm">${esc([x.g, x.pg].filter(Boolean).join(' · '))}${x.cpc ? ` · ฿${int(x.cpc)}/แชต` : ''}${x.fq ? ` · ความถี่ ${x.fq.toFixed(1)}` : ''}</div>
-      <div class="cw">${x.why ? esc(x.why) : ''}${x.act ? ` → <b>${esc(x.act)}</b>` : ''}${x.dg ? `<br><span style="color:var(--mute)">จุดที่ควรแก้: ${esc(x.dg)}</span>` : ''}</div></div></div>`).join('') + '</div>';
-  }
-  h += '<div class="note">ปี 2568 – เม.ย. 2569: ยอดรวมทุกโปรแกรม = Total Sale Monitoring (ค่าแอด · แชตใหม่ · ยอดออนไลน์) · สัดส่วนแยกโปรแกรมตามไฟล์ "สรุปยอดขายยิงAds" · เม.ย. 2569 ไม่มีไฟล์แยกโปรแกรม จึงแสดงยอดรวม TSM ก้อนเดียว · ตั้งแต่ พ.ค. 2569 รายโปรแกรมตาม Meta · ครีเอทีฟแสดงรอบล่าสุดเสมอ ไม่ขึ้นกับช่วงวันที่เลือก</div>';
+  h += '<div class="note">ปี 2568 – เม.ย. 2569: ยอดรวมทุกโปรแกรม = Total Sale Monitoring (ค่าแอด · แชตใหม่ · ยอดออนไลน์) · สัดส่วนแยกโปรแกรมตามไฟล์ "สรุปยอดขายยิงAds" · เม.ย. 2569 ไม่มีไฟล์แยกโปรแกรม จึงแสดงยอดรวม TSM ก้อนเดียว · ตั้งแต่ พ.ค. 2569 รายโปรแกรมตาม Meta</div>';
   $('app').innerHTML = h; drawChart(null);
-  if ($('crtabs')) $('crtabs').onclick = e => { const t = e.target.closest('button'); if (!t) return; S.ctab = t.dataset.k; render(); };
+}
+
+/* ---------- หน้า แอดมิน (ผู้บริหาร + หัวหน้าแอดมิน) ---------- */
+function admSum(a, b) { const g = {}; for (let d = a; d <= b; d = addD(d, 1)) (ADM.D[d] || []).forEach(x => { const o = g[x[0]] || (g[x[0]] = { s: 0, b: 0 }); o.s += x[1]; o.b += x[2]; }); return g; }
+function renderAdmins() {
+  const [a, b] = period(), rp = refPeriod(a, b);
+  const tf = target(a, b, -1).on / (SNAP.T.on || 1);
+  const g = admSum(a, b), gr = rp ? admSum(rp[0], rp[1]) : {};
+  const all = Object.keys(g).map(i => { const L = ADM.L[i] || {}, t = (L.t || 0) * tf, r = gr[i];
+    return { n: L.n || i, rk: L.rk, s: g[i].s, b: g[i].b, t, pct: t ? g[i].s / t : null, rs: r ? r.s : null }; });
+  const rows = all.filter(x => x.rk).sort((x, y) => (y.pct != null ? y.pct : -1) - (x.pct != null ? x.pct : -1) || y.s - x.s);
+  const other = all.filter(x => !x.rk && x.s).sort((x, y) => y.s - x.s);
+  const T = rows.reduce((o, x) => { o.s += x.s; o.b += x.b; o.t += x.t; return o; }, { s: 0, b: 0, t: 0 });
+  const onT = rows.filter(x => x.pct != null && x.pct >= 1).length, withT = rows.filter(x => x.pct != null).length;
+  let h = `<h2>${esc(rangeTH(a, b))} · แอดมิน <small>${nDays(a, b)} วัน · ข้อมูลถึง ${dTH(LAST)}${rp ? ` · เทียบ ${esc(rangeTH(rp[0], rp[1]))}` : ''}</small></h2>`;
+  if (!all.length) { $('app').innerHTML = h + '<div class="card">ยังไม่มีข้อมูลยอดขายรายแอดมินในช่วงนี้</div>'; drawChart(null); return; }
+  h += `<div class="bsum"><div class="card"><div class="l">ยอดขายทีมแอดมิน</div><div class="n">${baht(T.s)}</div><div class="l">${T.t ? (T.s / T.t * 100).toFixed(0) + '% ของเป้ารวม ' + baht(T.t) : ''}</div></div>
+    <div class="card"><div class="l">ถึงเป้า${S.mode === 'month' && S.m === CUR ? 'ตามจำนวนวัน' : ''}</div><div class="n">${onT}/${withT}</div><div class="l">คน</div></div>
+    <div class="card"><div class="l">บิล · ยอดเฉลี่ย/บิล</div><div class="n">${int(T.b)}</div><div class="l">${T.b ? baht(T.s / T.b) + ' / บิล' : ''}</div></div></div>`;
+  const card = (x, n) => { const pc = x.pct == null ? '' : x.pct >= 1 ? 'g' : x.pct >= .9 ? 'w' : 'b';
+    return `<div class="card acard"><div class="top"><div class="av">${esc(String(x.n).slice(0, 1))}</div><div class="nm">${esc(x.n)}<div class="rk">${n ? 'อันดับ ' + n : 'ไม่นับอันดับ'}</div></div>
+      <span class="pc ${pc}" style="font-weight:700">${x.pct != null ? (x.pct * 100).toFixed(0) + '%' : '—'}</span></div>
+      <div class="amt">${baht(x.s)} <small>/ เป้า ${x.t ? baht(x.t) : '—'}</small></div>
+      ${x.t ? `<div class="bar"><i style="width:${Math.min(100, x.pct * 100)}%;background:${pc === 'g' ? 'var(--sage)' : pc === 'w' ? 'var(--warn)' : 'var(--bad)'}"></i></div>` : ''}
+      <div class="row"><span>บิล <b>${int(x.b)}</b></span>${x.b ? `<span>ยอด/บิล <b>${baht(x.s / x.b)}</b></span>` : ''}${x.t && S.mode === 'month' && S.m === CUR ? `<span>ต้องได้อีก <b>${baht(Math.max(0, (x.t / tf) - x.s))}</b> ในเดือนนี้</span>` : ''}
+      ${S.cmp !== 'none' && x.rs ? `<span>${delta(x.s, x.rs)}</span>` : ''}</div></div>`; };
+  h += '<h2>รายคน <small>เรียงตาม % เป้า · เป้าคิดตามจำนวนวันในช่วง</small></h2><div class="alist">' + rows.map((x, i) => card(x, i + 1)).join('') + '</div>';
+  if (other.length) h += '<h2>ไม่นับอันดับ <small>หัวหน้าแอดมิน / อดีตแอดมิน</small></h2><div class="alist">' + other.map(x => card(x, 0)).join('') + '</div>';
+  h += '<div class="note">ยอดขายออนไลน์รายบิลตามรหัสผู้ขาย (ยืนยันการโอน) · เป้ารายคนจาก dim_admin (SET_TARGETS) · ข้อมูลรายแอดมินเห็นเฉพาะผู้บริหารและหัวหน้าแอดมิน</div>';
+  $('app').innerHTML = h; drawChart(null);
 }
 document.querySelector('nav').addEventListener('click', e => {
   const a = e.target.closest('a'); if (!a) return;
