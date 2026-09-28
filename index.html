@@ -114,6 +114,8 @@ nav a{cursor:pointer}
 .mx tr.tot td{font-weight:600;border-top:1px solid var(--line)}.mx tr.dim td{color:var(--mute)}.mx td small{font-size:10.5px;color:var(--mute)}
 .md{font-size:10.5px;font-weight:600;line-height:1.2}.md.up{color:var(--good)}.md.dn{color:var(--bad)}
 .mx td.pc{font-weight:700}
+.sc{font-size:13px;font-weight:700;padding:2px 8px;border-radius:99px;margin-right:6px}.sc.g{background:var(--goodbg);color:var(--good)}.sc.w{background:var(--warnbg);color:var(--warn)}.sc.b{background:var(--badbg);color:var(--bad)}
+.heat td{text-align:center}.heat td:first-child{text-align:left}
 
 .pgl{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:720px){.pgl{grid-template-columns:1fr 1fr}}
 .pcard .top{display:flex;align-items:baseline;gap:8px}.pcard .nm{font-weight:600;flex:1}.pcard .sh{font-size:12px;color:var(--mute)}
@@ -397,7 +399,7 @@ function target(a, b, pi) {
 }
 
 /* ---------- state ---------- */
-const S = { mode: 'month', y: CUR.slice(0, 4), m: CUR, from: '', to: '', page: -1, cmp: 'prev', showAllBr: false, preset: 'thism', view: 'ov', bsort: 'pct', ctab: 'Kill', attr: 'svc', mo: { n: 6, tab: 'kpi', bm: 'pBr' } };
+const S = { mode: 'month', y: CUR.slice(0, 4), m: CUR, from: '', to: '', page: -1, cmp: 'prev', showAllBr: false, preset: 'thism', view: 'ov', bsort: 'pct', ctab: 'Kill', attr: 'svc', asort: 'pct', mo: { n: 6, tab: 'kpi', bm: 'pBr' } };
 try { const p = JSON.parse(localStorage.getItem('mersi_ov2') || '{}'); if (p.cmp) S.cmp = p.cmp; if (p.attr === 'page') S.attr = 'page'; if (p.page != null && SNAP.P[p.page]) S.page = p.page; } catch (e) {}
 
 function period() {
@@ -684,33 +686,84 @@ function renderMarketing() {
 }
 
 /* ---------- หน้า แอดมิน (ผู้บริหาร + หัวหน้าแอดมิน) ---------- */
-function admSum(a, b) { const g = {}; for (let d = a; d <= b; d = addD(d, 1)) (ADM.D[d] || []).forEach(x => { const o = g[x[0]] || (g[x[0]] = { s: 0, b: 0 }); o.s += x[1]; o.b += x[2]; }); return g; }
+function admSum(a, b) { const g = {}; for (let d = a; d <= b; d = addD(d, 1)) (ADM.D[d] || []).forEach(x => { const o = g[x[0]] || (g[x[0]] = { s: 0, b: 0, u: 0 }); o.s += x[1]; o.b += x[2]; o.u += x[3] || 0; }); return g; }
+/* แชต Zaapi ของช่วง [a,b]: เดือนที่มีไฟล์ → คิดตามสัดส่วนวันที่ทับกัน · CR% ใช้บิลในวันเดียวกับช่วงแชต */
+function admChat(a, b) {
+  const g = {}, per = []; if (!ADM.C) return { g, per };
+  for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) {
+    const c = ADM.C[m]; if (!c) continue; const s = maxS(a, c.f), e = minS(b, c.t); if (s > e) continue;
+    const f = nDays(s, e) / nDays(c.f, c.t); per.push([s, e]); const bs = admSum(s, e);
+    c.r.forEach(([i, ch, miss, r10w, frw, frn]) => { const o = g[i] || (g[i] = { ch: 0, miss: 0, r10: 0, fr: 0, frn: 0, bw: 0 });
+      o.ch += ch * f; o.miss += miss * f; o.r10 += r10w * f; o.fr += frw * f; o.frn += frn * f; });
+    Object.keys(bs).forEach(i => { if (g[i]) g[i].bw += bs[i].b; });
+  }
+  return { g, per };
+}
+const ADM_W = { s: 30, cr: 25, sp: 20, up: 15, vol: 10 }, ADM_MIN = 100;
+const med = a => { const v = a.filter(x => x > 0).sort((x, y) => x - y); if (!v.length) return 0; const k = v.length >> 1; return v.length % 2 ? v[k] : (v[k - 1] + v[k]) / 2; };
+function admScore(rows) {                        // เทียบค่ากลางทีม: เท่าค่ากลาง = 70 · สูงสุด 100
+  const R = rows.filter(x => x.rk && x.ch >= ADM_MIN); if (R.length < 3) return;
+  const M = { s: med(R.map(x => x.s)), cr: med(R.map(x => x.cr)), r10: med(R.map(x => x.r10)), fr: med(R.map(x => x.fr)), up: med(R.map(x => x.up)), vol: med(R.map(x => x.ch)) };
+  const sc = (v, m) => m && v != null ? Math.max(0, Math.min(100, 70 * v / m)) : 70;
+  R.forEach(x => { x.dim = { s: sc(x.s, M.s), cr: sc(x.cr, M.cr), sp: (sc(x.r10, M.r10) + (x.fr ? Math.max(0, Math.min(100, 70 * M.fr / x.fr)) : 70)) / 2, up: sc(x.up, M.up), vol: sc(x.ch, M.vol) };
+    x.score = Object.keys(ADM_W).reduce((t, k) => t + x.dim[k] * ADM_W[k], 0) / 100; });
+}
 function renderAdmins() {
   const [a, b] = period(), rp = refPeriod(a, b);
   const tf = target(a, b, -1).on / (SNAP.T.on || 1);
-  const g = admSum(a, b), gr = rp ? admSum(rp[0], rp[1]) : {};
-  const all = Object.keys(g).map(i => { const L = ADM.L[i] || {}, t = (L.t || 0) * tf, r = gr[i];
-    return { n: L.n || i, rk: L.rk, s: g[i].s, b: g[i].b, t, pct: t ? g[i].s / t : null, rs: r ? r.s : null }; });
-  const rows = all.filter(x => x.rk).sort((x, y) => (y.pct != null ? y.pct : -1) - (x.pct != null ? x.pct : -1) || y.s - x.s);
-  const other = all.filter(x => !x.rk && x.s).sort((x, y) => y.s - x.s);
-  const T = rows.reduce((o, x) => { o.s += x.s; o.b += x.b; o.t += x.t; return o; }, { s: 0, b: 0, t: 0 });
+  const g = admSum(a, b), gr = rp ? admSum(rp[0], rp[1]) : {}, Z = admChat(a, b);
+  const ids = [...new Set(Object.keys(g).concat(Object.keys(Z.g)))];
+  const all = ids.map(i => { const L = ADM.L[i] || {}, t = (L.t || 0) * tf, r = gr[i], x = g[i] || { s: 0, b: 0, u: 0 }, z = Z.g[i];
+    return { n: L.n || i, rk: L.rk, s: x.s, b: x.b, t, pct: t ? x.s / t : null, rs: r ? r.s : null, up: x.b ? x.u / x.b : null,
+      ch: z ? z.ch : 0, cr: z && z.ch ? z.bw / z.ch : null, r10: z && z.ch ? z.r10 / z.ch : null, fr: z && z.frn ? z.fr / z.frn : null, miss: z ? z.miss : 0, bw: z ? z.bw : 0, score: null }; });
+  admScore(all);
+  const key = { pct: x => x.pct != null ? x.pct : -1, score: x => x.score != null ? x.score : -1, s: x => x.s, cr: x => x.cr != null ? x.cr : -1 }[S.asort] || (x => x.pct);
+  const rows = all.filter(x => x.rk && (x.s || x.ch)).sort((x, y) => key(y) - key(x) || y.s - x.s);
+  const other = all.filter(x => !x.rk && (x.s || x.ch)).sort((x, y) => y.s - x.s);
+  const T = rows.reduce((o, x) => { o.s += x.s; o.b += x.b; o.t += x.t; o.ch += x.ch; o.bw += x.bw; o.r10 += (x.r10 || 0) * x.ch; o.u += (x.up || 0) * x.b; return o; }, { s: 0, b: 0, t: 0, ch: 0, bw: 0, r10: 0, u: 0 });
   const onT = rows.filter(x => x.pct != null && x.pct >= 1).length, withT = rows.filter(x => x.pct != null).length;
+  const hasZ = Z.per.length > 0, zTxt = hasZ ? Z.per.map(([s, e]) => rangeTH(s, e)).join(' · ') : '';
   let h = `<h2>${esc(rangeTH(a, b))} · แอดมิน <small>${nDays(a, b)} วัน · ข้อมูลถึง ${dTH(LAST)}${rp ? ` · เทียบ ${esc(rangeTH(rp[0], rp[1]))}` : ''}</small></h2>`;
   if (!all.length) { $('app').innerHTML = h + '<div class="card">ยังไม่มีข้อมูลยอดขายรายแอดมินในช่วงนี้</div>'; drawChart(null); return; }
   h += `<div class="bsum"><div class="card"><div class="l">ยอดขายทีมแอดมิน</div><div class="n">${baht(T.s)}</div><div class="l">${T.t ? (T.s / T.t * 100).toFixed(0) + '% ของเป้ารวม ' + baht(T.t) : ''}</div></div>
     <div class="card"><div class="l">ถึงเป้า${S.mode === 'month' && S.m === CUR ? 'ตามจำนวนวัน' : ''}</div><div class="n">${onT}/${withT}</div><div class="l">คน</div></div>
-    <div class="card"><div class="l">บิล · ยอดเฉลี่ย/บิล</div><div class="n">${int(T.b)}</div><div class="l">${T.b ? baht(T.s / T.b) + ' / บิล' : ''}</div></div></div>`;
+    <div class="card"><div class="l">บิล · ยอดเฉลี่ย/บิล</div><div class="n">${int(T.b)}</div><div class="l">${T.b ? baht(T.s / T.b) + ' / บิล' : ''}${T.b ? ` · Upsell ${(T.u / T.b * 100).toFixed(0)}%` : ''}</div></div></div>`;
+  if (hasZ) h += `<div class="bsum" style="margin-top:10px"><div class="card"><div class="l">แชตที่แอดมินรับ (Zaapi)</div><div class="n">${int(T.ch)}</div><div class="l">${esc(zTxt)}</div></div>
+    <div class="card"><div class="l">ปิดการขาย (บิล ÷ แชตรับ)</div><div class="n">${T.ch ? (T.bw / T.ch * 100).toFixed(1) + '%' : '—'}</div><div class="l">บิลในช่วงวันเดียวกับแชต</div></div>
+    <div class="card"><div class="l">ตอบภายใน 10 นาที</div><div class="n">${T.ch ? (T.r10 / T.ch * 100).toFixed(1) + '%' : '—'}</div><div class="l">เฉลี่ยถ่วงตามจำนวนแชต</div></div></div>`;
+  h += '<div class="sortbar" id="asort">' + [['pct', '% เป้า'], ['score', 'Admin Score'], ['s', 'ยอดขาย'], ['cr', 'ปิดการขาย %']].filter(x => hasZ || (x[0] !== 'score' && x[0] !== 'cr'))
+    .map(([k, l]) => `<button data-k="${k}" class="${S.asort === k ? 'on' : ''}">${l}</button>`).join('') + '</div>';
   const card = (x, n) => { const pc = x.pct == null ? '' : x.pct >= 1 ? 'g' : x.pct >= .9 ? 'w' : 'b';
-    return `<div class="card acard"><div class="top"><div class="av">${esc(String(x.n).slice(0, 1))}</div><div class="nm">${esc(x.n)}<div class="rk">${n ? 'อันดับ ' + n : 'ไม่นับอันดับ'}</div></div>
-      <span class="pc ${pc}" style="font-weight:700">${x.pct != null ? (x.pct * 100).toFixed(0) + '%' : '—'}</span></div>
+    const sc = x.score == null ? '' : `<span class="sc ${x.score >= 70 ? 'g' : x.score >= 65 ? 'w' : 'b'}" title="Admin Score">${x.score.toFixed(0)}</span>`;
+    return `<div class="card acard"><div class="top"><div class="av">${esc(String(x.n).slice(0, 1))}</div><div class="nm">${esc(x.n)}<div class="rk">${n ? 'อันดับ ' + n : 'ไม่นับอันดับ'}${x.rk && hasZ && x.ch < ADM_MIN ? ' · แชต &lt; ' + ADM_MIN + ' ไม่คิดคะแนน' : ''}</div></div>
+      ${sc}<span class="pc ${pc}" style="font-weight:700">${x.pct != null ? (x.pct * 100).toFixed(0) + '%' : '—'}</span></div>
       <div class="amt">${baht(x.s)} <small>/ เป้า ${x.t ? baht(x.t) : '—'}</small></div>
       ${x.t ? `<div class="bar"><i style="width:${Math.min(100, x.pct * 100)}%;background:${pc === 'g' ? 'var(--sage)' : pc === 'w' ? 'var(--warn)' : 'var(--bad)'}"></i></div>` : ''}
-      <div class="row"><span>บิล <b>${int(x.b)}</b></span>${x.b ? `<span>ยอด/บิล <b>${baht(x.s / x.b)}</b></span>` : ''}${x.t && S.mode === 'month' && S.m === CUR ? `<span>ต้องได้อีก <b>${baht(Math.max(0, (x.t / tf) - x.s))}</b> ในเดือนนี้</span>` : ''}
-      ${S.cmp !== 'none' && x.rs ? `<span>${delta(x.s, x.rs)}</span>` : ''}</div></div>`; };
-  h += '<h2>รายคน <small>เรียงตาม % เป้า · เป้าคิดตามจำนวนวันในช่วง</small></h2><div class="alist">' + rows.map((x, i) => card(x, i + 1)).join('') + '</div>';
+      <div class="row"><span>บิล <b>${int(x.b)}</b></span>${x.b ? `<span>ยอด/บิล <b>${baht(x.s / x.b)}</b></span><span>Upsell <b>${(x.up * 100).toFixed(0)}%</b></span>` : ''}${x.t && S.mode === 'month' && S.m === CUR ? `<span>ต้องได้อีก <b>${baht(Math.max(0, (x.t / tf) - x.s))}</b> ในเดือนนี้</span>` : ''}
+      ${S.cmp !== 'none' && x.rs ? `<span>${delta(x.s, x.rs)}</span>` : ''}</div>
+      ${x.ch ? `<div class="row"><span>แชตรับ <b>${int(x.ch)}</b></span><span>ปิดได้ <b>${x.cr != null ? (x.cr * 100).toFixed(1) + '%' : '—'}</b></span><span>ตอบใน 10 นาที <b>${x.r10 != null ? (x.r10 * 100).toFixed(0) + '%' : '—'}</b></span>${x.fr ? `<span>ตอบเฉลี่ย <b>${x.fr.toFixed(1)} นาที</b></span>` : ''}${x.miss >= 1 ? `<span>ไม่ได้ตอบ 12 ชม. <b>${int(x.miss)}</b></span>` : ''}</div>` : ''}</div>`; };
+  const help = rows.filter(x => x.score != null && x.score < 65);
+  if (help.length) h += `<div class="card" style="margin-top:12px;border-color:var(--warn)"><div class="sec-h b">ต้องช่วย (Admin Score &lt; 65)</div>${help.map(x => { const w = Object.keys(x.dim).sort((p, q) => x.dim[p] - x.dim[q])[0];
+    return `<div style="font-size:13.5px;padding:3px 0">${esc(x.n)} · ${x.score.toFixed(0)} คะแนน — จุดที่ควรโค้ช: <b>${{ s: 'ยอดขาย', cr: 'การปิดการขาย', sp: 'ความเร็วตอบแชต', up: 'Upsell', vol: 'จำนวนแชตที่รับ' }[w]}</b></div>`; }).join('')}</div>`;
+  h += `<h2>รายคน <small>เรียงตาม ${{ pct: '% เป้า', score: 'Admin Score', s: 'ยอดขาย', cr: 'ปิดการขาย %' }[S.asort]} · เป้าคิดตามจำนวนวันในช่วง</small></h2><div class="alist">` + rows.map((x, i) => card(x, i + 1)).join('') + '</div>';
   if (other.length) h += '<h2>ไม่นับอันดับ <small>หัวหน้าแอดมิน / อดีตแอดมิน</small></h2><div class="alist">' + other.map(x => card(x, 0)).join('') + '</div>';
-  h += '<div class="note">ยอดขายออนไลน์รายบิลตามรหัสผู้ขาย (ยืนยันการโอน) · เป้ารายคนจาก dim_admin (SET_TARGETS) · ข้อมูลรายแอดมินเห็นเฉพาะผู้บริหารและหัวหน้าแอดมิน</div>';
+  h += admHeat(a, b);
+  h += `<div class="note">ยอดขายออนไลน์รายบิลตามรหัสผู้ขาย (ยืนยันการโอน) · Upsell = บิลที่ซื้อ ≥ 2 รายการ ÷ บิลทั้งหมด · เป้ารายคนจาก dim_admin (SET_TARGETS)<br>
+    ${hasZ ? `แชตจาก Zaapi (FB + IG + LINE) ช่วง ${esc(zTxt)} · ปิดการขาย = บิลในช่วงวันเดียวกัน ÷ แชตรับ` : 'ยังไม่มีข้อมูลแชตจาก Zaapi ในช่วงนี้ — วางไฟล์ในโฟลเดอร์ Zaapi_Inbox แล้ว Run syncZaapiInbox'}<br>
+    Admin Score (เต็ม 100 · เท่าค่ากลางทีม = 70): ยอดขาย 30 · ปิดการขาย 25 · ความเร็วตอบ 20 · Upsell 15 · ปริมาณแชต 10 · แชตรับ &lt; ${ADM_MIN} ไม่คิดคะแนน · ต่ำกว่า 65 = ต้องช่วย · ข้อมูลรายแอดมินเห็นเฉพาะผู้บริหารและหัวหน้าแอดมิน</div>`;
   $('app').innerHTML = h; drawChart(null);
+  $('asort').onclick = e => { const t = e.target.closest('button'); if (!t) return; S.asort = t.dataset.k; render(); };
+}
+/* heatmap แชตเข้า วัน × ช่วงเวลา (เฉลี่ยต่อสัปดาห์) — ใช้จัดกะ */
+function admHeat(a, b) {
+  if (!ADM.H) return ''; const sum = [...Array(7)].map(() => new Array(8).fill(0)); let wk = 0; const ps = [];
+  for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) { const hm = ADM.H[m]; if (!hm) continue; const s = maxS(a, hm.f), e = minS(b, hm.t); if (s > e) continue;
+    const f = nDays(s, e) / nDays(hm.f, hm.t); wk += nDays(s, e) / 7; ps.push(rangeTH(s, e)); hm.d.forEach((r, i) => r.forEach((v, j) => sum[i][j] += v * f)); }
+  if (!wk) return '';
+  const avg = sum.map(r => r.map(v => v / wk)), mx = Math.max(...avg.flat()) || 1, DN = ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'], SL = ['0–3', '3–6', '6–9', '9–12', '12–15', '15–18', '18–21', '21–24'];
+  const tot = avg.map(r => r.reduce((x, y) => x + y, 0));
+  return `<h2>จัดกะ: แชตเข้าตามวัน × ช่วงเวลา <small>เฉลี่ยต่อสัปดาห์ · ${esc(ps.join(' · '))} · ยิ่งเข้มยิ่งแชตเยอะ</small></h2><div class="card tbl mx heat"><table><tr><th>วัน</th>${SL.map(s => `<th>${s} น.</th>`).join('')}<th>ทั้งวัน</th></tr>` +
+    avg.map((r, i) => `<tr><td>${DN[i]}</td>${r.map(v => `<td style="background:rgba(107,119,87,${(0.04 + 0.6 * v / mx).toFixed(2)});${v / mx > 0.55 ? 'color:#fff;' : ''}">${int(v)}</td>`).join('')}<td><b>${int(tot[i])}</b></td></tr>`).join('') + '</table></div>';
 }
 /* ---------- หน้า เทียบรายเดือน ---------- */
 function moList() { const out = []; for (let i = 0; i < S.mo.n; i++) { const m = addM(CUR, -i); if (m < MONTHS[0]) break; out.push(m); } return out; }
