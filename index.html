@@ -738,10 +738,10 @@ function admTot(all) { return all.reduce((o, x) => { o.s += x.s; o.b += x.b; o.u
 const zTxt = Z => Z.per.map(([s, e]) => rangeTH(s, e)).join(' · ');
 function renderAdmins() {
   const [a, b] = period(), rp = refPeriod(a, b), A = admRows(a, b), AR = rp ? admRows(rp[0], rp[1]) : null;
-  let h = ph(S.atab === 'ind' ? 'ผลงานรายบุคคล' : S.atab === 'shift' ? 'จัดกะแอดมิน' : 'ทีมแอดมิน',
+  let h = ph(S.atab === 'ind' ? 'ผลงานรายบุคคล' : S.atab === 'shift' ? 'ช่วงเวลาที่แชตเข้า' : 'ทีมแอดมิน',
     `${esc(rangeTH(a, b))} · แชตรับจาก Zaapi (มีตั้งแต่ ก.ค. 2569${A.hasZ ? ' · ช่วงนี้ ' + esc(zTxt(A.Z)) : ''}) · บิลและยอดจากยอดขายออนไลน์รายบิล`,
     [A.hasZ ? '<span class="real">แชตจาก Zaapi</span>' : '<span class="mock">ยังไม่มีข้อมูล Zaapi ในช่วงนี้</span>', '<span class="real">เห็นเฉพาะผู้บริหาร · หัวหน้าแอดมิน</span>']);
-  h += `<nav class="stabs" id="atab">${[['team', 'ภาพรวมทีม & อันดับ'], ['ind', 'ผลงานรายบุคคล'], ['shift', 'จัดกะ']].map(([k, l]) => `<a data-k="${k}" class="${S.atab === k ? 'on' : ''}">${l}</a>`).join('')}</nav>`;
+  h += `<nav class="stabs" id="atab">${[['team', 'ภาพรวมทีม & อันดับ'], ['ind', 'ผลงานรายบุคคล'], ['shift', 'ช่วงเวลาแชตเข้า']].map(([k, l]) => `<a data-k="${k}" class="${S.atab === k ? 'on' : ''}">${l}</a>`).join('')}</nav>`;
   if (!A.all.length) { $('app').innerHTML = h + empty('ยังไม่มีข้อมูลยอดขายรายแอดมินในช่วงนี้'); bindAdm(); return; }
   h += S.atab === 'ind' ? admInd(A, AR, a, b) : S.atab === 'shift' ? admShift(a, b, true) : admTeam(A, AR);
   $('app').innerHTML = h; bindAdm();
@@ -836,11 +836,11 @@ function admInd(A, AR, a, b) {
 /* heatmap แชตเข้า วัน × ช่วงเวลา (เฉลี่ยต่อสัปดาห์) */
 function admShift(a, b, full) {
   const wrap = t => full ? t : `<div class="card col" style="gap:12px">${t}</div>`;
-  if (!ADM || !ADM.H) return wrap(cardH('แชตเข้า × ช่วงเวลา → วางกะ') + '<span class="sub">ยังไม่มีข้อมูลจาก Zaapi</span>');
+  if (!ADM || !ADM.H) return wrap(cardH('แชตเข้า × ช่วงเวลา') + '<span class="sub">ยังไม่มีข้อมูลจาก Zaapi</span>');
   const sum = [...Array(7)].map(() => new Array(8).fill(0)); let wk = 0; const ps = [];
   for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) { const hm = ADM.H[m]; if (!hm) continue; const s = maxS(a, hm.f), e = minS(minS(b, hm.t), LAST); if (s > e) continue;
     const f = nDays(s, e) / nDays(hm.f, hm.t); wk += nDays(s, e) / 7; ps.push(rangeTH(s, e)); hm.d.forEach((r, i) => r.forEach((v, j) => sum[i][j] += v * f)); }
-  if (!wk) return wrap(cardH('แชตเข้า × ช่วงเวลา → วางกะ') + '<span class="sub">ไม่มีข้อมูลแชตรายช่วงเวลาในช่วงที่เลือก (Zaapi เริ่ม ก.ค. 2569)</span>');
+  if (!wk) return wrap(cardH('แชตเข้า × ช่วงเวลา') + '<span class="sub">ไม่มีข้อมูลแชตรายช่วงเวลาในช่วงที่เลือก (Zaapi เริ่ม ก.ค. 2569)</span>');
   const avg = sum.map(r => r.map(v => v / wk)), mx = Math.max(...avg.flat()) || 1, DN = ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'], SL = ['0–3', '3–6', '6–9', '9–12', '12–15', '15–18', '18–21', '21–24'];
   const tot = avg.map(r => r.reduce((x, y) => x + y, 0)), slotT = SL.map((_, j) => avg.reduce((t, r) => t + r[j], 0)), all = slotT.reduce((x, y) => x + y, 0);
   let pk = [0, 0]; avg.forEach((r, i) => r.forEach((v, j) => { if (v > avg[pk[0]][pk[1]]) pk = [i, j]; }));
@@ -848,14 +848,14 @@ function admShift(a, b, full) {
   let g = `<div class="hm"><span class="hd"></span>${SL.map(s => `<span class="hd">${s}</span>`).join('')}<span class="hd">ทั้งวัน</span>
     ${avg.map((r, i) => `<span class="dn">${DN[i]}</span>${r.map(cell).join('')}<span class="num" style="font-weight:600">${int(tot[i])}</span>`).join('')}
     ${full ? `<span class="dn">% ของวัน</span>${slotT.map(v => `<span class="num sub">${pct0(v / all)}</span>`).join('')}<span></span>` : ''}</div>`;
-  const head = cardH('แชตเข้า × ช่วงเวลา → วางกะ', `เฉลี่ยต่อสัปดาห์ · ${esc(ps.join(' · '))} · เข้มขึ้น = แชตมาก`);
+  const head = cardH('แชตเข้า × ช่วงเวลา', `เฉลี่ยต่อสัปดาห์ · ${esc(ps.join(' · '))} · เข้มขึ้น = แชตมาก`);
   if (!full) return wrap(head + g);
   const busy = DN.map((d, i) => [d, tot[i]]).sort((x, y) => y[1] - x[1]);
   return `<section class="card col">${head}${g}<span class="sub">รวม FB + IG + LINE · แชตมากสุด: วัน${DN[pk[0]]} ช่วง ${SL[pk[1]]} น. (${int(avg[pk[0]][pk[1]])} แชต/สัปดาห์) · วันที่แชตเยอะสุด: ${busy.slice(0, 2).map(z => z[0]).join(', ')} · น้อยสุด: ${busy[6][0]}</span></section>
-    <section class="card col">${cardH('ข้อแนะนำการวางกะ')}<div class="col" style="gap:8px;font-size:14px">
-      <div>• ช่วงที่ควรมีคนมากที่สุด: <b>${SL.map((s, j) => [s, slotT[j]]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(z => z[0] + ' น.').join(', ')}</b> (รวม ${pct0(SL.map((_, j) => slotT[j]).sort((x, y) => y - x).slice(0, 3).reduce((x, y) => x + y, 0) / all)} ของแชตทั้งวัน)</div>
+    <section class="card col">${cardH('ข้อแนะนำ')}<div class="col" style="gap:8px;font-size:14px">
+      <div>• ช่วงที่แชตเข้ามากที่สุด (ควรมีแอดมินออนไลน์ครบ · เลี่ยงพัก/ประชุม): <b>${SL.map((s, j) => [s, slotT[j]]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(z => z[0] + ' น.').join(', ')}</b> (รวม ${pct0(SL.map((_, j) => slotT[j]).sort((x, y) => y - x).slice(0, 3).reduce((x, y) => x + y, 0) / all)} ของแชตทั้งวัน)</div>
       <div>• ช่วงกลางคืน 0–6 น. มีแชต ${pct0((slotT[0] + slotT[1]) / all)} ของทั้งวัน — ตั้งข้อความตอบกลับอัตโนมัติ + รับเรื่องต่อช่วงเช้า</div>
-      <div>• จำนวนคนในกะจริงยังไม่ได้เชื่อม (รอสเตอร์มีแค่วันหยุด/วันลา) — เมื่อใส่ตารางกะ ระบบจะแสดงกรอบแดงช่วงที่เกิน 25 แชตต่อแอดมิน</div></div></section>`;
+      <div>• ใช้ประกอบการเลือกเวลาพัก · วันหยุด/วันลาของแอดมิน (จากรอสเตอร์) และเวลายิงบรอดแคสต์ให้ตรงช่วงที่ลูกค้าทักเยอะ</div></div></section>`;
 }
 
 /* ================= เทียบรายเดือน ================= */
