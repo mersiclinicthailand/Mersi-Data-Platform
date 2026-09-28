@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Mersi Dashboard</title>
-<meta name="theme-color" content="#E8EBE1">
+<title>Mersi Performance Center</title>
+<meta name="theme-color" content="#FFFFFF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -15,122 +15,156 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
-:root{--bg:#F5F4EE;--card:#FFFFFF;--line:#E4E2D8;--ink:#2F3A2F;--mute:#7A8275;--sage:#6B7757;--brand:#8B9677;--sage2:#E8EBE1;--gold:#B89B5E;
-  --good:#2E7D4F;--goodbg:#E3F1E8;--ok:#7A9A3A;--okbg:#EEF3DE;--warn:#B7791F;--warnbg:#FBF1DD;--bad:#B23A3A;--badbg:#F8E3E1;--r:14px}
-[hidden]{display:none!important}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai',system-ui,sans-serif;font-size:15px;-webkit-text-size-adjust:100%}
-header{position:sticky;top:0;z-index:5;background:var(--sage2);border-bottom:1px solid var(--line);padding:10px 16px}
-.hrow{display:flex;align-items:center;gap:10px;max-width:1180px;margin:0 auto}
-.brand{display:flex;align-items:flex-end;gap:6px;white-space:nowrap}.blogo{height:26px;width:auto;display:block}.brand small{color:var(--gold);font-weight:500;font-size:12px;margin-left:4px}
-.who{margin-left:auto;font-size:12px;color:var(--mute);text-align:right;line-height:1.3;min-width:0;overflow:hidden;text-overflow:ellipsis}
-.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 10px;border-radius:99px;background:#fff;border:1px solid var(--line);white-space:nowrap}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--good)}.dot.warn{background:var(--warn)}.dot.bad{background:var(--bad)}
-main{max-width:1180px;margin:0 auto;padding:12px 16px 90px}
-.filters{display:flex;flex-direction:column;gap:8px;margin:2px 0 6px}
-.presets{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;scrollbar-width:none}.presets::-webkit-scrollbar{display:none}
-.presets button{font:inherit;font-size:13px;white-space:nowrap;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:99px;padding:7px 13px;cursor:pointer}
-.presets button.on{background:var(--sage);border-color:var(--sage);color:#fff}
-.frow{display:grid;grid-template-columns:.9fr 1.2fr 1.2fr;gap:8px}.frow .pg{grid-column:1/-1}
-@media(min-width:640px){.frow{grid-template-columns:110px 150px 150px 1fr}.frow .pg{grid-column:auto}}
-.rrow{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}.rrow span{color:var(--mute)}
-select,input[type=date]{font:inherit;font-size:14px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);min-height:40px;width:100%;-webkit-appearance:none;appearance:none}
-select{background-image:linear-gradient(45deg,transparent 50%,#7A8275 50%),linear-gradient(135deg,#7A8275 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:28px}
-.seg{display:flex;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;width:max-content;max-width:100%}
-.seg button{font:inherit;font-size:13px;border:0;background:none;padding:8px 12px;color:var(--mute);min-height:38px;cursor:pointer}
-.seg button.on{background:var(--sage);color:#fff}
-.attr{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--mute)}
-.attr .seg button{font-size:12px;padding:6px 10px;min-height:34px}
-h2{font-size:15px;margin:22px 0 10px;font-weight:600;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}h2 small{font-weight:400;color:var(--mute);font-size:12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px}
-.grid2,.grid3{display:grid;grid-template-columns:1fr;gap:10px}.grid6{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-@media(min-width:720px){.grid2{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr 1fr}.grid3>:first-child{grid-column:1/-1}.grid6{grid-template-columns:repeat(3,1fr)}}
-@media(min-width:1080px){.grid6{grid-template-columns:repeat(4,1fr)}.grid3{grid-template-columns:1fr 1fr 1fr}.grid3>:first-child{grid-column:auto}}
-.tgt .lbl{font-size:13px;color:var(--mute)}.tgt .big{font-size:24px;font-weight:700;margin:2px 0}.tgt .of{font-size:13px;color:var(--mute);font-weight:400}
-.bar{height:10px;border-radius:99px;background:#EFEDE4;position:relative;overflow:hidden;margin:8px 0}
-.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px}.bar b{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);opacity:.5}
-.tgt .meta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--mute)}.tgt .meta strong{color:var(--ink);font-weight:600}
-.kpi .lbl{font-size:12.5px;color:var(--mute)}.kpi .cap{display:block;font-size:10.5px;color:var(--mute);opacity:.85;margin-top:1px;line-height:1.3}.kpi .v{font-size:21px;font-weight:700;margin:3px 0 2px;white-space:nowrap}
-.kpi .sub{font-size:12px;color:var(--mute);min-height:16px}.d{font-size:12px;font-weight:600;padding:1px 7px;border-radius:99px;display:inline-block;margin-top:4px}
-.d.up{background:var(--goodbg);color:var(--good)}.d.dn{background:var(--badbg);color:var(--bad)}.d.na{background:#F0EFE9;color:var(--mute);font-weight:500}
-.roas{font-weight:700}.r4{color:var(--good)}.r3{color:var(--ok)}.r2{color:var(--warn)}.r1{color:var(--bad)}
-.pill{font-size:11.5px;padding:2px 8px;border-radius:99px;font-weight:600}.p4{background:var(--goodbg);color:var(--good)}.p3{background:var(--okbg);color:var(--ok)}.p2{background:var(--warnbg);color:var(--warn)}.p1{background:var(--badbg);color:var(--bad)}
-.chartbox{position:relative;height:250px}
-table{width:100%;border-collapse:collapse;font-size:13.5px}th{font-weight:500;color:var(--mute);font-size:12px;text-align:right;padding:6px;border-bottom:1px solid var(--line)}
-td{padding:9px 6px;border-bottom:1px solid #F0EEE6;text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}
-.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.sec-h{font-size:12.5px;font-weight:600;margin:4px 0 6px}.sec-h.g{color:var(--good)}.sec-h.b{color:var(--bad)}
-.more{font:inherit;font-size:13px;color:var(--sage);background:none;border:0;padding:10px 0 0;cursor:pointer}
-.todo{list-style:none;margin:0;padding:0}.todo li{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #F0EEE6;font-size:14px;line-height:1.45}.todo li:last-child{border:0}
-.todo .ic{flex:0 0 22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700}
-.ic.bad{background:var(--badbg);color:var(--bad)}.ic.warn{background:var(--warnbg);color:var(--warn)}.ic.ok{background:var(--goodbg);color:var(--good)}
-.adm{display:flex;align-items:center;gap:10px;padding:8px 0}.av{width:34px;height:34px;border-radius:50%;background:var(--sage2);display:grid;place-items:center;font-weight:600;color:var(--sage)}
-.adm .n{font-weight:600}.adm .s{font-size:12px;color:var(--mute)}.adm .amt{margin-left:auto;font-weight:600}
-.note{font-size:12px;color:var(--mute);margin-top:18px;line-height:1.6}
-.approx{font-size:11px;color:var(--warn);margin-left:4px}
-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:6}
-nav a{font-size:11px;color:var(--mute);text-decoration:none;text-align:center;padding:4px 8px;flex:1}nav a.on{color:var(--sage);font-weight:600}nav a span{display:block;font-size:18px;line-height:1.1}nav a.soon{opacity:.45}
-@media(min-width:900px){nav{top:0;bottom:0;right:auto;width:188px;flex-direction:column;justify-content:flex-start;gap:2px;border-top:0;border-right:1px solid var(--line);padding:76px 10px 16px;z-index:4}nav a{flex:0 0 auto;display:flex;align-items:center;gap:10px;text-align:left;font-size:14px;padding:10px 12px;border-radius:10px;white-space:nowrap}nav a span{display:inline;font-size:16px;width:20px;text-align:center}nav a.on{background:var(--sage2)}nav a:not(.soon):hover{background:#F2F1EA}main{margin-left:188px;margin-right:0;padding-left:28px;padding-bottom:40px}header .hrow{max-width:none}}@media(min-width:1400px){main{margin-left:max(188px,calc((100vw - 1180px)/2))}}
+/* ===== Mersi Performance Center V2.1 — design tokens (ตามไฟล์ดีไซน์) ===== */
+:root{--bg:#F4F2EA;--card:#FFFFFF;--line:#E3DECB;--line2:#EEEADB;--soft:#F7F5EE;--ink:#2B2D25;--mute:#666858;--mute2:#8A8C7E;
+  --sage:#5E6F50;--sage-d:#3F4D35;--sage-l:#E8EDDF;--link:#4F5F42;--inp:#D6D0BA;
+  --good:#2F5B2A;--goodbg:#E1ECDA;--bad:#A1342A;--badbg:#F7E1DC;--warn:#7A4F0E;--warnbg:#F6E9CC;--amber:#8A5A12;--clay:#C0694F;--gold:#C9A24A;
+  --serif:'Noto Serif Thai',Georgia,serif;--r:14px}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai',system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.45;-webkit-text-size-adjust:100%}
+a{color:var(--link)}button{font:inherit}
+.num{font-variant-numeric:tabular-nums}
+.sub{font-size:13px;color:var(--mute)}.mute2{color:var(--mute2)}
+.h3{margin:0;font-size:18px;font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.real,.mock,.tag{font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;white-space:nowrap;display:inline-block}
+.real{color:var(--good);background:var(--goodbg)}.mock{color:var(--warn);background:var(--warnbg)}
+.tag{padding:3px 10px;text-align:center}.tag.bad{background:var(--badbg);color:var(--bad)}.tag.good{background:var(--goodbg);color:var(--good)}.tag.warn{background:var(--warnbg);color:var(--warn)}
 
-.who{margin-left:auto}
-.ubtn{font:inherit;display:flex;align-items:center;gap:8px;background:none;border:0;cursor:pointer;color:var(--ink);padding:2px;text-align:right}
+/* ---- หัวเว็บ ---- */
+.top{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:28px;padding:0 40px;height:72px}
+.brand{display:flex;align-items:center;gap:10px;white-space:nowrap}.brand img{height:30px;width:auto;display:block}.brand .bs{font-size:13px;color:var(--mute)}
+.tabs{display:flex;gap:26px;flex:1;height:72px;overflow-x:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tabs a{text-decoration:none;padding:25px 2px 21px;font-size:15px;color:var(--mute);font-weight:500;border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer}
+.tabs a.on{color:var(--ink);font-weight:600;border-bottom-color:var(--sage)}.tabs a.soon{opacity:.45;cursor:default}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--good);background:var(--goodbg);padding:8px 14px;border-radius:999px;white-space:nowrap;border:0}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--good)}.chip.warn{color:var(--warn);background:var(--warnbg)}.chip.warn .dot{background:var(--warn)}.chip.bad{color:var(--bad);background:var(--badbg)}.chip.bad .dot{background:var(--bad)}
+.per{display:none;background:var(--soft);color:var(--ink);cursor:pointer;border:1px solid var(--line)}
+.who{position:relative}.ubtn{display:flex;align-items:center;gap:8px;background:none;border:0;cursor:pointer;color:var(--ink);padding:2px;text-align:right}
 .ubtn .t{font-size:12px;line-height:1.25;color:var(--mute)}.ubtn .t b{display:block;color:var(--ink);font-weight:600;font-size:13px}
-.ubtn .av2{width:32px;height:32px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:600}
-.menu{position:absolute;right:16px;top:54px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.08);min-width:210px;z-index:20;overflow:hidden}
-.menu button{display:block;width:100%;text-align:left;font:inherit;font-size:14px;padding:12px 16px;border:0;background:none;color:var(--ink);cursor:pointer}
-.menu button+button{border-top:1px solid #F0EEE6}.menu .danger{color:var(--bad)}
-header{padding-top:calc(10px + env(safe-area-inset-top))}
+.av2{width:34px;height:34px;border-radius:50%;background:var(--sage);color:#fff;display:grid;place-items:center;font-weight:600}
+.menu{position:absolute;right:0;top:48px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.08);min-width:210px;z-index:30;overflow:hidden}
+.menu button{display:block;width:100%;text-align:left;font-size:14px;padding:12px 16px;border:0;background:none;color:var(--ink);cursor:pointer}.menu button+button{border-top:1px solid var(--line2)}.menu .danger{color:var(--bad)}
+
+/* ---- แถบตัวกรอง ---- */
+.fbar{background:#fff;border-bottom:1px solid var(--line);padding:14px 40px;display:flex;gap:20px;align-items:flex-end;flex-wrap:wrap}
+.fl{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--mute);font-weight:500;min-width:0}
+.fr2{display:flex;gap:6px}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{height:44px;padding:0 14px;border:1px solid var(--inp);border-radius:999px;background:#fff;font-size:14px;color:var(--ink);cursor:pointer;white-space:nowrap}
+.pill.on{background:var(--sage);border-color:var(--sage);color:#fff}
+.pill.sm{height:36px;font-size:13px;padding:0 12px}
+select,input[type=date]{height:44px;border:1px solid var(--inp);border-radius:10px;padding:0 34px 0 12px;font:inherit;font-size:14px;color:var(--ink);background:#fff;min-width:120px;-webkit-appearance:none;appearance:none}
+input[type=date]{padding:0 10px}
+select{background-image:linear-gradient(45deg,transparent 50%,#666858 50%),linear-gradient(135deg,#666858 50%,transparent 50%);background-position:calc(100% - 17px) 50%,calc(100% - 12px) 50%;background-size:5px 5px;background-repeat:no-repeat}
+
+/* ---- เนื้อหา ---- */
+main{padding:28px 40px 48px;display:flex;flex-direction:column;gap:20px;max-width:1520px}
+.ph{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ph h1{margin:0;font-family:var(--serif);font-size:30px;font-weight:700;line-height:1.3}
+.ph .bd{display:flex;gap:8px;flex-wrap:wrap}
+.stabs{display:flex;gap:28px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}.stabs::-webkit-scrollbar{display:none}
+.stabs a{text-decoration:none;padding:10px 2px;font-size:15px;color:var(--mute);font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;cursor:pointer}
+.stabs a.on{color:var(--ink);font-weight:600;border-bottom-color:var(--sage)}
+.ch{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.col{display:flex;flex-direction:column;gap:14px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.g32{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:20px}
+.g112{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,2fr);gap:20px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.kpis.k8{grid-template-columns:repeat(4,minmax(0,1fr))}
+.kc{padding:18px;display:flex;flex-direction:column;gap:6px}
+.kc .v{font-size:26px;font-weight:700;line-height:1.2;white-space:nowrap}.kc .s2{font-size:13px;color:var(--mute2)}
+.dl{font-size:13px;font-weight:600}.dl.up{color:var(--good)}.dl.dn{color:var(--bad)}.dl.na{color:var(--mute2);font-weight:500}
+.tbar{position:relative;height:14px;background:var(--line2);border-radius:999px}.tbar i{display:block;height:14px;border-radius:999px;background:var(--sage)}
+.tbar b{position:absolute;top:-4px;width:2px;height:22px;background:var(--ink)}
+.sbar{height:8px;background:var(--line2);border-radius:99px;display:block;flex:1}.sbar i{display:block;height:8px;border-radius:99px}
+.big{font-size:30px;font-weight:700}
+.row3{display:grid;grid-template-columns:90px minmax(0,1fr) 190px;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line2)}.row3:last-child{border-bottom:0}
+.mini{background:var(--soft);border-radius:10px;padding:14px}.mini .v{font-size:22px;font-weight:700}
+.arow{display:grid;grid-template-columns:28px minmax(0,1fr) 54px 150px;gap:10px;align-items:center}
+.lnk{font-size:14px;font-weight:600;color:var(--link);cursor:pointer;background:none;border:0;padding:0;text-align:left}
+.brl{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line2);font-size:14px}.brl:last-child{border-bottom:0}
+/* ตาราง */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tb{width:100%;border-collapse:collapse;font-size:14px}
+.tb th{font-size:12px;font-weight:500;color:var(--mute);text-align:right;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tb td{padding:10px;border-bottom:1px solid var(--line2);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tb th:first-child,.tb td:first-child{text-align:left}.tb .l{text-align:left}
+.tb tr.md td{background:var(--soft);font-weight:600}.tb tr.gh td{background:var(--soft);color:var(--sage-d);font-weight:600;font-size:12px;padding:7px 10px}
+.tb tr.dim td{color:var(--mute2)}.tb tr.ck{cursor:pointer}.tb tr.ck:hover td{background:#FAF9F4}
+.stk th:first-child,.stk td:first-child{position:sticky;left:0;background:#fff;z-index:1;box-shadow:1px 0 0 var(--line2)}
+.stk tr.md td:first-child,.stk tr.gh td:first-child{background:var(--soft)}
+.avi{width:32px;height:32px;flex-shrink:0;border-radius:50%;background:var(--sage-l);color:var(--sage-d);display:inline-grid;place-items:center;font-weight:700;font-size:13px}
+.an{display:flex;align-items:center;gap:10px}.an b{font-weight:600}.an .sub{font-size:12px}
+.sc{display:flex;align-items:center;gap:10px;min-width:130px}.sc b{width:26px}
+.c-g{color:var(--good)}.c-b{color:var(--bad)}.c-w{color:var(--amber)}
+.rc{font-weight:700;border-radius:6px;padding:3px 8px;display:inline-block;min-width:52px;text-align:center}
+.rc4{background:#D5E5CC;color:var(--good)}.rc3{background:#E7EFD9;color:#4E6B2E}.rc2{background:var(--warnbg);color:var(--warn)}.rc1{background:var(--badbg);color:var(--bad)}
+.lg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mute)}.lg span{display:inline-flex;align-items:center;gap:6px}.lg i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.help{display:flex;flex-direction:column;gap:4px;padding:10px 12px;background:#FBF3EF;border-radius:10px}.help .n{font-size:13px;color:#6B3A2E}
+.hm{display:grid;grid-template-columns:44px repeat(8,minmax(0,1fr)) 56px;gap:4px;font-size:12px}
+.hm span{height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px}.hm .hd{height:auto;color:var(--mute)}.hm .dn{justify-content:flex-start;color:var(--mute)}
+.note{font-size:12.5px;color:var(--mute);line-height:1.7}
+.approx{font-size:12px;color:var(--warn);font-weight:600}
+.chartbox{position:relative;height:260px}
+.empty{padding:28px;text-align:center;color:var(--mute)}
+/* สาขา */
+.blist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.bcard{cursor:pointer;display:flex;flex-direction:column;gap:8px;padding:18px}.bcard:hover{border-color:var(--sage)}
+.bcard .top2{display:flex;align-items:baseline;gap:8px}.bcard .nm{font-weight:600;font-size:16px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bcard .pc{font-weight:700;font-size:16px}.bcard .amt{font-size:22px;font-weight:700}
+.bcard .rw{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--mute)}.bcard .rw b{color:var(--ink);font-weight:600}
+/* แอดมินรายบุคคล */
+.prof{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:20px;align-items:center}
+.pav{width:96px;height:96px;border-radius:50%;background:var(--sage-l);color:var(--sage-d);display:grid;place-items:center;font-size:36px;font-weight:700;font-family:var(--serif)}
+.score{text-align:center}.score .v{font-size:48px;font-weight:700;line-height:1;font-family:var(--serif)}
+.dim{display:grid;grid-template-columns:150px minmax(0,1fr) 40px;gap:10px;align-items:center;font-size:14px}
+.dim .sbar{position:relative}.dim .sbar u{position:absolute;left:70%;top:-3px;width:2px;height:14px;background:var(--mute2)}
+.cmpk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cmpk .mini .s{font-size:12px;margin-top:2px}
+/* ล็อกอิน / โหลด */
 .screen{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px 16px}
-.login{width:100%;max-width:360px}
-.login .logo{width:180px;max-width:70%;height:auto;display:block;margin:0 auto 18px}.login .logo.sq{width:72px;height:72px;border-radius:18px}
-.login h1{text-align:center;font-size:20px;margin:0 0 4px;color:var(--sage)}.login p.sub{text-align:center;color:var(--mute);font-size:13px;margin:0 0 20px}
+.login{width:100%;max-width:380px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:32px 28px}
+.login .logo{width:180px;max-width:70%;height:auto;display:block;margin:0 auto 14px}.login .logo.sq{width:72px;height:72px;border-radius:18px}
+.login h1{text-align:center;font-family:var(--serif);font-size:22px;margin:0 0 4px;color:var(--sage)}.login p.sub{text-align:center;margin:0 0 20px}
 .fld{display:block;margin-bottom:12px}.fld span{display:block;font-size:13px;color:var(--mute);margin-bottom:4px}
-.fld input{font:inherit;font-size:16px;width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink)}
-.pw{position:relative}.pw button{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--mute);font:inherit;font-size:13px;cursor:pointer;padding:6px}
-.btn{font:inherit;font-size:16px;font-weight:600;width:100%;padding:12px;border-radius:10px;border:0;background:var(--sage);color:#fff;cursor:pointer;min-height:48px}
+.fld input{font:inherit;font-size:16px;width:100%;padding:12px;border-radius:10px;border:1px solid var(--inp);background:#fff;color:var(--ink)}
+.pw{position:relative}.pw button{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--mute);font-size:13px;cursor:pointer;padding:6px}
+.btn{font-size:16px;font-weight:600;width:100%;padding:12px;border-radius:10px;border:0;background:var(--sage);color:#fff;cursor:pointer;min-height:48px}
 .btn:disabled{opacity:.6}.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:500}
 .msg{font-size:13px;margin:10px 0 0;min-height:18px;text-align:center}.msg.err{color:var(--bad)}.msg.ok{color:var(--good)}
-.hint{position:fixed;left:12px;right:12px;bottom:calc(70px + env(safe-area-inset-bottom));background:var(--ink);color:#fff;border-radius:12px;padding:12px 40px 12px 14px;font-size:13px;line-height:1.5;z-index:30}
+.spin{width:28px;height:28px;border:3px solid var(--sage-l);border-top-color:var(--sage);border-radius:50%;animation:s .8s linear infinite;margin:0 auto 10px}@keyframes s{to{transform:rotate(360deg)}}
+.modal{position:fixed;inset:0;background:rgba(43,45,37,.35);display:grid;place-items:center;z-index:40;padding:16px}.modal .card{width:100%;max-width:380px}
+.hint{position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));background:var(--ink);color:#fff;border-radius:12px;padding:12px 40px 12px 14px;font-size:13px;line-height:1.5;z-index:30}
 .hint button{position:absolute;right:6px;top:6px;background:none;border:0;color:#fff;font-size:18px;cursor:pointer;padding:4px 8px}
-.modal{position:fixed;inset:0;background:rgba(47,58,47,.35);display:grid;place-items:center;z-index:40;padding:16px}
-.modal .card{width:100%;max-width:360px}
-.spin{width:28px;height:28px;border:3px solid var(--sage2);border-top-color:var(--sage);border-radius:50%;animation:s .8s linear infinite;margin:0 auto 10px}@keyframes s{to{transform:rotate(360deg)}}
-.offline{background:var(--warnbg);color:var(--warn)}
+.bnav{display:none}
 
-nav a{cursor:pointer}
-.bsum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.bsum .card{padding:12px}.bsum .n{font-size:20px;font-weight:700}.bsum .l{font-size:12px;color:var(--mute)}
-.sortbar{display:flex;gap:6px;overflow-x:auto;margin:12px 0 10px;scrollbar-width:none}.sortbar::-webkit-scrollbar{display:none}
-.sortbar button{font:inherit;font-size:12.5px;white-space:nowrap;border:1px solid var(--line);background:#fff;color:var(--mute);border-radius:99px;padding:6px 12px;cursor:pointer}.sortbar button.on{background:var(--ink);border-color:var(--ink);color:#fff}
-.blist{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:720px){.blist{grid-template-columns:1fr 1fr}}@media(min-width:1080px){.blist{grid-template-columns:1fr 1fr 1fr}}
-.bcard{cursor:pointer;position:relative}.bcard .top{display:flex;align-items:baseline;gap:8px}.bcard .rk{font-size:12px;color:var(--mute);min-width:22px}
-.bcard .nm{font-weight:600;font-size:15px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bcard .pc{font-weight:700;font-size:15px}
-.bcard .amt{font-size:20px;font-weight:700;margin:4px 0 0}.bcard .amt small{font-size:12px;color:var(--mute);font-weight:400}
-.bcard .row{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--mute);margin-top:6px}.bcard .row b{color:var(--ink);font-weight:600}
-.bcard .go{position:absolute;right:12px;bottom:10px;color:var(--mute);font-size:12px}
-.pc.g{color:var(--good)}.pc.w{color:var(--warn)}.pc.b{color:var(--bad)}
-.mobar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:0 0 12px}.mobar .more{padding:0;margin-left:auto}
-.mx{padding:4px 0}.mx table{font-size:13px}.mx th,.mx td{padding:7px 10px}.mx th:first-child,.mx td:first-child{position:sticky;left:0;background:#fff;z-index:1;min-width:132px;box-shadow:1px 0 0 var(--line)}
-.mx tr.gh td{font-size:12px;font-weight:600;color:var(--sage);background:var(--sage2);padding:6px 10px}.mx tr.gh td:first-child{background:var(--sage2)}
-.mx tr.tot td{font-weight:600;border-top:1px solid var(--line)}.mx tr.dim td{color:var(--mute)}.mx td small{font-size:10.5px;color:var(--mute)}
-.md{font-size:10.5px;font-weight:600;line-height:1.2}.md.up{color:var(--good)}.md.dn{color:var(--bad)}
-.mx td.pc{font-weight:700}
-.sc{font-size:13px;font-weight:700;padding:2px 8px;border-radius:99px;margin-right:6px}.sc.g{background:var(--goodbg);color:var(--good)}.sc.w{background:var(--warnbg);color:var(--warn)}.sc.b{background:var(--badbg);color:var(--bad)}
-.heat td{text-align:center}.heat td:first-child{text-align:left}
-
-.pgl{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:720px){.pgl{grid-template-columns:1fr 1fr}}
-.pcard .top{display:flex;align-items:baseline;gap:8px}.pcard .nm{font-weight:600;flex:1}.pcard .sh{font-size:12px;color:var(--mute)}
-.pcard .big{font-size:19px;font-weight:700;margin-top:2px}.pcard .row{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--mute);margin-top:6px}.pcard .row b{color:var(--ink);font-weight:600}
-.crtabs{display:flex;gap:6px;overflow-x:auto;margin:0 0 10px;scrollbar-width:none}.crtabs::-webkit-scrollbar{display:none}
-.crtabs button{font:inherit;font-size:13px;white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 12px;cursor:pointer;color:var(--ink)}
-.crtabs button.on{color:#fff}.crtabs .Kill.on{background:var(--bad);border-color:var(--bad)}.crtabs .Scale.on{background:var(--good);border-color:var(--good)}.crtabs .Refresh.on{background:var(--warn);border-color:var(--warn)}.crtabs .Keep.on{background:var(--sage);border-color:var(--sage)}
-.crl{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:720px){.crl{grid-template-columns:1fr 1fr}}
-.cr{display:flex;gap:12px}.cr img{width:72px;height:72px;object-fit:cover;border-radius:10px;background:var(--sage2);flex:0 0 72px}
-.cr .ct{font-size:13.5px;font-weight:600;line-height:1.4}.cr .cm{font-size:12px;color:var(--mute);margin-top:2px}.cr .cw{font-size:12.5px;margin-top:6px;line-height:1.45}.cr .cw b{font-weight:600}
-
-.alist{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:720px){.alist{grid-template-columns:1fr 1fr}}@media(min-width:1080px){.alist{grid-template-columns:1fr 1fr 1fr}}
-.acard .top{display:flex;align-items:center;gap:10px}.acard .av{width:38px;height:38px;border-radius:50%;background:var(--sage2);display:grid;place-items:center;font-weight:600;color:var(--sage);flex:0 0 38px}
-.acard .nm{font-weight:600;flex:1}.acard .rk{font-size:12px;color:var(--mute)}.acard .amt{font-size:19px;font-weight:700;margin-top:6px}.acard .amt small{font-size:12px;color:var(--mute);font-weight:400}
-.acard .row{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--mute);margin-top:6px}.acard .row b{color:var(--ink);font-weight:600}
+/* ---- จอกลาง ---- */
+@media(max-width:1280px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.blist{grid-template-columns:repeat(2,minmax(0,1fr))}.g112{grid-template-columns:1fr 1fr}.g112>:last-child{grid-column:1/-1}}
+@media(max-width:1100px){.top{gap:18px;padding:0 20px}.tabs{gap:18px}.brand .bs{display:none}.fbar,main{padding-left:20px;padding-right:20px}.g32,.g2{grid-template-columns:1fr}}
+/* ---- มือถือ (ตามดีไซน์มือถือ) ---- */
+@media(max-width:899px){
+  .top{height:auto;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;gap:10px}
+  .brand img{height:26px}.tabs,#stat,.ubtn .t{display:none}.per{display:inline-flex;margin-left:auto;padding:7px 12px}
+  .fbar{padding:12px 16px;gap:12px;flex-direction:column;align-items:stretch}.fbar.mhide{display:none}
+  .fr2{flex-wrap:wrap}.fr2>*{flex:1 1 30%}select,input[type=date]{min-width:0;width:100%}
+  .pills{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.pills::-webkit-scrollbar{display:none}.pill{height:38px;font-size:13px;flex:0 0 auto}
+  main{padding:16px 16px calc(84px + env(safe-area-inset-bottom));gap:14px}
+  .ph h1{font-size:22px}.card{padding:16px}.h3{font-size:16px}
+  .kpis,.kpis.k8{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.kc{padding:14px}.kc .v{font-size:21px}
+  .g3{grid-template-columns:1fr;gap:18px}.g112{grid-template-columns:1fr}.blist{grid-template-columns:1fr}
+  .row3{grid-template-columns:78px minmax(0,1fr);}.row3>:last-child{grid-column:2;font-size:13px;color:var(--mute)}
+  .big{font-size:24px}.stabs{gap:20px}
+  .prof{grid-template-columns:auto minmax(0,1fr)}.prof .score{grid-column:1/-1;display:flex;align-items:center;gap:14px;text-align:left}.pav{width:72px;height:72px;font-size:28px}
+  .dim{grid-template-columns:110px minmax(0,1fr) 34px}.cmpk{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hm{grid-template-columns:30px repeat(8,minmax(0,1fr)) 40px;gap:2px;font-size:10.5px}.hm span{height:26px}
+  .bnav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);justify-content:space-around;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:20}
+  .bnav a{font-size:11px;color:var(--mute);text-align:center;padding:4px 6px;flex:1;cursor:pointer}.bnav a span{display:block;font-size:18px;line-height:1.1}.bnav a.on{color:var(--sage);font-weight:600}
+}
 </style>
 </head>
 <body>
@@ -139,7 +173,7 @@ nav a{cursor:pointer}
 <section class="screen" id="scLogin" hidden>
   <form class="login" id="fLogin" autocomplete="on">
     <img class="logo" src="logo.png" alt="Mersi Clinic" onerror="this.onerror=null;this.src='icon-192.png';this.classList.add('sq')">
-    <h1>Data Dashboard</h1>
+    <h1>Performance Center</h1>
     <p class="sub">เข้าสู่ระบบด้วยชื่อผู้ใช้และรหัสผ่าน</p>
     <label class="fld"><span>ชื่อผู้ใช้</span><input id="lUser" name="username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required></label>
     <label class="fld"><span>รหัสผ่าน</span><div class="pw"><input id="lPass" name="password" type="password" autocomplete="current-password" required><button type="button" id="lShow">แสดง</button></div></label>
@@ -154,49 +188,41 @@ nav a{cursor:pointer}
 
 <!-- แอป -->
 <div id="scApp" hidden>
-<header>
-  <div class="hrow">
-    <div class="brand"><img src="logo.png" alt="Mersi Clinic" class="blogo"><small>Data</small></div>
-    <span class="chip" id="stat"><i class="dot"></i>…</span>
-    <div class="who"><button class="ubtn" id="uBtn" aria-label="เมนูผู้ใช้"><span class="t"><b id="whoName"></b><span id="whoRole"></span></span><span class="av2" id="whoAv">M</span></button></div>
-  </div>
-  <div class="menu" id="uMenu" hidden>
-    <button id="mRefresh">↻ รีเฟรชข้อมูล</button>
-    <button id="mInstall" hidden>⬇ ติดตั้งเป็นแอป</button>
-    <button id="mPass">🔑 เปลี่ยนรหัสผ่าน</button>
-    <button id="mOut" class="danger">ออกจากระบบ</button>
+<header class="top">
+  <div class="brand"><img src="logo.png" alt="Mersi Clinic"><span class="bs">Performance Center · V2.1</span></div>
+  <nav class="tabs" id="nav" aria-label="หมวดหลัก">
+    <a data-v="ov">ภาพรวม</a><a data-v="mk">การตลาด</a><a class="soon" title="รอข้อมูล — เฟสถัดไป">การขาย &amp; ลูกค้า</a><a data-v="ad" id="navAdm">แอดมิน</a><a data-v="br">สาขา</a><a data-v="mo">เทียบรายเดือน</a>
+  </nav>
+  <span class="chip" id="stat"><i class="dot"></i>…</span>
+  <button class="chip per" id="perBtn"></button>
+  <div class="who"><button class="ubtn" id="uBtn" aria-label="เมนูผู้ใช้"><span class="t"><b id="whoName"></b><span id="whoRole"></span></span><span class="av2" id="whoAv">M</span></button>
+    <div class="menu" id="uMenu" hidden>
+      <button id="mRefresh">↻ รีเฟรชข้อมูล</button>
+      <button id="mInstall" hidden>⬇ ติดตั้งเป็นแอป</button>
+      <button id="mPass">🔑 เปลี่ยนรหัสผ่าน</button>
+      <button id="mOut" class="danger">ออกจากระบบ</button>
+    </div>
   </div>
 </header>
-<main>
-  <div class="filters">
-    <div class="presets" id="pre">
-      <button data-p="thism">เดือนนี้</button><button data-p="lastm">เดือนก่อน</button><button data-p="d7">7 วันล่าสุด</button>
-      <button data-p="d30">30 วันล่าสุด</button><button data-p="year">ปีนี้</button><button data-p="range">กำหนดช่วงวัน</button>
-    </div>
-    <div class="frow">
-      <select id="fY" aria-label="ปี"></select>
-      <select id="fM" aria-label="เดือน"></select>
-      <select id="fM2" aria-label="ถึงเดือน"></select>
-      <select id="fPage" class="pg" aria-label="เพจ/สาขา"></select>
-    </div>
-    <div class="rrow" id="rrow" hidden>
-      <input type="date" id="fFrom" aria-label="จากวันที่"><span>ถึง</span><input type="date" id="fTo" aria-label="ถึงวันที่">
-    </div>
-    <div class="attr" id="fAttrRow"><span>ยอดออนไลน์รายสาขา</span><div class="seg" id="fAttr"><button data-v="svc">ตามสาขาที่ใช้บริการ</button><button data-v="page">ตามเพจที่ลูกค้าทัก</button></div></div>
-    <div class="seg" id="fCmp"><button data-v="prev">เทียบช่วงก่อน</button><button data-v="yoy">เทียบปีก่อน</button><button data-v="none">ไม่เทียบ</button></div>
-  </div>
-  <div id="app"></div>
-</main>
-<nav>
-  <a class="on" id="navOv" data-v="ov"><span>◉</span>ภาพรวม</a><a id="navBr" data-v="br"><span>▦</span>สาขา</a><a id="navMk" data-v="mk"><span>◈</span>การตลาด</a>
-  <a id="navAdm" data-v="ad"><span>☺</span>แอดมิน</a><a id="navMo" data-v="mo"><span>≡</span>รายเดือน</a>
+<div class="fbar mhide" id="fbar">
+  <div class="fl" id="flMon"><span>เลือกเดือน</span><div class="fr2"><select id="fY" aria-label="ปี"></select><select id="fM" aria-label="เดือน"></select><select id="fM2" aria-label="ถึงเดือน"></select></div></div>
+  <div class="fl" id="flPre"><span>ช่วงวันที่</span><div class="pills" id="pre"></div></div>
+  <div class="fl" id="rrow" hidden><span>กำหนดช่วงวัน</span><div class="fr2"><input type="date" id="fFrom" aria-label="จากวันที่"><input type="date" id="fTo" aria-label="ถึงวันที่"></div></div>
+  <div class="fl" id="flCmp"><span>เปรียบเทียบกับ</span><div class="pills" id="fCmp"><button class="pill" data-v="none">ไม่เทียบ</button><button class="pill" data-v="prev">MoM</button><button class="pill" data-v="yoy">YoY</button></div></div>
+  <div class="fl" id="flPage"><span>สาขา / เพจ</span><select id="fPage"></select></div>
+  <div class="fl" id="fAttrRow"><span>ยอดออนไลน์รายสาขา</span><div class="pills" id="fAttr"><button class="pill" data-v="svc">ตามสาขาที่ใช้บริการ</button><button class="pill" data-v="page">ตามเพจที่ลูกค้าทัก</button></div></div>
+  <div class="fl" id="flMo" hidden><span>ช่วงเดือน</span><div class="pills" id="moN"><button class="pill" data-v="6">6 เดือนล่าสุด</button><button class="pill" data-v="ytd">ม.ค. – ปัจจุบัน</button><button class="pill" data-v="12">12 เดือนล่าสุด</button></div></div>
+</div>
+<main id="app"></main>
+<nav class="bnav" id="bnav" aria-label="เมนู">
+  <a data-v="ov"><span>◉</span>ภาพรวม</a><a data-v="mk"><span>◈</span>การตลาด</a><a data-v="br"><span>▦</span>สาขา</a><a data-v="ad" id="bnAdm"><span>☺</span>แอดมิน</a><a data-v="mo"><span>≡</span>รายเดือน</a>
 </nav>
 </div>
 
 <!-- เปลี่ยนรหัสผ่าน -->
 <div class="modal" id="pwModal" hidden>
   <form class="card" id="fPass">
-    <h2 style="margin-top:0">เปลี่ยนรหัสผ่าน</h2>
+    <h2 class="h3" style="margin-bottom:14px">เปลี่ยนรหัสผ่าน</h2>
     <label class="fld"><span>รหัสผ่านเดิม</span><input type="password" id="pOld" autocomplete="current-password" required></label>
     <label class="fld"><span>รหัสผ่านใหม่ (อย่างน้อย 6 ตัว)</span><input type="password" id="pNew" autocomplete="new-password" minlength="6" required></label>
     <label class="fld"><span>ยืนยันรหัสผ่านใหม่</span><input type="password" id="pNew2" autocomplete="new-password" minlength="6" required></label>
@@ -307,7 +333,7 @@ function init() {
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else setTimeout(init, 0);
 </script>
 <script>
-/* ================= Dashboard (ภาพรวม) ================= */
+/* ================= Dashboard V2.1 (ตามไฟล์ดีไซน์) ================= */
 function startDash(SNAP, ADM, BOOT) {
 
 /* ---------- helpers ---------- */
@@ -327,10 +353,10 @@ const dTH = d => (+d.slice(8)) + ' ' + TH_MON[+d.slice(5, 7) - 1];
 const rangeTH = (a, b) => a.slice(0, 7) === b.slice(0, 7) ? (a.slice(8) === '01' && (b === mEnd(b.slice(0, 7)) || b === SNAP.last && b.slice(0,7) === SNAP.cur)
     ? monTH(a.slice(0, 7)) + (b !== mEnd(b.slice(0, 7)) ? ` (1–${+b.slice(8)})` : '') : `${+a.slice(8)}–${dTH(b)} ${yBE(b.slice(0, 4)).slice(2)}`)
   : `${dTH(a)} ${yBE(a.slice(0, 4)).slice(2)} – ${dTH(b)} ${yBE(b.slice(0, 4)).slice(2)}`;
-const baht = n => '฿' + (Math.abs(n) >= 1e6 ? (n / 1e6).toFixed(2) + ' ล.' : Math.round(n || 0).toLocaleString('th-TH'));
-const int = n => Math.round(n || 0).toLocaleString('th-TH');
+const baht = n => '฿' + (Math.abs(n) >= 1e6 ? (n / 1e6).toFixed(2) + 'M' : Math.round(n || 0).toLocaleString('en-US'));
+const int = n => Math.round(n || 0).toLocaleString('en-US');
 const rLv = r => r >= 2 ? 4 : r >= 1.5 ? 3 : r >= 1 ? 2 : 1;
-const rTxt = r => ['', 'ขาดทุน', 'เสมอตัว', 'พอใช้', 'ดี'][rLv(r)];
+const rTxt = r => ['', 'ขาดทุนค่าแอด', 'ต่ำกว่าเกณฑ์', 'ผ่าน', 'ดีมาก'][rLv(r)];
 const minS = (a, b) => a < b ? a : b, maxS = (a, b) => a > b ? a : b;
 const yShift = (d, n) => { let s = (+d.slice(0, 4) + n) + d.slice(4); if (s.slice(5) === '02-29') s = s.slice(0, 8) + '28'; return s; };
 
@@ -340,7 +366,7 @@ const YEARS = [...new Set(MONTHS.map(m => m.slice(0, 4)))];
 
 /* ---------- ตัวเลขของช่วงวันใดๆ ----------
    เดือนที่อยู่ในช่วงเต็มเดือน → ใช้ยอดรายเดือน (ค่าแอดตาม TSM) · ไม่เต็มเดือน → รวมรายวัน · ไม่มีรายวัน → เฉลี่ยจากรายเดือน (≈) */
-function sumRange(a, b, pi) {
+function sumRange(a, b, pi, at) {
   const o = new Array(10).fill(0); let approx = false, has = false;
   if (!a || !b || b < a) return { o, approx, has };
   const addM_ = (mm, f) => { const x = mm.slice(); x[1] = x[1] || x[8]; x[3] = x[3] || x[9]; x[8] = x[9] = 0;   // แชต = Meta หรือ inbox ใหม่ (TSM) · บิล = บิลจริง หรือเคส (TSM)
@@ -362,7 +388,7 @@ function sumRange(a, b, pi) {
       x.forEach((v, i) => o[i] += v); if (hit) has = true;
     } else if (mm) { addM_(mm, f); approx = true; }
   }
-  if (pi >= 0 && SNAP.P[pi].b && S.attr !== 'page' && SNAP.MB) {                 // สาขา: ยอดออนไลน์ตามสาขาที่ใช้บริการ
+  if (pi >= 0 && SNAP.P[pi].b && (at || S.attr) !== 'page' && SNAP.MB) {                 // สาขา: ยอดออนไลน์ตามสาขาที่ใช้บริการ
     const v = svcRange(a, b, pi); if (v.ok) { o[2] = v.on; o[3] = v.bi; if (v.approx) approx = true; if (v.on) has = true; }
   }
   return { o, approx, has };
@@ -398,14 +424,18 @@ function target(a, b, pi) {
   return { on, br };
 }
 
+
 /* ---------- state ---------- */
-const S = { mode: 'month', y: CUR.slice(0, 4), m: CUR, from: '', to: '', page: -1, cmp: 'prev', showAllBr: false, preset: 'thism', view: 'ov', bsort: 'pct', ctab: 'Kill', attr: 'svc', asort: 'pct', mo: { n: 6, tab: 'kpi', bm: 'pBr' } };
-try { const p = JSON.parse(localStorage.getItem('mersi_ov2') || '{}'); if (p.cmp) S.cmp = p.cmp; if (p.attr === 'page') S.attr = 'page'; if (p.page != null && SNAP.P[p.page]) S.page = p.page; } catch (e) {}
+const TH_FULL = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const S = { mode: 'month', y: CUR.slice(0, 4), m: CUR, m2: '', from: '', to: '', page: -1, cmp: 'prev', preset: 'thism', view: 'ov', attr: 'svc',
+  asort: 'score', atab: 'team', aSel: null, bsort: 'pct', mtab: 'roas', mks: 'sp', mo: { n: 6, tab: 'kpi', bm: 'roas' }, fOpen: false };
+try { const p = JSON.parse(localStorage.getItem('mersi_ov3') || '{}'); if (p.cmp) S.cmp = p.cmp; if (p.page != null && SNAP.P[p.page]) S.page = p.page; if (p.attr === 'page') S.attr = 'page'; if (p.view && ['ov', 'mk', 'br', 'ad', 'mo'].includes(p.view)) S.view = p.view; } catch (e) {}
+if (S.view === 'ad' && !ADM) S.view = 'ov';
 
 function period() {
   if (S.mode === 'month') return [S.m + '-01', minS(mEnd(S.m), LAST)];
   if (S.mode === 'months') return [S.m + '-01', minS(mEnd(S.m2), LAST)];
-  if (S.mode === 'year') return [S.y + '-01-01', minS(S.y + '-12-31', LAST)];
+  if (S.mode === 'year') return [maxS(S.y + '-01-01', FIRST), minS(S.y + '-12-31', LAST)];
   let a = S.from || addD(LAST, -29), b = minS(S.to || LAST, LAST); if (a > b) [a, b] = [b, a]; return [maxS(a, FIRST), b];
 }
 function refPeriod(a, b) {
@@ -415,183 +445,213 @@ function refPeriod(a, b) {
   if (S.mode === 'month') { const pm = addM(S.m, -1); const full = b === mEnd(S.m); return [pm + '-01', full ? mEnd(pm) : pm + '-' + pad(Math.min(+b.slice(8), dim(pm)))]; }
   const n = nDays(a, b); return [addD(a, -n), addD(a, -1)];
 }
+const cmpLbl = () => S.cmp === 'yoy' || S.mode === 'year' ? 'YoY' : (S.mode === 'month' || S.mode === 'months') ? 'MoM' : 'ช่วงก่อน';
 
-/* ---------- filters ---------- */
+/* ---------- ตัวกรอง ---------- */
+const PRESETS = () => [['yday', 'เมื่อวาน'], ['d7', '7 วัน'], ['thism', `เดือนนี้ 1–${+LAST.slice(8)}`], ['lastm', 'เดือนก่อน'], ['ytd', 'ม.ค. – ปัจจุบัน'], ['d30', '30 วัน'], ['range', 'กำหนดเอง']];
 function fillFilters() {
-  $('fY').innerHTML = YEARS.slice().reverse().map(y => `<option value="${y}">${yBE(y)}</option>`).join('');
-  $('fY').value = S.y;
+  const v = S.view, mo = v === 'mo';
+  $('fY').innerHTML = YEARS.slice().reverse().map(y => `<option value="${y}">${yBE(y)}</option>`).join(''); $('fY').value = S.y;
   const ms = MONTHS.filter(m => m.slice(0, 4) === S.y).reverse();
-  $('fM').innerHTML = `<option value="year">ทั้งปี ${yBE(S.y)}</option>` + ms.map(m => `<option value="${m}">${TH_MON[+m.slice(5) - 1]}${m === CUR ? ' (เดือนนี้)' : ''}</option>`).join('');
+  $('fM').innerHTML = `<option value="year">ทั้งปี ${yBE(S.y)}</option>` + ms.map(m => `<option value="${m}">${TH_MON[+m.slice(5) - 1]} ${yBE(m.slice(0, 4))}${m === CUR ? ' (เดือนนี้)' : ''}</option>`).join('');
   $('fM').value = S.mode === 'year' ? 'year' : (S.mode === 'month' || S.mode === 'months') ? S.m : '';
   const from = S.mode === 'year' ? S.y + '-01' : S.m;
   $('fM2').innerHTML = '<option value="">ถึงเดือน…</option>' + MONTHS.filter(m => m > from).reverse().map(m => `<option value="${m}">ถึง ${monTH(m)}</option>`).join('');
   $('fM2').value = S.mode === 'months' ? S.m2 : '';
+  $('pre').innerHTML = PRESETS().map(([k, l]) => `<button class="pill${S.preset === k ? ' on' : ''}" data-p="${k}">${l}</button>`).join('');
   if ($('fPage').options.length === 0) {
     const P = SNAP.P.map((p, i) => ({ ...p, i })).filter(p => p.b || (SNAP.M[CUR] || {})[p.i] || (SNAP.M[addM(CUR, -1)] || {})[p.i]);
-    $('fPage').innerHTML = '<option value="-1">ทุกเพจ · ทุกสาขา</option>' + P.sort((x, y) => y.b - x.b || x.n.localeCompare(y.n, 'th')).map(p => `<option value="${p.i}">${esc(p.n)}</option>`).join('');
+    $('fPage').innerHTML = `<option value="-1">ทั้งหมด (${P.length})</option>` + P.sort((x, y) => y.b - x.b || x.n.localeCompare(y.n, 'th')).map(p => `<option value="${p.i}">${esc(p.c)} · ${esc(p.n)}</option>`).join('');
   }
   $('fPage').value = String(S.page);
-  const [a, b] = period(); $('fFrom').value = a; $('fTo').value = b;
-  $('fFrom').min = $('fTo').min = FIRST; $('fFrom').max = $('fTo').max = LAST;
-  $('rrow').hidden = S.mode !== 'range';
-  [...$('pre').children].forEach(x => x.classList.toggle('on', x.dataset.p === S.preset));
+  const [a, b] = period(); $('fFrom').value = a; $('fTo').value = b; $('fFrom').min = $('fTo').min = FIRST; $('fFrom').max = $('fTo').max = LAST;
   [...$('fCmp').children].forEach(x => x.classList.toggle('on', x.dataset.v === S.cmp));
+  $('fCmp').children[1].textContent = S.mode === 'month' || S.mode === 'months' ? 'MoM' : S.mode === 'year' ? 'YoY' : 'ช่วงก่อน';
+  $('fCmp').children[2].hidden = S.mode === 'year';
   [...$('fAttr').children].forEach(x => x.classList.toggle('on', x.dataset.v === S.attr));
-  $('fCmp').children[0].textContent = S.mode === 'months' ? 'เทียบช่วงก่อน' : S.mode === 'month' ? 'เทียบเดือนก่อน' : S.mode === 'year' ? 'เทียบปีก่อน' : 'เทียบช่วงก่อน';
-  $('fCmp').children[1].style.display = S.mode === 'year' ? 'none' : '';
+  [...$('moN').children].forEach(x => x.classList.toggle('on', x.dataset.v === String(S.mo.n)));
+  const vis = { flMon: !mo, flPre: !mo, flCmp: !mo, rrow: !mo && S.mode === 'range', flPage: v === 'ov' || (mo && S.mo.tab === 'kpi'), flMo: mo,
+    fAttrRow: !!SNAP.MB && (v === 'br' || (mo && S.mo.tab === 'br') || ((v === 'ov' || (mo && S.mo.tab === 'kpi')) && (S.page < 0 || SNAP.P[S.page].b))) };
+  Object.keys(vis).forEach(id => $(id).hidden = !vis[id]);
+  $('perBtn').textContent = (mo ? `เทียบรายเดือน · ${S.mo.n === 'ytd' ? 'ม.ค. – ปัจจุบัน' : S.mo.n + ' เดือน'}` : `${rangeTH(a, b)}${S.cmp !== 'none' ? ' · ' + cmpLbl() : ''}`) + (S.fOpen ? ' ▴' : ' ▾');
+  $('fbar').classList.toggle('mhide', !S.fOpen);
 }
+$('perBtn').onclick = () => { S.fOpen = !S.fOpen; fillFilters(); };
 $('pre').addEventListener('click', e => {
   const p = e.target.closest('button'); if (!p) return; S.preset = p.dataset.p;
-  if (p.dataset.p === 'thism') { S.mode = 'month'; S.m = CUR; }
-  else if (p.dataset.p === 'lastm') { S.mode = 'month'; S.m = addM(CUR, -1); }
-  else if (p.dataset.p === 'd7') { S.mode = 'range'; S.from = addD(LAST, -6); S.to = LAST; }
-  else if (p.dataset.p === 'd30') { S.mode = 'range'; S.from = addD(LAST, -29); S.to = LAST; }
-  else if (p.dataset.p === 'year') { S.mode = 'year'; S.y = CUR.slice(0, 4); }
+  if (S.preset === 'thism') { S.mode = 'month'; S.m = CUR; }
+  else if (S.preset === 'lastm') { S.mode = 'month'; S.m = addM(CUR, -1); }
+  else if (S.preset === 'yday') { S.mode = 'range'; S.from = S.to = LAST; }
+  else if (S.preset === 'd7') { S.mode = 'range'; S.from = addD(LAST, -6); S.to = LAST; }
+  else if (S.preset === 'd30') { S.mode = 'range'; S.from = addD(LAST, -29); S.to = LAST; }
+  else if (S.preset === 'ytd') { S.mode = 'year'; S.y = CUR.slice(0, 4); }
   else { const [a, b] = period(); S.mode = 'range'; S.from = a; S.to = b; }
   S.y = (S.mode === 'month' ? S.m : S.mode === 'range' ? S.to : S.y).slice(0, 4);
   go();
 });
-$('fY').addEventListener('change', e => { S.y = e.target.value; const ms = MONTHS.filter(m => m.slice(0, 4) === S.y); S.mode = 'month'; S.m = ms.includes(S.y + S.m.slice(4)) ? S.y + S.m.slice(4) : ms[ms.length - 1]; S.preset = ''; go(); });
-$('fM').addEventListener('change', e => { if (e.target.value === 'year') S.mode = 'year';
-  else { S.m = e.target.value; S.mode = S.mode === 'months' && S.m2 > S.m ? 'months' : 'month'; } S.preset = ''; go(); });
-$('fM2').addEventListener('change', e => { const v = e.target.value;
-  if (!v) { S.mode = S.mode === 'months' ? 'month' : S.mode; } else { if (S.mode === 'year') S.m = S.y + '-01'; S.m2 = v; S.mode = 'months'; }
-  S.preset = ''; go(); });
+$('fY').addEventListener('change', e => { S.y = e.target.value; const ms = MONTHS.filter(m => m.slice(0, 4) === S.y); S.mode = 'month'; S.m = ms.includes(S.y + S.m.slice(4)) ? S.y + S.m.slice(4) : ms[ms.length - 1]; go(); });
+$('fM').addEventListener('change', e => { if (e.target.value === 'year') S.mode = 'year'; else { S.m = e.target.value; S.mode = S.mode === 'months' && S.m2 > S.m ? 'months' : 'month'; } go(); });
+$('fM2').addEventListener('change', e => { const v = e.target.value; if (!v) { if (S.mode === 'months') S.mode = 'month'; } else { if (S.mode === 'year') S.m = S.y + '-01'; S.m2 = v; S.mode = 'months'; } go(); });
 $('fPage').addEventListener('change', e => { S.page = +e.target.value; go(); });
 ['fFrom', 'fTo'].forEach(id => $(id).addEventListener('change', () => { S.mode = 'range'; S.preset = 'range'; S.from = $('fFrom').value; S.to = $('fTo').value; go(); }));
 $('fCmp').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.cmp = b.dataset.v; go(); });
 $('fAttr').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.attr = b.dataset.v; go(); });
-
+$('moN').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.mo.n = b.dataset.v === 'ytd' ? 'ytd' : +b.dataset.v; go(); });
 function go() {
-  try { localStorage.setItem('mersi_ov2', JSON.stringify({ cmp: S.cmp, page: S.page, attr: S.attr })); } catch (e) {}
+  try { localStorage.setItem('mersi_ov3', JSON.stringify({ cmp: S.cmp, page: S.page, attr: S.attr, view: S.view })); } catch (e) {}
   if (S.mode === 'month') S.preset = S.m === CUR ? 'thism' : S.m === addM(CUR, -1) ? 'lastm' : '';
-  else if (S.mode === 'year') S.preset = S.y === CUR.slice(0, 4) ? 'year' : '';
-  fillFilters(); render();
+  else if (S.mode === 'year') S.preset = S.y === CUR.slice(0, 4) ? 'ytd' : '';
+  else if (S.mode === 'months') S.preset = '';
+  render();
 }
+function nav(v, extra) { if (v === 'ad' && !ADM) return; S.view = v; if (extra) Object.assign(S, extra); go(); window.scrollTo(0, 0); }
+['nav', 'bnav'].forEach(id => $(id).addEventListener('click', e => { const a = e.target.closest('a'); if (!a || !a.dataset.v) return; nav(a.dataset.v); }));
 
-/* ---------- render ---------- */
+/* ---------- ตัวช่วยแสดงผล ---------- */
 let chart;
-function delta(cur, ref, invert) {
+const pct0 = v => v == null || !isFinite(v) ? '—' : (v * 100).toFixed(0) + '%', pct1 = v => v == null || !isFinite(v) ? '—' : (v * 100).toFixed(1) + '%';
+const xR = v => v ? v.toFixed(2) + 'x' : '—';
+const rc = v => v ? `<span class="rc rc${rLv(v)}">${v.toFixed(2)}x</span>` : '<span class="mute2">—</span>';
+function dl(cur, ref, inv, lbl) {
   if (S.cmp === 'none') return '';
-  if (ref == null || !ref || (cur > 0 && ref > 0 && cur / ref > 20)) return '<span class="d na">— ไม่มีตัวเทียบ</span>';
-  const p = (cur - ref) / Math.abs(ref), up = p >= 0, good = invert ? !up : up;
-  return `<span class="d ${good ? 'up' : 'dn'}">${up ? '▲' : '▼'} ${Math.abs(p * 100).toFixed(1)}%</span>`;
+  if (ref == null || !ref || cur == null || (cur > 0 && ref > 0 && cur / ref > 20)) return '<span class="dl na">— ไม่มีตัวเทียบ</span>';
+  const p = (cur - ref) / Math.abs(ref), up = p >= 0, good = inv ? !up : up;
+  return `<span class="dl ${good ? 'up' : 'dn'}">${up ? '▲' : '▼'} ${Math.abs(p * 100).toFixed(1)}% ${lbl || cmpLbl()}</span>`;
+}
+function dlPt(cur, ref, inv) { if (S.cmp === 'none') return ''; if (cur == null || ref == null) return '<span class="dl na">— ไม่มีตัวเทียบ</span>';
+  const d = (cur - ref) * 100, up = d >= 0, good = inv ? !up : up; return `<span class="dl ${good ? 'up' : 'dn'}">${up ? '▲' : '▼'} ${Math.abs(d).toFixed(1)} pt</span>`; }
+function dlAbs(cur, ref, unit, inv, dig) { if (S.cmp === 'none') return ''; if (cur == null || ref == null || !ref) return '<span class="dl na">— ไม่มีตัวเทียบ</span>';
+  const d = cur - ref, up = d >= 0, good = inv ? !up : up; return `<span class="dl ${good ? 'up' : 'dn'}">${up ? '▲' : '▼'} ${Math.abs(d).toFixed(dig == null ? 1 : dig)} ${unit}${inv && !up ? ' (ดีขึ้น)' : ''}</span>`; }
+const kc = (l, v, s2, d) => `<div class="card kc"><span class="sub">${l}</span><span class="v num">${v}</span>${s2 ? `<span class="s2">${s2}</span>` : ''}${d || ''}</div>`;
+const ph = (t, sub, bd) => `<div class="ph"><div class="col" style="gap:4px"><h1>${esc(t)}</h1><span class="sub">${sub}</span></div><div class="bd">${(bd || []).filter(Boolean).join('')}</div></div>`;
+const cardH = (t, sub) => `<div class="ch"><h2 class="h3">${t}</h2>${sub ? `<span class="sub">${sub}</span>` : ''}</div>`;
+const empty = t => `<div class="card empty">${t}</div>`;
+function heatBg(v, lo, hi, inv) { if (!v || hi <= lo) return ''; let f = (v - lo) / (hi - lo); if (inv) f = 1 - f; return `background:rgba(94,111,80,${(0.05 + f * 0.28).toFixed(2)})`; }
+function spark(vs, inv) {
+  const v = vs.slice().reverse(), ok = v.filter(x => x != null && isFinite(x)); if (ok.length < 2) return '';
+  const lo = Math.min(...ok), hi = Math.max(...ok), w = 90, h = 26, n = v.length;
+  const pts = v.map((x, i) => x == null ? null : [i * (w - 4) / (n - 1) + 2, h - 3 - (hi > lo ? (x - lo) / (hi - lo) : .5) * (h - 6)]).filter(Boolean);
+  const last = pts[pts.length - 1], first = pts[0], up = v[v.length - 1] >= v.find(x => x != null), good = inv ? !up : up;
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline fill="none" stroke="${good ? '#5E6F50' : '#C0694F'}" stroke-width="1.8" points="${pts.map(p => p.map(z => z.toFixed(1)).join(',')).join(' ')}"/><circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.6" fill="${good ? '#5E6F50' : '#C0694F'}"/></svg>`;
+}
+function csvDown(name, rows) {
+  const s = '﻿' + rows.map(r => r.map(x => { x = x == null ? '' : String(x); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; }).join(',')).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([s], { type: 'text/csv;charset=utf-8' })); a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
 }
 function render() {
-  document.querySelectorAll('nav a[data-v]').forEach(x => x.classList.toggle('on', x.dataset.v === S.view));
-  const mo = S.view === 'mo';
-  $('fPage').style.display = S.view === 'ov' || (mo && S.mo.tab === 'kpi') ? '' : 'none';
-  ['pre', 'fY', 'fM', 'fM2', 'fCmp'].forEach(id => $(id).style.display = mo ? 'none' : '');
-  if (mo) $('rrow').hidden = true;
-  $('fAttrRow').style.display = SNAP.MB && (S.view === 'br' || (mo && S.mo.tab === 'br') || ((S.view === 'ov' || (mo && S.mo.tab === 'kpi')) && (S.page < 0 || SNAP.P[S.page].b))) ? '' : 'none';
-  if (mo) return renderMonthly();
-  if (S.view === 'br') return renderBranches();
-  if (S.view === 'mk') return renderMarketing();
-  if (S.view === 'ad') return ADM ? renderAdmins() : (S.view = 'ov', renderOverview());
-  renderOverview();
+  document.querySelectorAll('#nav a[data-v],#bnav a[data-v]').forEach(x => x.classList.toggle('on', x.dataset.v === S.view));
+  fillFilters();
+  if (chart) { chart.destroy(); chart = null; }
+  ({ br: renderBranches, mk: renderMarketing, ad: renderAdmins, mo: renderMonthly }[S.view] || renderOverview)();
+}
+
+/* ================= ภาพรวม ================= */
+function pulse() {
+  const e = LAST, s = addD(LAST, -3), pe = addD(e, -7), ps = addD(s, -7), out = [];
+  const rows = SNAP.P.map((p, i) => ({ p, i })).filter(x => x.p.b || x.p.c === 'TH').map(x => ({ x, k: kpis(sumRange(s, e, x.i, 'page').o), kp: kpis(sumRange(ps, pe, x.i, 'page').o) }))
+    .filter(r => r.k.spend >= 3000);
+  const mc = med(rows.map(r => r.k.cpc));
+  rows.forEach(({ x, k, kp }) => {
+    const nm = `${x.p.c} · ${x.p.n}`, det = `ROAS ${xR(k.roas)} · ฿${int(k.cpc)} ต่อแชต`;
+    if (k.roas < 1) out.push({ t: 'bad', l: 'แก้ด่วน', nm, det, act: k.roas < .6 ? 'หยุดชุดโฆษณาที่แพงสุด' : (mc && k.cpc > mc * 1.2) ? 'ลดงบหรือเปลี่ยนครีเอทีฟ' : 'ตรวจสคริปต์ปิดการขาย', o: k.roas });
+    else if (k.roas >= 2 && (!mc || k.cpc <= mc * 1.3)) out.push({ t: 'good', l: 'เพิ่มงบ', nm, det, act: 'เพิ่มงบ 20%', o: -k.roas });
+    else if (kp.roas && k.roas < kp.roas * .7) out.push({ t: 'warn', l: 'เฝ้าดู', nm, det, act: `ROAS ลดลง ${((1 - k.roas / kp.roas) * 100).toFixed(0)}% จากสัปดาห์ก่อน`, o: k.roas });
+  });
+  const ord = { bad: 0, warn: 1, good: 2 };
+  out.sort((a, b) => ord[a.t] - ord[b.t] || a.o - b.o);
+  const sys = [];
+  (SNAP.st || []).filter(x => x.status === 'FAIL').forEach(x => sys.push({ t: 'bad', l: 'ระบบ', nm: x.job === 'QA_MONTHLY' ? 'ตรวจยอดเทียบ TSM ไม่ผ่าน ±2%' : `ท่อข้อมูล ${x.job} ล้มเหลว`, det: String(x.at || ''), act: x.job === 'QA_MONTHLY' ? 'ดูแท็บ qa_monthly' : 'แจ้งทีม Digital' }));
+  if (nDays(LAST, SNAP.today) > 2) sys.push({ t: 'warn', l: 'ข้อมูล', nm: `ข้อมูลล่าสุดถึง ${dTH(LAST)}`, det: 'ยังไม่อัปเดตเกิน 1 วัน', act: 'ตรวจการตั้งเวลา / Run BUILD_AGG' });
+  return { items: sys.concat(out).slice(0, 7), s, e, ps, pe };
 }
 function renderOverview() {
-  const [a, b] = period(), pi = S.page, isCurMonth = S.mode === 'month' && S.m === CUR;
-  const R = sumRange(a, b, pi), K = kpis(R.o);
+  const [a, b] = period(), pi = S.page, R = sumRange(a, b, pi), K = kpis(R.o);
   const rp = refPeriod(a, b), RR = rp ? sumRange(rp[0], rp[1], pi) : null, KR = RR && RR.has ? kpis(RR.o) : null;
-  const pName = pi < 0 ? 'ทั้งเครือ' : SNAP.P[pi].n;
-  const ax = R.approx ? '<span class="approx">≈ ประมาณจากยอดรายเดือน</span>' : '';
-  let h = `<h2>${esc(rangeTH(a, b))} · ${esc(pName)} <small>${nDays(a, b)} วัน · ข้อมูลถึง ${dTH(LAST)}${rp ? ` · เทียบ ${esc(rangeTH(rp[0], rp[1]))}` : ''}</small>${ax}</h2>`;
-  if (!R.has) { $('app').innerHTML = h + '<div class="card">ยังไม่มีข้อมูลในช่วงนี้</div>'; drawChart(null); return; }
-
-  // เป้า
-  const full = S.mode === 'month' ? target(S.m + '-01', mEnd(S.m), pi) : target(a, b, pi);
-  const dayN = nDays(a, b), dimN = S.mode === 'month' ? dim(S.m) : dayN, pace = isCurMonth ? dayN / dimN : 1;
-  const cards = [['ยอดออนไลน์', K.online, full.on], ['ยอดหน้าสาขา', K.branch, full.br]];
-  if (pi < 0) cards.unshift(['ยอดขายรวม (ออนไลน์ + หน้าสาขา)', K.online + K.branch, full.on + full.br]);
-  h += `<div class="${cards.length > 2 ? 'grid3' : 'grid2'}">` + cards.map(([n, v, t]) => {
-    const pct = t ? v / t : 0, left = dimN - dayN;
-    const tl = S.mode === 'month' ? '' : S.mode === 'months' ? ` (เป้ารวม ${mDiff(S.m, S.m2) + 1} เดือน${b < mEnd(S.m2) ? ' · เดือนล่าสุดคิดตามวัน' : ''})` : ' (เป้าเฉลี่ยตามจำนวนวัน)';
-    return `<div class="card tgt"><div class="lbl">${n}${tl ? `<span style="font-size:11px">${tl}</span>` : ''}</div>
-      <div class="big">${baht(v)} <span class="of">/ เป้า ${t ? baht(t) : '—'}</span></div>
-      <div class="bar"><i style="width:${Math.min(100, pct * 100)}%;background:${pct >= pace * 0.97 ? 'var(--sage)' : 'var(--warn)'}"></i>${isCurMonth ? `<b style="left:${pace * 100}%"></b>` : ''}</div>
-      <div class="meta"><span>ทำได้ <strong>${t ? (pct * 100).toFixed(1) + '%' : '—'}</strong></span>
-      ${isCurMonth && t ? `<span>คาดปิดเดือน <strong>${baht(v / dayN * dimN)}</strong></span><span>ต้องได้วันละ <strong>${baht(left > 0 ? Math.max(0, (t - v) / left) : 0)}</strong></span><span>ตอนนี้เฉลี่ย ${baht(v / dayN)}/วัน</span>` : ''}</div></div>`;
-  }).join('') + '</div>';
-
-  // KPI
-  const r = K.roas;
-  h += '<h2>ตัวชี้วัดหลัก</h2><div class="grid6">' + [
-    ['ค่าโฆษณา <span class="cap">ไม่รวม VAT (ตรง Ads Manager)</span>', baht(K.spend), '', delta(K.spend, KR && KR.spend, true)],
-    ['ROAS ออนไลน์ <span class="cap">ยอดขายออนไลน์ ÷ ค่าโฆษณา</span>', `<span class="roas r${rLv(r)}">${r ? r.toFixed(2) : '—'}</span>`, r ? `<span class="pill p${rLv(r)}">${rTxt(r)}</span>` : '', delta(K.roas, KR && KR.roas)],
-    ['ROAS รวม <span class="cap">(ยอดออนไลน์ + ยอดหน้าสาขา) ÷ ค่าโฆษณา</span>', K.roasT ? K.roasT.toFixed(2) : '—', K.spend ? `ทุก ฿1 ค่าแอด ได้ยอดรวม ฿${K.roasT.toFixed(1)}` : '', delta(K.roasT, KR && KR.roasT)],
-    ['แชตใหม่', K.chats ? int(K.chats) : '—', K.cpc ? `฿${int(K.cpc)} / แชต` : '', delta(K.chats, KR && KR.chats)],
-    ['บิลออนไลน์', K.bills ? int(K.bills) : '—', K.cr ? `ปิดได้ ${(K.cr * 100).toFixed(1)}% ของแชต` : '', delta(K.bills, KR && KR.bills)],
-    ['ลูกค้าใหม่', K.newp ? int(K.newp) : '—', K.cac ? `CAC ฿${int(K.cac)}` : '', delta(K.newp, KR && KR.newp)],
-    ['ยอด / บิล', K.spb ? baht(K.spb) : '—', '', delta(K.spb, KR && KR.spb)]
-  ].map(([l, v, s, d]) => `<div class="card kpi"><div class="lbl">${l}</div><div class="v">${v}</div><div class="sub">${s}</div>${d}</div>`).join('') + '</div>';
-
-  // กราฟ
-  const T = trend(a, b, pi);
-  h += `<h2>${esc(T.title)} <small>${esc(T.sub)}</small></h2><div class="card"><div class="chartbox"><canvas id="cTrend"></canvas></div></div>`;
-
-  // สาขา
-  const br = SNAP.P.map((p, i) => ({ p, i })).filter(x => x.p.b).map(x => { const k = kpis(sumRange(a, b, x.i).o), t = target(a, b, x.i).br;
-    return { name: x.p.n, ...k, pct: t ? k.branch / t : null }; }).filter(x => x.branch || x.online || x.spend).sort((x, y) => (y.pct || 0) - (x.pct || 0));
-  if (pi < 0 && br.length) {
-    const row = x => `<tr><td>${esc(x.name)}</td><td>${baht(x.branch)}</td><td>${x.pct != null ? (x.pct * 100).toFixed(0) + '%' : '—'}</td><td>${baht(x.online)}</td><td class="roas r${rLv(x.roas)}">${x.roas ? x.roas.toFixed(2) : '—'}</td><td>${x.roasT ? x.roasT.toFixed(2) : '—'}</td></tr>`;
-    const head = '<tr><th>สาขา</th><th>หน้าสาขา</th><th>% เป้า</th><th>ออนไลน์</th><th>ROAS ออนไลน์</th><th>ROAS รวม</th></tr>';
-    h += `<h2>สาขา <small>เรียงตาม % เป้าหน้าสาขา (เป้าตามจำนวนวันในช่วง) · ออนไลน์${S.attr === 'page' ? 'ตามเพจที่ลูกค้าทัก (ไม่รวมเพจหลัก TH)' : 'ตามสาขาที่ใช้บริการ'}</small></h2><div class="card">`;
-    if (S.showAllBr || br.length <= 6) h += `<div class="tbl"><table>${head}${br.map(row).join('')}</table></div>`;
-    else h += `<div class="sec-h g">▲ นำ 3 สาขา</div><div class="tbl"><table>${head}${br.slice(0, 3).map(row).join('')}</table></div>
-      <div class="sec-h b" style="margin-top:12px">▼ ต้องช่วย 3 สาขา</div><div class="tbl"><table>${head}${br.slice(-3).reverse().map(row).join('')}</table></div>`;
-    if (br.length > 6) h += `<button class="more" id="moreBr">${S.showAllBr ? 'ย่อ' : 'ดูทั้ง ' + br.length + ' สาขา'} ›</button>`;
-    h += '</div>';
-  }
-
-  // แอดมิน
+  const title = (S.mode === 'month' ? `ภาพรวมเดือน${TH_FULL[+S.m.slice(5) - 1]} ${yBE(S.m.slice(0, 4))}` : S.mode === 'year' ? `ภาพรวมปี ${yBE(S.y)}` : `ภาพรวม ${rangeTH(a, b)}`) + (pi < 0 ? '' : ` · ${SNAP.P[pi].n}`);
+  let h = ph(title, `ข้อมูล ${esc(rangeTH(a, b))}${rp ? ` · เทียบกับ ${esc(rangeTH(rp[0], rp[1]))} (${cmpLbl()})` : ''} · ข้อมูลถึง ${dTH(LAST)}`,
+    [R.approx ? '<span class="mock">≈ บางส่วนประมาณจากยอดรายเดือน</span>' : '', '<span class="real">ค่าโฆษณาไม่รวม VAT · ตรง Ads Manager</span>']);
+  if (!R.has) { $('app').innerHTML = h + empty('ยังไม่มีข้อมูลในช่วงนี้'); return; }
+  // ---- ยอดขายเทียบเป้า ----
+  const curM = S.mode === 'month' && S.m === CUR;
+  let tOn, tBr, dayN, dimN, pace = null;
+  if (curM) { const t = target(CUR + '-01', mEnd(CUR), pi); tOn = t.on; tBr = t.br; dayN = nDays(CUR + '-01', LAST); dimN = dim(CUR); pace = dayN / dimN; }
+  else { const t = target(a, b, pi); tOn = t.on; tBr = t.br; }
+  const tcol = (lbl, v, t) => { const p = t ? v / t : 0, fc = curM ? v / dayN * dimN : null, ok = pace == null ? p >= .97 : p >= pace * .97;
+    return `<div class="col" style="gap:8px"><div class="ch" style="font-size:14px"><b>${lbl}</b><span class="num">${baht(v)} / ${t ? baht(t) : '—'}</span></div>
+      <div class="tbar"><i style="width:${Math.min(100, p * 100)}%;background:${ok ? 'var(--sage)' : 'var(--clay)'}"></i>${pace != null ? `<b style="left:${(pace * 100).toFixed(1)}%"></b>` : ''}</div>
+      <div class="ch" style="font-size:13px"><b class="num">${t ? pct0(p) : '—'}</b>${fc != null && t ? `<span style="color:var(--warn)">คาดการณ์ ${baht(fc)} · ${pct0(fc / t)} ของเป้า</span>` : `<span class="sub">${t ? (ok ? 'ถึงเป้าตามจำนวนวัน' : 'ต่ำกว่าเป้าตามจำนวนวัน') : 'ยังไม่ได้ตั้งเป้า'}</span>`}</div></div>`; };
+  let third;
+  const tot = K.online + K.branch, tT = tOn + tBr;
+  if (curM) { const left = dimN - dayN, need = left > 0 ? Math.max(0, tT - tot) / left : 0;
+    third = `<div class="col" style="gap:8px"><b style="font-size:14px">ต้องทำเพิ่มต่อวัน (ออนไลน์ + หน้าสาขา)</b><div class="big num">${left > 0 ? baht(need) : '—'}</div>
+      <div class="sub">${left > 0 ? `ใน ${left} วันที่เหลือ เพื่อถึงเป้ารวม ${baht(tT)} · ออนไลน์ ${baht(Math.max(0, tOn - K.online) / left)}/วัน · หน้าสาขา ${baht(Math.max(0, tBr - K.branch) / left)}/วัน` : `วันสุดท้ายของเดือน · ยอดรวม ${baht(tot)} (${pct0(tT ? tot / tT : null)} ของเป้า)`}</div></div>`; }
+  else third = `<div class="col" style="gap:8px"><b style="font-size:14px">ยอดรวม (ออนไลน์ + หน้าสาขา)</b><div class="big num">${baht(tot)}</div><div class="sub">${tT ? pct0(tot / tT) + ' ของเป้ารวม ' + baht(tT) : ''}${KR ? ' · ' + dl(tot, KR.online + KR.branch) : ''}</div></div>`;
+  h += `<section class="card col" style="gap:16px">${cardH('ยอดขายเทียบเป้า' + (curM ? 'เดือน' : 'ช่วง'), curM ? `เวลาผ่านไป ${dayN} จาก ${dimN} วัน (${pct0(pace)}) · เส้นดำ = ควรถึงตามจำนวนวัน` : 'เป้าคิดตามจำนวนวันในช่วง')}
+    <div class="g3">${tcol('ออนไลน์', K.online, tOn)}${tcol(pi < 0 ? 'หน้าสาขา 14 สาขา' : 'หน้าสาขา', K.branch, tBr)}${third}</div></section>`;
+  // ---- KPI ----
+  h += '<section class="kpis">' + [
+    kc('ค่าโฆษณา (ไม่รวม VAT)', baht(K.spend), '', dl(K.spend, KR && KR.spend, true)),
+    kc('ROAS ออนไลน์', xR(K.roas), `ROAS รวม ${xR(K.roasT)}${K.roas ? ' · ' + rTxt(K.roas) : ''}`, dl(K.roas, KR && KR.roas)),
+    kc('แชตใหม่', K.chats ? int(K.chats) : '—', K.cpc ? `฿${int(K.cpc)} ต่อแชต` : '', dl(K.chats, KR && KR.chats)),
+    kc('บิลที่ปิดได้', K.bills ? int(K.bills) : '—', K.cr ? `${pct1(K.cr)} ของแชต` : '', dl(K.bills, KR && KR.bills)),
+    kc('ลูกค้าใหม่', K.newp ? int(K.newp) : '—', K.cac ? `CAC ฿${int(K.cac)}` : '', dl(K.newp, KR && KR.newp)),
+    kc('ยอดเฉลี่ย / บิล', K.spb ? baht(K.spb) : '—', `ยอดออนไลน์ ${baht(K.online)}`, dl(K.spb, KR && KR.spb))
+  ].join('') + '</section>';
+  // ---- สิ่งที่ต้องทำ + ทีมแอดมิน ----
+  const P = pulse();
+  const todo = `<div class="card col">${cardH('สิ่งที่ต้องทำวันนี้', `Pulse ${esc(rangeTH(P.s, P.e))} เทียบ ${esc(rangeTH(P.ps, P.pe))}`)}
+    <div>${P.items.length ? P.items.map(x => `<div class="row3"><span class="tag ${x.t}">${x.l}</span><div><div style="font-weight:600">${esc(x.nm)}</div><div class="sub">${esc(x.det)}</div></div><span style="font-size:14px">${esc(x.act)}</span></div>`).join('')
+      : '<div class="sub" style="padding:12px 0">ไม่มีเรื่องเร่งด่วน — ทุกเพจที่ใช้งบ ROAS 1.0x ขึ้นไป</div>'}</div>
+    <span class="sub" style="font-size:12px">ต่อเพจ · 4 วันล่าสุดเทียบวันเดียวกันสัปดาห์ก่อน · แก้ด่วน = ROAS &lt; 1.0 · เพิ่มงบ = ROAS ≥ 2.0 และ ฿/แชตไม่แพงกว่าค่ากลาง 30%</span></div>`;
+  const brCard = pi < 0 ? brLead(a, b) : '';
+  let right = '';
   if (ADM && pi < 0) {
-    const g = {}; for (let d = a; d <= b; d = addD(d, 1)) (ADM.D[d] || []).forEach(x => { const o = g[x[0]] || (g[x[0]] = { s: 0, b: 0 }); o.s += x[1]; o.b += x[2]; });
-    const tf = target(a, b, -1).on / (SNAP.T.on || 1);                     // สัดส่วนเป้าตามจำนวนวันในช่วง (เทียบเป้าเดือนเต็ม)
-    const rows = Object.keys(g).map(i => { const L = ADM.L[i], t = (L.t || 0) * tf; return { ...L, s: g[i].s, b: g[i].b, tg: t, pct: t ? g[i].s / t : null }; })
-      .filter(x => x.rk).sort((x, y) => (y.pct != null ? y.pct : -1) - (x.pct != null ? x.pct : -1) || y.s - x.s);
-    if (rows.length) {
-      const av = x => `<div class="adm"><div class="av">${esc(String(x.n).slice(0, 1))}</div><div style="flex:1;min-width:0"><div class="n">${esc(x.n)}</div>
-        <div class="s">${int(x.b)} บิล${x.tg ? ` · เป้า ${baht(x.tg)}` : ''}</div>${x.tg ? `<div class="bar" style="margin:4px 0 0;height:6px"><i style="width:${Math.min(100, x.pct * 100)}%;background:${x.pct >= 1 ? 'var(--sage)' : x.pct >= .9 ? 'var(--warn)' : 'var(--bad)'}"></i></div>` : ''}</div>
-        <div class="amt" style="text-align:right">${baht(x.s)}${x.pct != null ? `<div class="s pc ${x.pct >= 1 ? 'g' : x.pct >= .9 ? 'w' : 'b'}" style="font-weight:700">${(x.pct * 100).toFixed(0)}%</div>` : ''}</div></div>`;
-      const withT = rows.filter(x => x.pct != null);
-      const top = rows.slice(0, S.showAllAdm ? rows.length : 3), help = withT.length > 5 ? withT.slice(-3).reverse() : [];
-      h += `<h2>แอดมิน <small>ยอดขายออนไลน์เทียบเป้า${S.mode === 'month' ? 'รายเดือน' : 'ตามจำนวนวันในช่วง'} · ${rows.length} คน</small></h2><div class="grid2"><div class="card"><div class="sec-h g">${S.showAllAdm ? 'ทุกคน (เรียงตาม % เป้า)' : 'นำ 3 คน'}</div>${top.map(av).join('')}
-        ${rows.length > 3 ? `<button class="more" id="moreAdm">${S.showAllAdm ? 'ย่อ' : 'ดูทั้ง ' + rows.length + ' คน'} ›</button>` : ''}</div>
-        <div class="card"><div class="sec-h b">ต้องช่วยดู</div>${help.length ? help.map(av).join('') : '<div class="s" style="padding:8px 0;color:var(--mute)">—</div>'}</div></div>`;
-    }
-  }
-
-  // สิ่งที่ต้องทำ
-  const todo = [];
-  if (isCurMonth && full.on) { const need = (full.on - K.online) / Math.max(1, dimN - dayN), avg = K.online / dayN;
-    if (need > avg * 1.1) todo.push(['warn', `ยอดออนไลน์ต้องได้วันละ ${baht(need)} (ตอนนี้เฉลี่ย ${baht(avg)}) จึงจะถึงเป้า`]); }
-  br.filter(x => x.spend > 20000 && x.roas && x.roas < 1).slice(0, 4).forEach(x => todo.push(['bad', `${x.name}: ROAS ออนไลน์ ${x.roas.toFixed(2)} ต่ำกว่า 1.0 — ตรวจแคมเปญ/ครีเอทีฟ`]));
-  (SNAP.st || []).filter(s => s.status === 'FAIL').forEach(s => todo.push(['bad', s.job === 'QA_MONTHLY' ? `ตรวจยอดเทียบ Total Sale Monitoring ไม่ผ่าน ±2% (${s.at}) — ดูแท็บ qa_monthly` : `ท่อข้อมูล ${s.job} ล้มเหลวล่าสุด ${s.at} — แจ้งทีม Digital`]));
-  for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) { const c = SNAP.cov[m] || {}, need = m === CUR ? nDays(m + '-01', LAST) : dim(m);
-    if ((m === CUR || !c.t) && m >= '2026-01' && (c.a || 0) < need - 1) todo.push(['bad', `ค่าโฆษณา ${monTH(m)} มีข้อมูลแค่ ${c.a || 0}/${need} วัน — ตัวเลขค่าแอด/ROAS ต่ำกว่าจริง (แจ้งทีม Digital: Run BACKFILL_THIS_MONTH)`]); }
-  if (!todo.length) todo.push(['ok', 'ทุกตัวชี้วัดอยู่ในเกณฑ์ ไม่มีเรื่องเร่งด่วน']);
-  h += '<h2>สิ่งที่ต้องทำ</h2><div class="card"><ul class="todo">' + todo.map(t => `<li><span class="ic ${t[0]}">${t[0] === 'ok' ? '✓' : '!'}</span><span>${esc(t[1])}</span></li>`).join('') + '</ul></div>';
-  h += `<div class="note">ค่าโฆษณา + แชตใหม่ ปี 2568 – เม.ย. 2569 และยอดออนไลน์ถึง มิ.ย. 2569 ยึด Total Sale Monitoring ทุกเพจ/สาขา (เลือกช่วงวันบางส่วน = เฉลี่ยตามจำนวนวัน) · ตั้งแต่ พ.ค. 2569 เดือนเต็ม = TSM · ช่วงวันบางส่วน = Meta รายวัน<br>ROAS ออนไลน์ = ยอดขายออนไลน์ ÷ ค่าโฆษณา (≥2.0 ดี · 1.5–1.99 พอใช้ · 1.0–1.49 เสมอตัว · &lt;1.0 ขาดทุน) · ROAS รวม = (ยอดออนไลน์ + ยอดหน้าสาขา) ÷ ค่าโฆษณา · อัปเดตข้อมูล ${esc(SNAP.built)}</div>`;
-  $('app').innerHTML = h;
-  if ($('moreBr')) $('moreBr').onclick = () => { S.showAllBr = !S.showAllBr; render(); };
-  if ($('moreAdm')) $('moreAdm').onclick = () => { S.showAllAdm = !S.showAllAdm; render(); };
-  drawChart(T);
+    const A = admRows(a, b), T = admTot(A.all), ranked = A.R.filter(x => x.score != null).sort((x, y) => y.score - x.score);
+    const pick = ranked.length ? ranked.slice(0, 2).concat(ranked.length > 2 ? [ranked[ranked.length - 1]] : []) : A.all.filter(x => x.rk).sort((x, y) => (y.pct || 0) - (x.pct || 0)).slice(0, 3);
+    right = `<div class="card col">${cardH('ทีมแอดมิน', A.hasZ ? `<span class="real">แชตจาก Zaapi</span>` : '<span class="mock">ยังไม่มีข้อมูล Zaapi ช่วงนี้</span>')}
+      <div class="g3" style="gap:12px">${[['แชตรับ (Zaapi)', T.ch ? int(T.ch) : '—'], ['CR% ทีม', T.ch ? pct1(T.bw / T.ch) : '—'], ['ตอบใน 10 นาที', T.ch ? pct0(T.r10 / T.ch) : '—']].map(([l, v]) => `<div class="mini"><div class="sub">${l}</div><div class="v num">${v}</div></div>`).join('')}</div>
+      <div class="col" style="gap:10px">${pick.map(x => { const v = x.score != null ? x.score : Math.round((x.pct || 0) * 100);
+        return `<div class="arow"><span class="num" style="font-weight:700">${x.rank || '–'}</span><span style="font-weight:600">${esc(x.n)} <span class="sub">${x.score != null ? (x.score < 65 ? 'ต้องช่วย' : `ยอด ${baht(x.s)}`) : `% เป้า`}</span></span><span class="num" style="font-weight:700;color:${scColor(v)}">${v}</span><span class="sbar"><i style="width:${Math.min(100, v)}%;background:${barColor(v)}"></i></span></div>`; }).join('')}</div>
+      <button class="lnk" data-go="ad">ดูอันดับทั้งทีม และผลงานรายบุคคล →</button></div>`;
+  } else right = brCard;
+  h += right ? `<section class="g2">${todo}${right}</section>` : todo;
+  // ---- เทียบรายเดือนย่อ + สาขา ----
+  const ms = [0, 1, 2, 3].map(i => addM(CUR, -i)).filter(m => m >= MONTHS[0]);
+  const MK = ms.map(m => { const [x, y] = moRange(m); return moK(x, y, pi); });
+  const mrow = (l, f, fmt) => `<tr><td>${l}</td>${MK.map((k, i) => `<td${i ? '' : ' style="font-weight:600"'}>${k.has ? fmt(k[f]) : '—'}</td>`).join('')}</tr>`;
+  const mini = `<div class="card col">${cardH('เทียบรายเดือน · ล่าสุดก่อน', pi < 0 ? 'ทั้งเครือ' : esc(SNAP.P[pi].n))}
+    <div class="tw"><table class="tb"><tr><th>ตัวชี้วัด</th>${ms.map((m, i) => `<th${i ? '' : ' style="color:var(--ink);font-weight:600"'}>${TH_MON[+m.slice(5) - 1]}${m === CUR ? ` (1–${+LAST.slice(8)})` : ''}</th>`).join('')}</tr>
+    ${mrow('ยอดออนไลน์', 'online', baht)}${mrow('ยอดหน้าสาขา', 'branch', baht)}${mrow('ROAS ออนไลน์', 'roas', xR)}${mrow('CR% แชต → บิล', 'cr', pct1)}${mrow('CAC', 'cac', v => v ? '฿' + int(v) : '—')}</table></div>
+    <button class="lnk" data-go="mo">เปิดเทียบรายเดือนเต็ม →</button></div>`;
+  h += `<section class="g32">${mini}${ADM && pi < 0 ? brCard : trendCard(a, b, pi)}</section>`;
+  if (ADM && pi < 0) h += trendCard(a, b, pi);
+  $('app').innerHTML = h; bindGo(); drawChart(trend(a, b, pi));
 }
-
+function brLead(a, b) {
+  const rows = SNAP.P.map((p, i) => ({ p, i })).filter(x => x.p.b).map(x => { const k = kpis(sumRange(a, b, x.i).o), t = target(a, b, x.i).br; return { ...x, k, pt: t ? k.branch / t : null }; }).filter(x => x.k.spend > 0);
+  if (!rows.length) return '';
+  rows.sort((x, y) => y.k.roas - x.k.roas);
+  const top = rows.slice(0, 3), bot = rows.slice(-3).reverse().filter(x => !top.includes(x));
+  const li = x => `<div class="brl"><span><b>${esc(x.p.c)}</b> · ${esc(x.p.n)} <span class="sub">· หน้าสาขา ${pct0(x.pt)} ของเป้า</span></span>${rc(x.k.roas)}</div>`;
+  return `<div class="card col">${cardH('สาขา: นำ 3 · ต้องช่วย 3', 'ROAS ออนไลน์')}<div><div class="sub" style="font-weight:600;color:var(--good)">นำ</div>${top.map(li).join('')}</div>
+    ${bot.length ? `<div><div class="sub" style="font-weight:600;color:var(--bad)">ต้องช่วย</div>${bot.map(li).join('')}</div>` : ''}
+    <span class="sub" style="font-size:12px">ไม่รวมเพจกลาง TH · ยอดออนไลน์${S.attr === 'page' ? 'ตามเพจที่ลูกค้าทัก' : 'ตามสาขาที่ใช้บริการ'}</span><button class="lnk" data-go="br">ดูทุกสาขา →</button></div>`;
+}
+function bindGo() { document.querySelectorAll('[data-go]').forEach(x => x.onclick = () => nav(x.dataset.go, x.dataset.page != null ? { page: +x.dataset.page } : null)); }
+function trendCard(a, b, pi) { const T = trend(a, b, pi); return `<section class="card col">${cardH('แนวโน้ม · ' + esc(T.title), esc(T.sub))}<div class="chartbox"><canvas id="cTrend"></canvas></div></section>`; }
 function trend(a, b, pi) {
   const pts = [];
   if (S.mode === 'range' && nDays(a, b) <= 92) {
     for (let d = a; d <= b; d = addD(d, 1)) { const k = kpis(sumRange(d, d, pi).o); pts.push({ l: dTH(d), on: k.online, br: k.branch, roas: k.roas }); }
-    return { title: 'รายวัน', sub: 'ยอดออนไลน์ + หน้าสาขา', pts, daily: true };
+    return { title: 'รายวัน', sub: 'ยอดออนไลน์ + หน้าสาขา · เส้นทอง = ROAS ออนไลน์', pts, daily: true };
   }
-  let ms;
-  if (S.mode === 'month') ms = [0, 1, 2, 3].map(i => addM(S.m, -i));
-  else { ms = []; for (let m = b.slice(0, 7); m >= a.slice(0, 7) && ms.length < 24; m = addM(m, -1)) ms.push(m); }
+  let ms = [];
+  if (S.mode === 'month') ms = [5, 4, 3, 2, 1, 0].map(i => addM(S.m, -i)).filter(m => m >= MONTHS[0]);
+  else for (let m = a.slice(0, 7); m <= b.slice(0, 7) && ms.length < 24; m = addM(m, 1)) ms.push(m);
   ms.forEach(m => { const k = kpis(sumRange(m + '-01', minS(mEnd(m), LAST), pi).o); pts.push({ l: monTH(m) + (m === CUR ? '*' : ''), on: k.online, br: k.branch, roas: k.roas }); });
-  return { title: S.mode === 'month' ? 'เทียบ 4 เดือน' : 'รายเดือน', sub: 'ล่าสุดอยู่ซ้าย · ROAS ออนไลน์ = เส้นสีทอง', pts };
+  return { title: 'รายเดือน', sub: 'ยอดออนไลน์ + หน้าสาขา · เส้นทอง = ROAS ออนไลน์' + (ms.includes(CUR) ? ' · * เดือนปัจจุบันถึง ' + dTH(LAST) : ''), pts };
 }
-
 let chartLib = null;
 function drawChart(T) {
   if (chart) { chart.destroy(); chart = null; }
@@ -600,54 +660,300 @@ function drawChart(T) {
   const p = T.pts;
   chart = new Chart($('cTrend'), {
     data: { labels: p.map(x => x.l), datasets: [
-      { type: 'bar', label: 'ออนไลน์', data: p.map(x => x.on), backgroundColor: '#8B9677', stack: 's', borderRadius: 3, yAxisID: 'y' },
-      { type: 'bar', label: 'หน้าสาขา', data: p.map(x => x.br), backgroundColor: '#CDD4C2', stack: 's', borderRadius: 3, yAxisID: 'y' },
-      { type: 'line', label: 'ROAS ออนไลน์', data: p.map(x => x.roas || null), borderColor: '#B89B5E', backgroundColor: '#B89B5E', tension: .3, pointRadius: T.daily ? 0 : 3, yAxisID: 'y2' } ] },
+      { type: 'bar', label: 'ออนไลน์', data: p.map(x => x.on), backgroundColor: '#5E6F50', stack: 's', borderRadius: 3, yAxisID: 'y' },
+      { type: 'bar', label: 'หน้าสาขา', data: p.map(x => x.br), backgroundColor: '#D3D9C6', stack: 's', borderRadius: 3, yAxisID: 'y' },
+      { type: 'line', label: 'ROAS ออนไลน์', data: p.map(x => x.roas || null), borderColor: '#C9A24A', backgroundColor: '#C9A24A', tension: .3, pointRadius: T.daily ? 0 : 3, yAxisID: 'y2' } ] },
     options: { responsive: true, maintainAspectRatio: false, animation: false, interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } },
-        tooltip: { callbacks: { label: c => c.dataset.yAxisID === 'y2' ? ` ROAS ${c.raw ? c.raw.toFixed(2) : '—'}` : ` ${c.dataset.label} ${baht(c.raw)}` } } },
-      scales: { y: { stacked: true, ticks: { callback: v => v >= 1e6 ? (v / 1e6).toFixed(0) + ' ล.' : (v / 1e3).toFixed(0) + 'k' }, grid: { color: '#EFEDE4' } },
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { family: 'IBM Plex Sans Thai' } } },
+        tooltip: { callbacks: { label: c => c.dataset.yAxisID === 'y2' ? ` ROAS ${c.raw ? c.raw.toFixed(2) : '—'}x` : ` ${c.dataset.label} ${baht(c.raw)}` } } },
+      scales: { y: { stacked: true, ticks: { callback: v => v >= 1e6 ? (v / 1e6).toFixed(0) + 'M' : (v / 1e3).toFixed(0) + 'k' }, grid: { color: '#EEEADB' } },
         y2: { position: 'right', beginAtZero: true, grid: { display: false } }, x: { stacked: true, grid: { display: false }, ticks: { maxRotation: 0, autoSkip: true } } } }
   });
 }
 
-/* ---------- หน้า สาขา ---------- */
-function renderBranches() {
-  const [a, b] = period(), rp = refPeriod(a, b), isCurMonth = S.mode === 'month' && S.m === CUR;
-  const rows = SNAP.P.map((p, i) => ({ p, i })).filter(x => x.p.b).map(x => {
-    const R = sumRange(a, b, x.i), k = kpis(R.o), t = target(a, b, x.i);
-    const RR = rp ? sumRange(rp[0], rp[1], x.i) : null, kr = RR && RR.has ? kpis(RR.o) : null;
-    return { i: x.i, name: x.p.n, ...k, tBr: t.br, tOn: t.on, pct: t.br ? k.branch / t.br : null, pctOn: t.on ? k.online / t.on : null,
-      dBr: kr && kr.branch ? (k.branch - kr.branch) / kr.branch : null, approx: R.approx };
-  }).filter(x => x.branch || x.online || x.spend);
-  const key = { pct: x => x.pct || 0, branch: x => x.branch, online: x => x.online, roas: x => x.roas, growth: x => x.dBr == null ? -9 : x.dBr }[S.bsort];
-  rows.sort((x, y) => key(y) - key(x));
-  const sum = rows.reduce((o, x) => { o.br += x.branch; o.on += x.online; o.sp += x.spend; o.t += x.tBr; return o; }, { br: 0, on: 0, sp: 0, t: 0 });
-  const onTrack = rows.filter(x => x.pct != null && x.pct >= 1).length;
-  let h = `<h2>${esc(rangeTH(a, b))} · ${rows.length} สาขา <small>${nDays(a, b)} วัน · ข้อมูลถึง ${dTH(LAST)}${rp ? ` · เทียบ ${esc(rangeTH(rp[0], rp[1]))}` : ''}</small></h2>`;
-  if (!rows.length) { $('app').innerHTML = h + '<div class="card">ยังไม่มีข้อมูลในช่วงนี้</div>'; drawChart(null); return; }
-  h += `<div class="bsum"><div class="card"><div class="l">ยอดหน้าสาขารวม</div><div class="n">${baht(sum.br)}</div><div class="l">${sum.t ? (sum.br / sum.t * 100).toFixed(0) + '% ของเป้า' : ''}</div></div>
-    <div class="card"><div class="l">ถึงเป้า${isCurMonth ? 'ตามจำนวนวัน' : ''}</div><div class="n">${onTrack}/${rows.length}</div><div class="l">สาขา</div></div>
-    <div class="card"><div class="l">ROAS ออนไลน์ (ทุกสาขา)</div><div class="n roas r${rLv(sum.sp ? sum.on / sum.sp : 0)}">${sum.sp ? (sum.on / sum.sp).toFixed(2) : '—'}</div><div class="l">ROAS รวม ${sum.sp ? ((sum.on + sum.br) / sum.sp).toFixed(2) : '—'}</div></div></div>`;
-  h += '<div class="sortbar" id="bsort">' + [['pct', '% เป้าหน้าสาขา'], ['branch', 'ยอดหน้าสาขา'], ['online', 'ยอดออนไลน์'], ['roas', 'ROAS ออนไลน์'], ['growth', 'โตขึ้นมากสุด']]
-    .map(([k, l]) => `<button data-k="${k}" class="${S.bsort === k ? 'on' : ''}">${l}</button>`).join('') + '</div>';
-  h += '<div class="blist">' + rows.map((x, n) => {
-    const pc = x.pct == null ? '' : x.pct >= 1 ? 'g' : x.pct >= 0.9 ? 'w' : 'b';
-    return `<div class="card bcard" data-i="${x.i}"><div class="top"><span class="rk">${n + 1}</span><span class="nm">${esc(x.name)}</span><span class="pc ${pc}">${x.pct != null ? (x.pct * 100).toFixed(0) + '%' : '—'}</span></div>
-      <div class="amt">${baht(x.branch)} <small>/ เป้า ${x.tBr ? baht(x.tBr) : '—'}</small>${x.approx ? '<span class="approx">≈</span>' : ''}</div>
-      <div class="bar"><i style="width:${Math.min(100, (x.pct || 0) * 100)}%;background:${pc === 'g' ? 'var(--sage)' : pc === 'w' ? 'var(--warn)' : 'var(--bad)'}"></i></div>
-      <div class="row"><span>ออนไลน์ <b>${baht(x.online)}</b>${x.pctOn != null ? ` (${(x.pctOn * 100).toFixed(0)}%)` : ''}</span><span>ค่าแอด <b>${baht(x.spend)}</b></span>
-      <span>ROAS ออนไลน์ <b class="roas r${rLv(x.roas)}">${x.roas ? x.roas.toFixed(2) : '—'}</b></span><span>ROAS รวม <b>${x.roasT ? x.roasT.toFixed(2) : '—'}</b></span>${x.chats ? `<span>แชต <b>${int(x.chats)}</b></span>` : ''}
-      ${S.cmp !== 'none' && x.dBr != null ? `<span>หน้าสาขา ${delta(x.branch, x.branch / (1 + x.dBr))}</span>` : ''}</div>
-      <span class="go">ดูรายละเอียด ›</span></div>`;
-  }).join('') + '</div>';
-  h += `<div class="note">ROAS ออนไลน์ = ยอดขายออนไลน์ ÷ ค่าโฆษณา · ROAS รวม = (ยอดออนไลน์ + ยอดหน้าสาขา) ÷ ค่าโฆษณา<br>% เป้า = ยอดหน้าสาขา ÷ เป้าตามจำนวนวันในช่วง (เขียว ≥ 100% · เหลือง 90–99% · แดง &lt; 90%) · แตะการ์ดเพื่อดูภาพรวมของสาขานั้น<br>${S.attr === 'page' ? 'ยอดออนไลน์ = ตามเพจที่ลูกค้าทัก — ยอดจากเพจหลัก TH แยกไว้ต่างหาก (ดูได้ที่หน้าภาพรวม › เลือกเพจหลัก TH)' : 'ยอดออนไลน์ = ตามสาขาที่ลูกค้าไปใช้บริการ (รวมลูกค้าที่ทักจากเพจหลัก TH · แบบ Total Sale Monitoring)'} · ค่าโฆษณา = ค่าแอดของเพจสาขานั้น ไม่รวม VAT</div>`;
-  $('app').innerHTML = h; drawChart(null);
-  $('bsort').onclick = e => { const t = e.target.closest('button'); if (!t) return; S.bsort = t.dataset.k; render(); };
-  document.querySelectorAll('.bcard').forEach(c => c.onclick = () => { S.page = +c.dataset.i; S.view = 'ov'; go(); window.scrollTo(0, 0); });
+/* ================= แอดมิน (ผู้บริหาร + หัวหน้าแอดมิน) ================= */
+function admSum(a, b) { const g = {}; if (!ADM) return g; for (let d = a; d <= b; d = addD(d, 1)) (ADM.D[d] || []).forEach(x => { const o = g[x[0]] || (g[x[0]] = { s: 0, b: 0, u: 0 }); o.s += x[1]; o.b += x[2]; o.u += x[3] || 0; }); return g; }
+/* แชต Zaapi ของช่วง [a,b]: เดือนที่มีไฟล์ → คิดตามสัดส่วนวันที่ทับกัน · CR% ใช้บิลในวันเดียวกับช่วงแชต */
+function admChat(a, b) {
+  const g = {}, per = []; if (!ADM || !ADM.C) return { g, per };
+  for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) {
+    const c = ADM.C[m]; if (!c) continue; const s = maxS(a, c.f), e = minS(minS(b, c.t), LAST); if (s > e) continue;
+    const f = nDays(s, e) / nDays(c.f, c.t); per.push([s, e]); const bs = admSum(s, e);
+    c.r.forEach(([i, ch, miss, r10w, frw, frn]) => { const o = g[i] || (g[i] = { ch: 0, miss: 0, r10: 0, fr: 0, frn: 0, bw: 0 });
+      o.ch += ch * f; o.miss += miss * f; o.r10 += r10w * f; o.fr += frw * f; o.frn += frn * f; });
+    Object.keys(bs).forEach(i => { if (g[i]) g[i].bw += bs[i].b; });
+  }
+  return { g, per };
+}
+const ADM_W = { s: 30, cr: 25, sp: 20, up: 15, vol: 10 }, ADM_MIN = 100;
+const DIM_N = { s: 'ยอดขาย', cr: 'CR% (บิล ÷ แชตรับ)', sp: 'ความเร็วตอบ', up: 'Upsell%', vol: 'ปริมาณแชตรับ' };
+const DIM_TIP = { s: 'ยอดขายต่ำกว่าทีม → ดูโปรแกรมที่ขายและการเสนอแพ็กเกจ', cr: 'ปิดการขายได้น้อย → ทบทวนสคริปต์ปิดการขาย / การนัดหมาย', sp: 'ตอบช้า → ตรวจภาระงานในกะและตั้งข้อความตอบกลับเร็ว',
+  up: 'Upsell ต่ำ → ฝึกเสนอบริการคู่ (เช่น Pico + Botox) ในแชตที่ปิดการขายแล้ว', vol: 'รับแชตน้อย → ตรวจการกระจายแชตในกะ' };
+const DIM_GOOD = { s: 'ยอดขายสูงกว่าค่ากลางทีม', cr: 'ปิดการขายเก่ง', sp: 'ตอบแชตเร็ว', up: 'เสนอขายเพิ่ม (Upsell) ได้ดี', vol: 'รับแชตได้มาก' };
+const med = a => { const v = a.filter(x => x != null && x > 0).sort((x, y) => x - y); if (!v.length) return 0; const k = v.length >> 1; return v.length % 2 ? v[k] : (v[k - 1] + v[k]) / 2; };
+const scColor = s => s >= 80 ? '#2F5B2A' : s >= 65 ? '#3F4D35' : s >= 55 ? '#8A5A12' : '#A1342A';
+const barColor = s => s >= 65 ? '#5E6F50' : s >= 55 ? '#C9A24A' : '#C0694F';
+/* คะแนนตามดีไซน์: แต่ละมิติ = 70 + 60 × (ค่าของคน ÷ ค่ากลางทีม − 1) · ตัดที่ 0–100 */
+function admRows(a, b) {
+  const tf = target(a, b, -1).on / (SNAP.T.on || 1), g = admSum(a, b), Z = admChat(a, b);
+  const ids = [...new Set(Object.keys(g).concat(Object.keys(Z.g)))];
+  const all = ids.map(i => { const L = ADM.L[i] || {}, x = g[i] || { s: 0, b: 0, u: 0 }, z = Z.g[i], t = (L.t || 0) * tf;
+    return { i: +i, n: L.n || i, rk: L.rk, s: x.s, b: x.b, u: x.u, t, pct: t ? x.s / t : null, up: x.b ? x.u / x.b : null, ch: z ? z.ch : 0, bw: z ? z.bw : 0,
+      cr: z && z.ch ? z.bw / z.ch : null, r10: z && z.ch ? z.r10 / z.ch : null, fr: z && z.frn ? z.fr / z.frn : null, miss: z ? z.miss : 0, score: null, rank: null, dims: null }; })
+    .filter(x => x.s || x.ch);
+  const R = all.filter(x => x.rk && x.ch >= ADM_MIN);
+  const M = { s: med(R.map(x => x.s)), cr: med(R.map(x => x.cr)), fr: med(R.map(x => x.fr)), r10: med(R.map(x => x.r10)), up: med(R.map(x => x.up)), ch: med(R.map(x => x.ch)), b: med(R.map(x => x.b)), pct: med(R.map(x => x.pct)) };
+  const d = r => Math.max(0, Math.min(100, Math.round(70 + 60 * (r - 1))));
+  if (R.length >= 3) {
+    R.forEach(x => { x.dims = { s: d(M.s ? x.s / M.s : 1), cr: d(M.cr ? (x.cr || 0) / M.cr : 1), sp: d(((x.fr && M.fr ? M.fr / x.fr : 1) + (x.r10 && M.r10 ? x.r10 / M.r10 : 1)) / 2), up: d(M.up ? (x.up || 0) / M.up : 1), vol: d(M.ch ? x.ch / M.ch : 1) };
+      x.score = Math.round(Object.keys(ADM_W).reduce((t, k) => t + x.dims[k] * ADM_W[k], 0) / 100); });
+    R.slice().sort((x, y) => y.score - x.score || y.s - x.s).forEach((x, i) => x.rank = i + 1);
+  } else all.filter(x => x.rk).sort((x, y) => (y.pct || 0) - (x.pct || 0) || y.s - x.s).forEach((x, i) => x.rank = i + 1);
+  return { all, R, M, Z, hasZ: Z.per.length > 0, tf };
+}
+function admTot(all) { return all.reduce((o, x) => { o.s += x.s; o.b += x.b; o.u += x.u; o.t += x.t; o.ch += x.ch; o.bw += x.bw; o.miss += x.miss; o.r10 += (x.r10 || 0) * x.ch; if (x.fr) { o.fr += x.fr * x.ch; o.frn += x.ch; } return o; },
+  { s: 0, b: 0, u: 0, t: 0, ch: 0, bw: 0, miss: 0, r10: 0, fr: 0, frn: 0 }); }
+const zTxt = Z => Z.per.map(([s, e]) => rangeTH(s, e)).join(' · ');
+function renderAdmins() {
+  const [a, b] = period(), rp = refPeriod(a, b), A = admRows(a, b), AR = rp ? admRows(rp[0], rp[1]) : null;
+  let h = ph(S.atab === 'ind' ? 'ผลงานรายบุคคล' : S.atab === 'shift' ? 'จัดกะแอดมิน' : 'ทีมแอดมิน',
+    `${esc(rangeTH(a, b))} · แชตรับจาก Zaapi (มีตั้งแต่ ก.ค. 2569${A.hasZ ? ' · ช่วงนี้ ' + esc(zTxt(A.Z)) : ''}) · บิลและยอดจากยอดขายออนไลน์รายบิล`,
+    [A.hasZ ? '<span class="real">แชตจาก Zaapi</span>' : '<span class="mock">ยังไม่มีข้อมูล Zaapi ในช่วงนี้</span>', '<span class="real">เห็นเฉพาะผู้บริหาร · หัวหน้าแอดมิน</span>']);
+  h += `<nav class="stabs" id="atab">${[['team', 'ภาพรวมทีม & อันดับ'], ['ind', 'ผลงานรายบุคคล'], ['shift', 'จัดกะ']].map(([k, l]) => `<a data-k="${k}" class="${S.atab === k ? 'on' : ''}">${l}</a>`).join('')}</nav>`;
+  if (!A.all.length) { $('app').innerHTML = h + empty('ยังไม่มีข้อมูลยอดขายรายแอดมินในช่วงนี้'); bindAdm(); return; }
+  h += S.atab === 'ind' ? admInd(A, AR, a, b) : S.atab === 'shift' ? admShift(a, b, true) : admTeam(A, AR);
+  $('app').innerHTML = h; bindAdm();
+}
+function bindAdm() {
+  $('atab').onclick = e => { const t = e.target.closest('a'); if (!t) return; S.atab = t.dataset.k; render(); };
+  if ($('asort')) $('asort').onclick = e => { const t = e.target.closest('button'); if (!t) return; S.asort = t.dataset.k; render(); };
+  document.querySelectorAll('[data-adm]').forEach(x => x.onclick = () => { S.aSel = +x.dataset.adm; S.atab = 'ind'; render(); window.scrollTo(0, 0); });
+  if ($('aPick')) $('aPick').onchange = e => { S.aSel = +e.target.value; render(); };
+  document.querySelectorAll('[data-step]').forEach(x => x.onclick = () => { const o = [...$('aPick').options].map(z => +z.value), k = o.indexOf(S.aSel); S.aSel = o[(k + +x.dataset.step + o.length) % o.length]; render(); });
+}
+function admTeam(A, AR) {
+  const T = admTot(A.all), TR = AR ? admTot(AR.all) : null, M = A.M, hasS = A.R.some(x => x.score != null);
+  let h = '<section class="kpis">' + [
+    kc('แชตรับ', T.ch ? int(T.ch) : '—', '', A.hasZ ? dl(T.ch, TR && TR.ch) : ''),
+    kc('บิล', int(T.b), '', dl(T.b, TR && TR.b)),
+    kc('CR% บิล ÷ แชตรับ', T.ch ? pct1(T.bw / T.ch) : '—', '', A.hasZ && TR && TR.ch ? dlPt(T.bw / T.ch, TR.bw / TR.ch) : ''),
+    kc('ยอดขายออนไลน์', baht(T.s), T.t ? `${pct0(T.s / T.t)} ของเป้าทีม ${baht(T.t)}` : '', dl(T.s, TR && TR.s)),
+    kc('เวลาตอบเฉลี่ย', T.frn ? (T.fr / T.frn).toFixed(1) + ' นาที' : '—', T.ch ? `ตอบใน 10 นาที ${pct0(T.r10 / T.ch)}` : '', TR && TR.frn && T.frn ? dlAbs(T.fr / T.frn, TR.fr / TR.frn, 'นาที', true) : ''),
+    kc('แชตพลาด (ไม่ตอบ 12 ชม.)', T.ch ? int(T.miss) : '—', '', TR && TR.ch && T.ch ? dlAbs(T.miss, TR.miss, 'แชต', true, 0) : '')
+  ].join('') + '</section>';
+  const refS = {}; if (AR) AR.all.forEach(x => refS[x.i] = x.s);
+  const key = { score: x => x.score != null ? x.score : -1, s: x => x.s, pct: x => x.pct != null ? x.pct : -1, cr: x => x.cr != null ? x.cr : -1, up: x => x.up != null ? x.up : -1, fr: x => x.fr ? -x.fr : -1e9 }[S.asort] || (x => x.score);
+  const ranked = A.all.filter(x => x.rk).sort((x, y) => key(y) - key(x) || y.s - x.s), other = A.all.filter(x => !x.rk).sort((x, y) => y.s - x.s);
+  const col = (v, m, inv) => v == null || !m ? '' : (inv ? v <= m : v >= m) ? 'c-g' : 'c-b';
+  const tr = x => { const mom = refS[x.i] ? (x.s / refS[x.i] - 1) : null;
+    return `<tr class="ck${x.rk ? '' : ' dim'}" data-adm="${x.i}"><td class="l num" style="font-weight:700">${x.rank || '—'}</td>
+    <td class="l"><span class="an"><span class="avi">${esc(String(x.n).slice(0, 1))}</span><span class="col" style="gap:0"><b>${esc(x.n)}</b><span class="sub">${x.rk ? (x.t ? 'เป้า ' + baht(x.t) : 'ยังไม่มีเป้า') : 'ไม่นับอันดับ'}${x.rk && A.hasZ && x.ch < ADM_MIN ? ' · แชต &lt; ' + ADM_MIN : ''}</span></span></span></td>
+    <td class="l">${x.score != null ? `<span class="sc"><b style="color:${scColor(x.score)}">${x.score}</b><span class="sbar"><i style="width:${x.score}%;background:${barColor(x.score)}"></i></span></span>` : '<span class="mute2">—</span>'}</td>
+    <td>${x.ch ? int(x.ch) : '—'}</td><td>${int(x.b)}</td><td class="${col(x.cr, M.cr)}" style="font-weight:600">${pct1(x.cr)}</td><td>${baht(x.s)}</td>
+    <td class="${x.pct == null ? '' : x.pct >= 1 ? 'c-g' : x.pct >= .9 ? 'c-w' : 'c-b'}" style="font-weight:600">${pct0(x.pct)}</td><td>${x.b ? baht(x.s / x.b) : '—'}</td><td>${pct1(x.up)}</td>
+    <td class="${col(x.fr, M.fr, true)}" style="font-weight:600">${x.fr ? x.fr.toFixed(1) + ' น.' : '—'}</td><td>${pct0(x.r10)}</td><td>${x.ch ? int(x.miss) : '—'}</td>
+    <td class="${mom == null ? '' : mom >= 0 ? 'c-g' : 'c-b'}" style="font-weight:600">${mom == null ? '—' : (mom >= 0 ? '▲ ' : '▼ ') + Math.abs(mom * 100).toFixed(1) + '%'}</td></tr>`; };
+  h += `<section class="card col">${cardH('อันดับแอดมิน', '')}<div class="ch" style="margin-top:-8px"><span class="sub">สีของ CR% และเวลาตอบ = เทียบค่ากลางทีม · กดชื่อเพื่อดูผลงานรายบุคคล · แชตรับ &lt; ${ADM_MIN} = ไม่จัดอันดับ</span>
+    <div class="pills" id="asort"><span class="sub" style="align-self:center;margin-right:4px">เรียงตาม</span>${[['score', 'Score'], ['s', 'ยอดขาย'], ['pct', '% เป้า'], ['cr', 'CR%'], ['up', 'Upsell%'], ['fr', 'ตอบเร็ว']].filter(z => hasS || !['score'].includes(z[0]))
+      .map(([k, l]) => `<button class="pill sm${S.asort === k ? ' on' : ''}" data-k="${k}">${l}</button>`).join('')}</div></div>
+    <div class="tw"><table class="tb stk" style="min-width:1180px"><tr><th>#</th><th class="l">แอดมิน</th><th class="l">Admin Score</th><th>แชตรับ</th><th>บิล</th><th>CR%</th><th>ยอดขาย</th><th>% เป้า</th><th>ยอด/บิล</th><th>Upsell%</th><th>ตอบเฉลี่ย</th><th>≤ 10 นาที</th><th>พลาด</th><th>ยอด ${cmpLbl()}</th></tr>
+    ${ranked.map(tr).join('')}
+    <tr class="md"><td></td><td class="l">ค่ากลางทีม</td><td></td><td>${M.ch ? int(M.ch) : '—'}</td><td>${M.b ? int(M.b) : '—'}</td><td>${pct1(M.cr || null)}</td><td>${M.s ? baht(M.s) : '—'}</td><td>${pct0(M.pct || null)}</td><td>—</td><td>${pct1(M.up || null)}</td><td>${M.fr ? M.fr.toFixed(1) + ' น.' : '—'}</td><td>${pct0(M.r10 || null)}</td><td>—</td><td>—</td></tr>
+    ${other.map(tr).join('')}</table></div></section>`;
+  const helps = A.R.filter(x => x.score != null && x.score < 65).sort((x, y) => x.score - y.score);
+  h += `<section class="g112"><div class="card col" style="gap:12px">${cardH('Admin Score คิดจาก')}<span class="sub">แต่ละมิติเทียบค่ากลางทีม = 70 คะแนน · สูงกว่าค่ากลาง 50% = 100</span>
+      <div class="col" style="gap:10px;font-size:14px">${Object.keys(ADM_W).map(k => `<div class="ch"><span>${k === 'sp' ? 'ความเร็ว (เวลาตอบ + ≤10 นาที)' : DIM_N[k]}</span><b class="num">${ADM_W[k]}%</b></div>`).join('')}</div>
+      <span class="sub" style="font-size:12px">Upsell% = บิลที่ซื้อ ≥ 2 รายการ ÷ บิลทั้งหมด</span></div>
+    <div class="card col" style="gap:12px">${cardH('ต้องช่วย (Score &lt; 65)')}${hasS ? (helps.length ? helps.map(x => { const w = Object.keys(x.dims).sort((p, q) => x.dims[p] - x.dims[q])[0];
+      return `<div class="help" data-adm="${x.i}" style="cursor:pointer"><b>${esc(x.n)} · ${x.score}</b><span class="n">จุดอ่อน: ${DIM_N[w]} (${x.dims[w]}) — ${DIM_TIP[w]}</span></div>`; }).join('') : '<span class="sub">ไม่มีแอดมินที่คะแนนต่ำกว่า 65 ในช่วงนี้ 👍</span>')
+      : '<span class="sub">คำนวณคะแนนได้เมื่อมีข้อมูลแชตจาก Zaapi ในช่วงที่เลือก (ตั้งแต่ ก.ค. 2569)</span>'}</div>
+    ${admShift(...period(), false)}</section>`;
+  return h;
+}
+function admInd(A, AR, a, b) {
+  const list = A.all.filter(x => x.rk).sort((x, y) => (x.rank || 99) - (y.rank || 99)).concat(A.all.filter(x => !x.rk));
+  if (S.aSel == null || !list.some(x => x.i === S.aSel)) S.aSel = list[0].i;
+  const x = list.find(z => z.i === S.aSel), M = A.M, n = A.R.length || list.filter(z => z.rk).length;
+  const prev = AR ? AR.all.find(z => z.i === x.i) : null;
+  let h = `<section class="card" style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap"><div class="fl" style="flex:1;min-width:220px"><span>เลือกแอดมิน (${list.length} คน · เรียงตามอันดับ)</span>
+    <select id="aPick">${list.map(z => `<option value="${z.i}"${z.i === x.i ? ' selected' : ''}>${z.rank ? '#' + z.rank + ' · ' : ''}${esc(z.n)}${z.score != null ? ' · Score ' + z.score : ''}${z.rk ? '' : ' (ไม่นับอันดับ)'}</option>`).join('')}</select></div>
+    <button class="pill" data-step="-1" aria-label="ก่อนหน้า">‹</button><button class="pill" data-step="1" aria-label="ถัดไป">›</button></section>`;
+  const move = prev && prev.rank && x.rank ? prev.rank - x.rank : null;
+  const verdict = x.score == null ? (x.rk ? 'ยังคิดคะแนนไม่ได้ (ต้องมีแชตรับจาก Zaapi ≥ 100)' : 'หัวหน้าแอดมิน / อดีตแอดมิน — ไม่นับอันดับ')
+    : x.score >= 80 ? 'ผลงานโดดเด่น — เป็นตัวอย่างให้ทีมได้' : x.score >= 70 ? 'ผลงานดีกว่าค่ากลางทีม' : x.score >= 65 ? 'ใกล้ค่ากลางทีม — มีจุดให้พัฒนา' : 'ต้องช่วย — ควรคุยโค้ชสัปดาห์นี้';
+  h += `<section class="card prof"><div class="pav">${esc(String(x.n).slice(0, 1))}</div>
+    <div class="col" style="gap:4px"><span class="sub">ชื่อเล่น</span><span style="font-size:24px;font-weight:700;font-family:var(--serif)">${esc(x.n)}</span>
+      <span class="sub">ทีมออนไลน์ · ยอด ${baht(x.s)}${x.t ? ` / เป้า ${baht(x.t)} (${pct0(x.pct)})` : ''}</span><span style="font-weight:600;color:${x.score == null ? 'var(--mute)' : scColor(x.score)}">${verdict}</span></div>
+    <div class="score">${x.score != null ? `<div class="v" style="color:${scColor(x.score)}">${x.score}</div><div class="col" style="gap:2px"><span class="sub">Admin Score / 100</span><b>อันดับ ${x.rank} จาก ${n}</b>${move ? `<span class="dl ${move > 0 ? 'up' : 'dn'}">${move > 0 ? '▲' : '▼'} ${Math.abs(move)} อันดับจากช่วงก่อน</span>` : ''}</div>` : `<div class="v mute2">—</div><span class="sub">Admin Score</span>`}</div></section>`;
+  const cmp = (l, v, m, fmt, inv, unit) => { const dd = v != null && m ? (inv ? (m - v) / m : (v - m) / m) : null;
+    return `<div class="mini"><div class="sub">${l}</div><div class="v num">${fmt(v)}</div><div class="s sub">ทีม ${m ? fmt(m) : '—'}${dd != null ? ` · <b class="${dd >= 0 ? 'c-g' : 'c-b'}">${dd >= 0 ? (inv ? 'เร็วกว่า' : 'ดีกว่า') : (inv ? 'ช้ากว่า' : 'แย่กว่า')}ทีม ${Math.abs(dd * 100).toFixed(0)}%</b>` : ''}</div></div>`; };
+  h += `<section class="card col">${cardH('เทียบค่ากลางทีม', 'ช่วงเดียวกัน')}<div class="cmpk">
+    ${cmp('ยอดขาย', x.s, M.s, v => v == null ? '—' : baht(v))}${cmp('CR% (บิล ÷ แชตรับ)', x.cr, M.cr, pct1)}${cmp('Upsell%', x.up, M.up, pct1)}
+    ${cmp('เวลาตอบเฉลี่ย', x.fr, M.fr, v => v ? v.toFixed(1) + ' นาที' : '—', true)}${cmp('ตอบใน 10 นาที', x.r10, M.r10, pct0)}${cmp('แชตรับ', x.ch || null, M.ch, v => v ? int(v) : '—')}</div></section>`;
+  // 5 มิติ + รายเดือน
+  const dims = x.dims ? `<div class="col" style="gap:12px">${Object.keys(ADM_W).sort((p, q) => x.dims[q] - x.dims[p]).map(k => `<div class="dim"><span>${DIM_N[k]} <span class="sub">· ${ADM_W[k]}%</span></span><span class="sbar"><i style="width:${x.dims[k]}%;background:${barColor(x.dims[k])}"></i><u></u></span><b class="num" style="color:${scColor(x.dims[k])}">${x.dims[k]}</b></div>`).join('')}
+    <span class="sub" style="font-size:12px">เส้นเทา = ค่ากลางทีม (70)</span></div>` : '<span class="sub">ยังไม่มีคะแนนแยกมิติในช่วงนี้</span>';
+  const ms = [0, 1, 2].map(i => addM(CUR, -i)), MA = ms.map(m => { const [p, q] = moRange(m); const r = admRows(p, q); return r.all.find(z => z.i === x.i) || null; });
+  const mt = (l, f) => `<tr><td>${l}</td>${MA.map(z => `<td>${z ? f(z) : '—'}</td>`).join('')}</tr>`;
+  h += `<section class="g2"><div class="card col">${cardH('คะแนนแยก 5 มิติ')}${dims}</div>
+    <div class="card col">${cardH('เทียบรายเดือน · ล่าสุดก่อน')}<div class="tw"><table class="tb"><tr><th>ตัวชี้วัด</th>${ms.map(m => `<th>${TH_MON[+m.slice(5) - 1]}${m === CUR ? '*' : ''}</th>`).join('')}</tr>
+      ${mt('Score', z => z.score != null ? `<b style="color:${scColor(z.score)}">${z.score}</b>` : '—')}${mt('ยอดขาย', z => baht(z.s))}${mt('% เป้า', z => pct0(z.pct))}${mt('CR%', z => pct1(z.cr))}${mt('ตอบเฉลี่ย', z => z.fr ? z.fr.toFixed(1) + ' น.' : '—')}${mt('แชตรับ', z => z.ch ? int(z.ch) : '—')}</table></div>
+      <span class="sub" style="font-size:12px">* ${TH_MON[+CUR.slice(5) - 1]} = 1–${+LAST.slice(8)} · Zaapi เริ่ม ก.ค. 2569</span></div></section>`;
+  // funnel + โค้ช
+  const good = x.dims ? Object.keys(x.dims).filter(k => x.dims[k] >= 80).map(k => DIM_GOOD[k]) : [];
+  const weak = x.dims ? Object.keys(x.dims).sort((p, q) => x.dims[p] - x.dims[q])[0] : null;
+  const fn = [['แชตรับ', x.ch, ''], ['บิลที่ปิดได้', x.b, x.ch ? pct1(x.bw / x.ch) + ' ของแชต' : ''], ['บิล Upsell (≥ 2 รายการ)', x.u, x.b ? pct1(x.u / x.b) + ' ของบิล' : '']];
+  const fmax = Math.max(1, ...fn.map(f => f[1] || 0));
+  h += `<section class="g2"><div class="card col">${cardH('Funnel ส่วนตัว')}${fn.map(([l, v, r]) => `<div class="col" style="gap:4px"><div class="ch" style="font-size:14px"><span>${l}</span><span><b class="num">${v ? int(v) : '—'}</b> <span class="sub">${r}</span></span></div><span class="sbar"><i style="width:${(v || 0) / fmax * 100}%;background:var(--sage)"></i></span></div>`).join('')}</div>
+    <div class="card col">${cardH('สรุปสำหรับคุยกับแอดมิน')}<div><div class="sub" style="font-weight:600;color:var(--good)">จุดแข็ง</div><div style="font-size:14px;margin-top:4px">${good.length ? good.map(esc).join(' · ') : (x.dims ? 'ยังไม่มีมิติที่โดดเด่นเกิน 80 คะแนน' : '—')}</div></div>
+      <div><div class="sub" style="font-weight:600;color:var(--bad)">โฟกัสช่วงนี้</div><div style="font-size:14px;margin-top:4px">${weak ? esc(DIM_TIP[weak]) : (x.pct != null && x.pct < 1 ? 'ยอดยังไม่ถึงเป้า — ติดตามแชตค้างและลูกค้าที่ทักแต่ยังไม่ปิด' : '—')}</div></div>
+      <span class="sub" style="font-size:12px">สร้างจากกฎอัตโนมัติ (มิติคะแนน ≥ 80 = จุดแข็ง · มิติต่ำสุด = โฟกัส)</span></div></section>`;
+  return h;
+}
+/* heatmap แชตเข้า วัน × ช่วงเวลา (เฉลี่ยต่อสัปดาห์) */
+function admShift(a, b, full) {
+  const wrap = t => full ? t : `<div class="card col" style="gap:12px">${t}</div>`;
+  if (!ADM || !ADM.H) return wrap(cardH('แชตเข้า × ช่วงเวลา → วางกะ') + '<span class="sub">ยังไม่มีข้อมูลจาก Zaapi</span>');
+  const sum = [...Array(7)].map(() => new Array(8).fill(0)); let wk = 0; const ps = [];
+  for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) { const hm = ADM.H[m]; if (!hm) continue; const s = maxS(a, hm.f), e = minS(minS(b, hm.t), LAST); if (s > e) continue;
+    const f = nDays(s, e) / nDays(hm.f, hm.t); wk += nDays(s, e) / 7; ps.push(rangeTH(s, e)); hm.d.forEach((r, i) => r.forEach((v, j) => sum[i][j] += v * f)); }
+  if (!wk) return wrap(cardH('แชตเข้า × ช่วงเวลา → วางกะ') + '<span class="sub">ไม่มีข้อมูลแชตรายช่วงเวลาในช่วงที่เลือก (Zaapi เริ่ม ก.ค. 2569)</span>');
+  const avg = sum.map(r => r.map(v => v / wk)), mx = Math.max(...avg.flat()) || 1, DN = ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'], SL = ['0–3', '3–6', '6–9', '9–12', '12–15', '15–18', '18–21', '21–24'];
+  const tot = avg.map(r => r.reduce((x, y) => x + y, 0)), slotT = SL.map((_, j) => avg.reduce((t, r) => t + r[j], 0)), all = slotT.reduce((x, y) => x + y, 0);
+  let pk = [0, 0]; avg.forEach((r, i) => r.forEach((v, j) => { if (v > avg[pk[0]][pk[1]]) pk = [i, j]; }));
+  const cell = v => { const t = v / mx, l = Math.round(96 - t * 52); return `<span class="num" style="background:hsl(88,18%,${l}%);color:${l < 62 ? '#fff' : 'var(--ink)'}">${int(v)}</span>`; };
+  let g = `<div class="hm"><span class="hd"></span>${SL.map(s => `<span class="hd">${s}</span>`).join('')}<span class="hd">ทั้งวัน</span>
+    ${avg.map((r, i) => `<span class="dn">${DN[i]}</span>${r.map(cell).join('')}<span class="num" style="font-weight:600">${int(tot[i])}</span>`).join('')}
+    ${full ? `<span class="dn">% ของวัน</span>${slotT.map(v => `<span class="num sub">${pct0(v / all)}</span>`).join('')}<span></span>` : ''}</div>`;
+  const head = cardH('แชตเข้า × ช่วงเวลา → วางกะ', `เฉลี่ยต่อสัปดาห์ · ${esc(ps.join(' · '))} · เข้มขึ้น = แชตมาก`);
+  if (!full) return wrap(head + g);
+  const busy = DN.map((d, i) => [d, tot[i]]).sort((x, y) => y[1] - x[1]);
+  return `<section class="card col">${head}${g}<span class="sub">รวม FB + IG + LINE · แชตมากสุด: วัน${DN[pk[0]]} ช่วง ${SL[pk[1]]} น. (${int(avg[pk[0]][pk[1]])} แชต/สัปดาห์) · วันที่แชตเยอะสุด: ${busy.slice(0, 2).map(z => z[0]).join(', ')} · น้อยสุด: ${busy[6][0]}</span></section>
+    <section class="card col">${cardH('ข้อแนะนำการวางกะ')}<div class="col" style="gap:8px;font-size:14px">
+      <div>• ช่วงที่ควรมีคนมากที่สุด: <b>${SL.map((s, j) => [s, slotT[j]]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(z => z[0] + ' น.').join(', ')}</b> (รวม ${pct0(SL.map((_, j) => slotT[j]).sort((x, y) => y - x).slice(0, 3).reduce((x, y) => x + y, 0) / all)} ของแชตทั้งวัน)</div>
+      <div>• ช่วงกลางคืน 0–6 น. มีแชต ${pct0((slotT[0] + slotT[1]) / all)} ของทั้งวัน — ตั้งข้อความตอบกลับอัตโนมัติ + รับเรื่องต่อช่วงเช้า</div>
+      <div>• จำนวนคนในกะจริงยังไม่ได้เชื่อม (รอสเตอร์มีแค่วันหยุด/วันลา) — เมื่อใส่ตารางกะ ระบบจะแสดงกรอบแดงช่วงที่เกิน 25 แชตต่อแอดมิน</div></div></section>`;
 }
 
-/* ---------- หน้า การตลาด ---------- */
+/* ================= เทียบรายเดือน ================= */
+function moList() { const out = []; const n = S.mo.n === 'ytd' ? +CUR.slice(5) : S.mo.n; for (let i = 0; i < n; i++) { const m = addM(CUR, -i); if (m < MONTHS[0]) break; out.push(m); } return out; }
+function moRange(m) { return [m + '-01', minS(mEnd(m), LAST)]; }
+function moRef(m) { const pm = addM(m, -1); if (m !== CUR) return [pm + '-01', mEnd(pm)]; return [pm + '-01', pm + '-' + pad(Math.min(+LAST.slice(8), dim(pm)))]; }
+function moK(a, b, pi) { const R = sumRange(a, b, pi), k = kpis(R.o), t = target(a, b, pi);
+  return { ...k, tot: k.online + k.branch, pOn: t.on ? k.online / t.on : null, pBr: t.br ? k.branch / t.br : null, pT: (t.on + t.br) ? (k.online + k.branch) / (t.on + t.br) : null, has: R.has, approx: R.approx }; }
+const MO_FMT = { b: v => v ? baht(v) : '—', n: v => v ? int(v) : '—', x: xR, p: pct0, q: v => v ? pct1(v) : '—' };
+const MO_ROWS = [
+  ['โฆษณา', [['ค่าโฆษณา (ไม่รวม VAT)', 'spend', 'b', 0, 'งบ'], ['แชตใหม่', 'chats', 'n'], ['฿ / แชต', 'cpc', 'b', 1], ['ROAS ออนไลน์', 'roas', 'x'], ['ROAS รวม', 'roasT', 'x']]],
+  ['Funnel', [['บิลออนไลน์', 'bills', 'n'], ['CR% แชต → บิล', 'cr', 'q'], ['ลูกค้าใหม่', 'newp', 'n'], ['CAC', 'cac', 'b', 1]]],
+  ['ยอดขาย', [['ยอดออนไลน์', 'online', 'b'], ['% เป้าออนไลน์', 'pOn', 'p'], ['ยอด / บิล', 'spb', 'b'], ['ยอดหน้าสาขา', 'branch', 'b'], ['% เป้าหน้าสาขา', 'pBr', 'p']]],
+  ['ธุรกิจ', [['ยอดรวม (ออนไลน์ + สาขา)', 'tot', 'b'], ['% เป้ารวม', 'pT', 'p']]]
+];
+const pcCls = v => v == null ? '' : v >= 1 ? 'c-g' : v >= .9 ? 'c-w' : 'c-b';
+function moDelta(c, r, inv, neutral) { if (!r || !c || c / r > 20) return ''; const p = (c - r) / Math.abs(r), up = p >= 0, good = inv ? !up : up;
+  return `<div style="font-size:11px;font-weight:600;color:${neutral ? 'var(--mute2)' : good ? 'var(--good)' : 'var(--bad)'}">${up ? '▲' : '▼'}${Math.abs(p * 100).toFixed(0)}%</div>`; }
+function signal(vs, kind) {   // vs: ล่าสุดก่อน
+  const v = vs.filter(x => x != null && isFinite(x) && x > 0); if (v.length < 2) return '';
+  if (kind === 'roas' && v[0] < 1) return `<span class="tag bad">ต่ำกว่า 1.0${v[1] < 1 ? ' 2 เดือนติด' : ''}</span>`;
+  if (kind === 'score' && v[0] < 65) return '<span class="tag bad">ต้องช่วย</span>';
+  if (v.length >= 3 && v[0] > v[1] && v[1] > v[2]) return '<span class="tag good">ขึ้นต่อเนื่อง 3 เดือน</span>';
+  if (v.length >= 3 && v[0] < v[1] && v[1] < v[2]) return '<span class="tag warn">ลงต่อเนื่อง 3 เดือน</span>';
+  return '';
+}
+function renderMonthly() {
+  const ms = moList(), tabs = [['kpi', 'ตัวชี้วัด'], ['br', 'สาขา × เดือน']].concat(ADM ? [['ad', 'Admin Score × เดือน']] : []);
+  if (S.mo.tab === 'ad' && !ADM) S.mo.tab = 'kpi';
+  const head = ms.map((m, i) => `<th${i ? '' : ' style="color:var(--ink);font-weight:600"'}>${monTH(m)}${m === CUR ? `<br><span class="sub" style="font-size:11px">1–${+LAST.slice(8)}</span>` : ''}</th>`).join('');
+  let h = ph('เทียบรายเดือน', `เดือนล่าสุดอยู่ซ้ายสุด · เดือนปัจจุบันเทียบวันที่เดียวกันของเดือนก่อน (1–${+LAST.slice(8)}) · เดือนอื่นเทียบทั้งเดือน`, ['<span class="real">เดือนที่ปิดแล้ว ล็อกตัวเลขทุกวันที่ 3</span>']);
+  h += `<nav class="stabs" id="moTab">${tabs.map(([k, l]) => `<a data-v="${k}" class="${S.mo.tab === k ? 'on' : ''}">${l}</a>`).join('')}</nav>`;
+  const csv = []; let body = '';
+  if (S.mo.tab === 'kpi') {
+    const pi = S.page, K = ms.map(m => { const [a, b] = moRange(m); return moK(a, b, pi); }), KR = ms.map(m => { const [a, b] = moRef(m); return moK(a, b, pi); });
+    csv.push(['ตัวชี้วัด · ' + (pi < 0 ? 'ทั้งเครือ' : SNAP.P[pi].n)].concat(ms.map(monTH)));
+    body = `<table class="tb stk"><tr><th>${esc(pi < 0 ? 'ทั้งเครือ' : SNAP.P[pi].n)}</th><th class="l">แนวโน้ม ${ms.length} เดือน</th>${head}</tr>`;
+    MO_ROWS.forEach(([g, rows]) => {
+      body += `<tr class="gh"><td colspan="${ms.length + 2}">${g}</td></tr>`;
+      rows.forEach(([l, k, f, inv, neu]) => {
+        const vs = K.map((x, i) => x.has ? x[k] : null), nz = vs.map((v, i) => [v, i]).filter(z => z[0] != null && z[0] > 0 && ms[z[1]] !== CUR);
+        const best = nz.length > 2 && !neu ? nz.slice().sort((p, q) => inv ? p[0] - q[0] : q[0] - p[0])[0][1] : -1, worst = nz.length > 2 && !neu ? nz.slice().sort((p, q) => inv ? q[0] - p[0] : p[0] - q[0])[0][1] : -1;
+        body += `<tr><td>${l}</td><td class="l">${spark(vs, inv)}</td>` + vs.map((v, i) => `<td style="${i === best ? 'box-shadow:inset 0 0 0 2px #7FA06A;' : i === worst ? 'box-shadow:inset 0 0 0 2px #D9A294;' : ''}${i ? '' : 'font-weight:600'}" class="${f === 'p' ? pcCls(v) : ''}">${K[i].has ? MO_FMT[f](v) : '—'}${K[i].approx && f !== 'p' ? '<span class="approx">≈</span>' : ''}${f === 'p' ? '' : moDelta(v, KR[i][k], inv, neu)}</td>`).join('') + '</tr>';
+        csv.push([l].concat(vs.map(v => v == null ? '' : f === 'p' || f === 'q' ? (v * 100).toFixed(1) + '%' : f === 'x' ? v.toFixed(2) : Math.round(v))));
+      });
+    });
+    body += '</table>';
+    body = `<section class="card col" style="gap:12px">${cardH('ตัวชี้วัด × เดือน', `<span class="lg"><span><i style="box-shadow:inset 0 0 0 2px #7FA06A"></i>เดือนที่ดีที่สุด</span><span><i style="box-shadow:inset 0 0 0 2px #D9A294"></i>แย่ที่สุด</span></span>`)}<div class="tw">${body}</div>
+      <span class="sub" style="font-size:12px">สีของ % ตามความหมาย: ยอด/ROAS ขึ้น = เขียว · ต้นทุนขึ้น (฿/แชต, CAC) = แดง · งบ = เทา · % เป้า: เขียว ≥ 100% · เหลือง 90–99% · แดง &lt; 90% · — = ไม่มีข้อมูลต้นทาง</span></section>`;
+  } else if (S.mo.tab === 'br') {
+    const MET = [['roas', 'ROAS ออนไลน์', 'x'], ['roasT', 'ROAS รวม', 'x'], ['pBr', '% เป้าหน้าสาขา', 'p'], ['branch', 'ยอดหน้าสาขา', 'b'], ['online', 'ยอดออนไลน์', 'b'], ['spend', 'ค่าโฆษณา', 'b']];
+    const [k, lab, f] = MET.find(x => x[0] === S.mo.bm) || MET[0];
+    const rows = SNAP.P.map((p, i) => ({ p, i })).filter(x => x.p.b).map(x => ({ c: x.p.c, n: x.p.n, v: ms.map(m => { const [a, b] = moRange(m); return moK(a, b, x.i); }) }));
+    rows.sort((x, y) => (y.v[0][k] || 0) - (x.v[0][k] || 0));
+    const all = rows.flatMap(r => r.v.map(x => x[k])).filter(v => v), lo = Math.min(...all), hi = Math.max(...all);
+    body = `<section class="card col" style="gap:12px">${cardH(`${lab} รายสาขา × เดือน`, 'เรียงตามเดือนล่าสุด · ไม่รวม TH และ LINE OA')}
+      <div class="pills" id="moBm">${MET.map(([c, l]) => `<button class="pill sm${k === c ? ' on' : ''}" data-k="${c}">${l}</button>`).join('')}</div>
+      <div class="tw"><table class="tb stk"><tr><th>สาขา</th>${head}<th class="l">สัญญาณ</th></tr>` + rows.map(r => `<tr><td><b>${esc(r.c)}</b> · ${esc(r.n)}</td>` + r.v.map(x => { const v = x[k];
+        return `<td style="${f === 'b' ? heatBg(v, lo, hi) : ''}" class="${f === 'p' ? pcCls(v) : ''}" >${!x.has ? '—' : f === 'x' ? rc(v) : MO_FMT[f](v)}</td>`; }).join('') + `<td class="l">${signal(r.v.map(x => x[k]), f === 'x' ? 'roas' : '')}</td></tr>`).join('')
+      + (f === 'b' ? `<tr class="md"><td>รวม ${rows.length} สาขา</td>${ms.map((m, j) => `<td>${baht(rows.reduce((s, r) => s + (r.v[j][k] || 0), 0))}</td>`).join('')}<td></td></tr>` : '') + `</table></div>
+      ${f === 'x' ? '<div class="lg"><span><i class="rc4"></i>≥ 2.0 ดีมาก</span><span><i class="rc3"></i>1.5 – 1.99 ผ่าน</span><span><i class="rc2"></i>1.0 – 1.49 ต่ำกว่าเกณฑ์</span><span><i class="rc1"></i>&lt; 1.0 ขาดทุนค่าแอด</span></div>' : ''}
+      <span class="sub" style="font-size:12px">ยอดออนไลน์รายสาขา${S.attr === 'page' ? 'ตามเพจที่ลูกค้าทัก' : 'ตามสาขาที่ใช้บริการ'} (สลับได้ที่ตัวกรองด้านบน)</span></section>`;
+    csv.push(['สาขา · ' + lab].concat(ms.map(monTH))); rows.forEach(r => csv.push([r.c + ' ' + r.n].concat(r.v.map(x => x[k] == null ? '' : f === 'p' ? (x[k] * 100).toFixed(1) + '%' : f === 'x' ? x[k].toFixed(2) : Math.round(x[k])))));
+  } else {
+    const per = ms.map(m => { const [a, b] = moRange(m); return admRows(a, b); });
+    const ids = [...new Set(per.flatMap(p => p.all.filter(x => x.rk).map(x => x.i)))];
+    const rows = ids.map(i => ({ n: (ADM.L[i] || {}).n || i, v: per.map(p => p.all.find(x => x.i === i) || null) }));
+    rows.sort((x, y) => ((y.v[0] || {}).score || -1) - ((x.v[0] || {}).score || -1) || ((y.v[0] || {}).s || 0) - ((x.v[0] || {}).s || 0));
+    body = `<section class="card col" style="gap:12px">${cardH('Admin Score รายคน × เดือน', 'มีตั้งแต่ ก.ค. 2569 (เริ่มใช้ Zaapi) · เดือนก่อนหน้าแสดง % เป้ายอดขาย')}
+      <div class="tw"><table class="tb stk"><tr><th>แอดมิน</th>${head}<th class="l">สัญญาณ</th></tr>` + rows.map(r => `<tr class="ck" data-adm="${r.v.find(Boolean) ? r.v.find(Boolean).i : ''}"><td><b>${esc(r.n)}</b></td>` + r.v.map(x => !x ? '<td>—</td>' : x.score != null
+        ? `<td><b style="color:${scColor(x.score)}">${x.score}</b><div class="sub" style="font-size:11px">${baht(x.s)}</div></td>` : `<td class="${pcCls(x.pct)}">${pct0(x.pct)}<div class="sub" style="font-size:11px">${baht(x.s)}</div></td>`).join('')
+        + `<td class="l">${signal(r.v.map(x => x && x.score), 'score')}</td></tr>`).join('') + '</table></div></section>';
+    csv.push(['แอดมิน'].concat(ms.flatMap(m => [monTH(m) + ' Score', monTH(m) + ' ยอด']))); rows.forEach(r => csv.push([r.n].concat(r.v.flatMap(x => x ? [x.score == null ? '' : x.score, Math.round(x.s)] : ['', '']))));
+  }
+  h += body + `<div class="ch"><span class="note">ปี 2568 – เม.ย. 2569 ค่าโฆษณา/แชตตาม Total Sale Monitoring · ยอดออนไลน์ก่อน ก.ค. 2569 ตาม TSM · ค่าโฆษณาไม่รวม VAT ทุกเดือน</span><button class="pill sm" id="moCsv">⬇︎ ดาวน์โหลด CSV</button></div>`;
+  $('app').innerHTML = h;
+  $('moTab').onclick = e => { const t = e.target.closest('a'); if (!t) return; S.mo.tab = t.dataset.v; go(); };
+  if ($('moBm')) $('moBm').onclick = e => { const t = e.target.closest('button'); if (!t) return; S.mo.bm = t.dataset.k; render(); };
+  document.querySelectorAll('[data-adm]').forEach(x => x.onclick = () => { if (x.dataset.adm === '') return; S.aSel = +x.dataset.adm; S.atab = 'ind'; nav('ad'); });
+  $('moCsv').onclick = () => csvDown(`mersi_รายเดือน_${S.mo.tab}_${CUR}.csv`, csv);
+}
+
+/* ================= สาขา ================= */
+function renderBranches() {
+  const [a, b] = period(), rp = refPeriod(a, b), curM = S.mode === 'month' && S.m === CUR;
+  const rows = SNAP.P.map((p, i) => ({ p, i })).filter(x => x.p.b).map(x => {
+    const R = sumRange(a, b, x.i), k = kpis(R.o), t = target(a, b, x.i), RR = rp ? sumRange(rp[0], rp[1], x.i) : null, kr = RR && RR.has ? kpis(RR.o) : null;
+    return { i: x.i, c: x.p.c, n: x.p.n, ...k, tBr: t.br, tOn: t.on, pct: t.br ? k.branch / t.br : null, pctOn: t.on ? k.online / t.on : null, kr, approx: R.approx };
+  }).filter(x => x.branch || x.online || x.spend);
+  let h = ph('สาขา', `${esc(rangeTH(a, b))} · ${rows.length} สาขา · ข้อมูลถึง ${dTH(LAST)}${rp ? ` · เทียบ ${esc(rangeTH(rp[0], rp[1]))}` : ''}`,
+    [`<span class="real">ออนไลน์${S.attr === 'page' ? 'ตามเพจที่ลูกค้าทัก' : 'ตามสาขาที่ใช้บริการ'}</span>`]);
+  if (!rows.length) { $('app').innerHTML = h + empty('ยังไม่มีข้อมูลในช่วงนี้'); return; }
+  const key = { pct: x => x.pct || 0, branch: x => x.branch, online: x => x.online, roas: x => x.roas, growth: x => x.kr && x.kr.branch ? x.branch / x.kr.branch : -9 }[S.bsort] || (x => x.pct || 0);
+  rows.sort((x, y) => key(y) - key(x));
+  const T = rows.reduce((o, x) => { o.br += x.branch; o.on += x.online; o.sp += x.spend; o.t += x.tBr; o.to += x.tOn; return o; }, { br: 0, on: 0, sp: 0, t: 0, to: 0 });
+  const TR = rp ? rows.reduce((o, x) => { if (x.kr) { o.br += x.kr.branch; o.on += x.kr.online; o.sp += x.kr.spend; } return o; }, { br: 0, on: 0, sp: 0 }) : null;
+  const onTrack = rows.filter(x => x.pct != null && x.pct >= 1).length;
+  h += '<section class="kpis">' + [
+    kc('ยอดหน้าสาขารวม', baht(T.br), T.t ? `${pct0(T.br / T.t)} ของเป้า ${baht(T.t)}` : '', dl(T.br, TR && TR.br)),
+    kc(`ถึงเป้า${curM ? 'ตามจำนวนวัน' : ''}`, `${onTrack}/${rows.length}`, 'สาขา', ''),
+    kc('ยอดออนไลน์รวม (ทุกสาขา)', baht(T.on), T.to ? `${pct0(T.on / T.to)} ของเป้า` : '', dl(T.on, TR && TR.on)),
+    kc('ค่าโฆษณา (เพจสาขา)', baht(T.sp), 'ไม่รวม VAT', dl(T.sp, TR && TR.sp, true)),
+    kc('ROAS ออนไลน์', xR(T.sp ? T.on / T.sp : 0), `ROAS รวม ${xR(T.sp ? (T.on + T.br) / T.sp : 0)}`, TR && TR.sp ? dl(T.on / T.sp, TR.on / TR.sp) : ''),
+    kc('ยอดรวม (ออนไลน์ + สาขา)', baht(T.on + T.br), (T.t + T.to) ? `${pct0((T.on + T.br) / (T.t + T.to))} ของเป้ารวม` : '', dl(T.on + T.br, TR && TR.on + TR.br))
+  ].join('') + '</section>';
+  h += `<div class="ch"><div class="pills" id="bsort"><span class="sub" style="align-self:center;margin-right:4px">เรียงตาม</span>${[['pct', '% เป้าหน้าสาขา'], ['branch', 'ยอดหน้าสาขา'], ['online', 'ยอดออนไลน์'], ['roas', 'ROAS ออนไลน์'], ['growth', 'โตขึ้นมากสุด']]
+    .map(([k, l]) => `<button class="pill sm${S.bsort === k ? ' on' : ''}" data-k="${k}">${l}</button>`).join('')}</div></div>`;
+  h += '<section class="blist">' + rows.map((x, n) => {
+    const pc = x.pct == null ? '' : x.pct >= 1 ? 'c-g' : x.pct >= 0.9 ? 'c-w' : 'c-b';
+    return `<div class="card bcard" data-go="ov" data-page="${x.i}"><div class="top2"><span class="sub num" style="min-width:20px">${n + 1}</span><span class="nm">${esc(x.c)} · ${esc(x.n)}</span><span class="pc ${pc}">${pct0(x.pct)}</span></div>
+      <div class="amt num">${baht(x.branch)} <span class="sub">/ เป้า ${x.tBr ? baht(x.tBr) : '—'}</span>${x.approx ? ' <span class="approx">≈</span>' : ''}</div>
+      <div class="tbar" style="height:10px"><i style="height:10px;width:${Math.min(100, (x.pct || 0) * 100)}%;background:${pc === 'c-g' ? 'var(--sage)' : pc === 'c-w' ? 'var(--gold)' : 'var(--clay)'}"></i></div>
+      <div class="rw"><span>ออนไลน์ <b>${baht(x.online)}</b>${x.pctOn != null ? ` (${pct0(x.pctOn)})` : ''}</span><span>ค่าแอด <b>${baht(x.spend)}</b></span><span>ROAS ${rc(x.roas)}</span><span>รวม <b>${xR(x.roasT)}</b></span>${x.chats ? `<span>แชต <b>${int(x.chats)}</b></span>` : ''}</div>
+      ${S.cmp !== 'none' && x.kr ? `<div class="rw">หน้าสาขา ${dl(x.branch, x.kr.branch)}</div>` : ''}</div>`;
+  }).join('') + '</section>';
+  h += `<div class="note">ROAS ออนไลน์ = ยอดขายออนไลน์ ÷ ค่าโฆษณา · ROAS รวม = (ยอดออนไลน์ + ยอดหน้าสาขา) ÷ ค่าโฆษณา · % เป้า = ยอดหน้าสาขา ÷ เป้าตามจำนวนวันในช่วง (เขียว ≥ 100% · เหลือง 90–99% · แดง &lt; 90%) · แตะการ์ดเพื่อดูภาพรวมของสาขานั้น</div>`;
+  $('app').innerHTML = h; bindGo();
+  $('bsort').onclick = e => { const t = e.target.closest('button'); if (!t) return; S.bsort = t.dataset.k; render(); };
+}
+
+/* ================= การตลาด ================= */
 function sumProg(a, b) {
   const G = SNAP.G || [], out = G.map(() => [0, 0, 0, 0]); let approx = false, has = false;
   if (!a || !b || b < a) return { out, approx, has };
@@ -660,199 +966,81 @@ function sumProg(a, b) {
   }
   return { out, approx, has };
 }
+/* เพจ × โปรแกรม: เต็มเดือน = MPG · ไม่เต็มเดือน = รายวัน (62 วันล่าสุด) หรือเฉลี่ยจากรายเดือน */
+function sumPG(a, b) {
+  const o = {}; let approx = false; const add = (r, f) => { const k = r[0] + '|' + r[1], x = o[k] || (o[k] = [r[0], r[1], 0, 0, 0, 0]); for (let i = 2; i < 6; i++) x[i] += r[i] * f; };
+  for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) {
+    const ms = m + '-01', me = mEnd(m), s = maxS(a, ms), e = minS(b, me), lastEff = m === CUR ? LAST : me, mm = (SNAP.MPG || {})[m];
+    if (s === ms && e >= lastEff && mm) { mm.forEach(r => add(r, 1)); continue; }
+    let hit = false; for (let d = s; d <= e; d = addD(d, 1)) ((SNAP.DPG || {})[d] || []).forEach(r => { add(r, 1); hit = true; });
+    if (!hit && mm) { mm.forEach(r => add(r, nDays(s, e) / (m === CUR ? nDays(ms, LAST) : dim(m)))); approx = true; }
+  }
+  return { rows: Object.values(o), approx };
+}
 function renderMarketing() {
   const [a, b] = period(), rp = refPeriod(a, b), G = SNAP.G || [];
+  const R = sumRange(a, b, -1), K = kpis(R.o), RR = rp ? sumRange(rp[0], rp[1], -1) : null, KR = RR && RR.has ? kpis(RR.o) : null;
+  let h = ph('การตลาด', `เงินโฆษณาคุ้มไหม ควรเพิ่มหรือลดที่ไหน · ${esc(rangeTH(a, b))}${rp ? ` · เทียบ ${esc(rangeTH(rp[0], rp[1]))}` : ''} · ข้อมูลถึง ${dTH(LAST)}`,
+    ['<span class="real">Meta · ค่าโฆษณาไม่รวม VAT</span>', a < '2026-05-01' ? '<span class="mock">ก่อน พ.ค. 2569 = TSM + ไฟล์สรุปยิงAds</span>' : '']);
+  h += `<nav class="stabs" id="mtab">${[['roas', 'ภาพรวม & ROAS'], ['prog', 'โปรแกรม']].map(([k, l]) => `<a data-k="${k}" class="${S.mtab === k ? 'on' : ''}">${l}</a>`).join('')}</nav>`;
+  h += '<section class="kpis k8">' + [
+    kc('ค่าโฆษณา', baht(K.spend), '', dl(K.spend, KR && KR.spend, true)), kc('ยอดขายออนไลน์', baht(K.online), '', dl(K.online, KR && KR.online)),
+    kc('ROAS ออนไลน์', xR(K.roas), K.roas ? rTxt(K.roas) : '', dl(K.roas, KR && KR.roas)), kc('แชตใหม่', K.chats ? int(K.chats) : '—', '', dl(K.chats, KR && KR.chats)),
+    kc('฿ / แชต', K.cpc ? '฿' + int(K.cpc) : '—', '', dl(K.cpc, KR && KR.cpc, true)), kc('บิลออนไลน์', K.bills ? int(K.bills) : '—', '', dl(K.bills, KR && KR.bills)),
+    kc('CR% แชต → บิล', pct1(K.cr || null), '', KR ? dlPt(K.cr, KR.cr) : ''), kc('ยอด / บิล', K.spb ? baht(K.spb) : '—', '', dl(K.spb, KR && KR.spb))
+  ].join('') + '</section>';
+  if (S.mtab === 'prog') h += mkProg(a, b, rp);
+  else h += mkRoas(a, b);
+  h += '<div class="note">ROAS ออนไลน์ = ยอดขายออนไลน์ ÷ ค่าโฆษณา · ยอดนับเข้าเพจที่ลูกค้าทักเข้ามา · ปี 2568 – เม.ย. 2569 ยอดรวมทุกโปรแกรม = Total Sale Monitoring (สัดส่วนตามไฟล์สรุปยิงAds · เม.ย. 2569 ไม่มีไฟล์แยกโปรแกรม) · รายละเอียดระดับแคมเปญ / ชุดโฆษณา / ครีเอทีฟ ดูต่อใน Live Report v22</div>';
+  $('app').innerHTML = h; bindGo();
+  $('mtab').onclick = e => { const t = e.target.closest('a'); if (!t) return; S.mtab = t.dataset.k; render(); };
+  if ($('mks')) $('mks').onclick = e => { const t = e.target.closest('button'); if (!t) return; S.mks = t.dataset.k; render(); };
+}
+function mkRoas(a, b) {
+  const G = SNAP.G || [];
+  if (!SNAP.MPG) return empty('ตาราง เพจ × โปรแกรม ต้องอัปเดต Apps Script <b>30_DASHBOARD_API</b> แล้ว Run <b>DASH_REBUILD</b>');
+  const X = sumPG(a, b); if (!X.rows.length) return empty('ยังไม่มีข้อมูลเพจ × โปรแกรมในช่วงนี้');
+  const pg = {}, gs = {}; let TS = 0;
+  X.rows.forEach(([pi, g, sp, ch, on, bi]) => { const p = pg[pi] || (pg[pi] = { pi, sp: 0, ch: 0, on: 0, bi: 0, g: {} }); p.sp += sp; p.ch += ch; p.on += on; p.bi += bi; p.g[g] = [sp, on, ch]; gs[g] = (gs[g] || 0) + sp; TS += sp; });
+  const top = Object.keys(gs).sort((x, y) => gs[y] - gs[x]).slice(0, 5).map(Number);
+  const key = { sp: x => x.sp, roas: x => x.sp ? x.on / x.sp : 0, on: x => x.on }[S.mks] || (x => x.sp);
+  const rows = Object.values(pg).filter(x => x.sp || x.on).sort((x, y) => key(y) - key(x));
+  const nm = pi => SNAP.P[pi] ? `${SNAP.P[pi].c}` : pi, fullN = pi => SNAP.P[pi] ? SNAP.P[pi].n : '';
+  let h = `<section class="card col" style="gap:12px">${cardH('ROAS ออนไลน์ แยกเพจ × โปรแกรม', 'ยอดขายจริง ÷ ค่าโฆษณา · ยอดนับเข้าเพจที่ลูกค้าทักเข้ามา' + (X.approx ? ' · <span class="approx">≈ บางวันประมาณจากรายเดือน</span>' : ''))}
+    <div class="pills" id="mks"><span class="sub" style="align-self:center;margin-right:4px">เรียงตาม</span>${[['sp', 'ค่าโฆษณา'], ['roas', 'ROAS'], ['on', 'ยอดขาย']].map(([k, l]) => `<button class="pill sm${S.mks === k ? ' on' : ''}" data-k="${k}">${l}</button>`).join('')}</div>
+    <div class="tw"><table class="tb stk"><tr><th>เพจ</th><th>ค่าโฆษณา</th><th>ยอดขาย</th><th>ROAS เพจ</th>${top.map(g => `<th>${esc(G[g] || g)}</th>`).join('')}<th>อื่น ๆ</th></tr>`
+    + rows.map(x => { const oth = Object.keys(x.g).filter(g => !top.includes(+g)).reduce((o, g) => [o[0] + x.g[g][0], o[1] + x.g[g][1]], [0, 0]);
+      return `<tr class="ck" data-go="ov" data-page="${x.pi}"><td><b>${esc(nm(x.pi))}</b> <span class="sub">${esc(fullN(x.pi))}</span></td><td>${baht(x.sp)}</td><td>${baht(x.on)}</td><td>${rc(x.sp ? x.on / x.sp : 0)}</td>${top.map(g => { const c = x.g[g]; return `<td>${c && c[0] ? rc(c[1] / c[0]) : '<span class="mute2">—</span>'}</td>`; }).join('')}<td>${oth[0] ? rc(oth[1] / oth[0]) : '<span class="mute2">—</span>'}</td></tr>`; }).join('')
+    + `</table></div><div class="lg"><span><i class="rc4"></i>≥ 2.0 ดีมาก</span><span><i class="rc3"></i>1.5 – 1.99 ผ่าน</span><span><i class="rc2"></i>1.0 – 1.49 ต่ำกว่าเกณฑ์</span><span><i class="rc1"></i>&lt; 1.0 ขาดทุนค่าแอด</span></div></section>`;
+  const cells = X.rows.filter(r => r[2] >= Math.max(3000, TS * .01)).map(([pi, g, sp, ch, on]) => ({ pi, g, sp, on, roas: on / sp, cpc: ch ? sp / ch : 0 }));
+  const sc = cells.filter(c => c.roas >= 2).sort((x, y) => y.roas - x.roas).slice(0, 6), fx = cells.filter(c => c.roas < 1).sort((x, y) => y.sp - x.sp).slice(0, 6);
+  const li = c => `<div class="brl"><span><b>${esc(nm(c.pi))}</b> · ${esc(G[c.g] || c.g)} <span class="sub">· งบ ${baht(c.sp)}${c.cpc ? ` · ฿${int(c.cpc)}/แชต` : ''}</span></span>${rc(c.roas)}</div>`;
+  h += `<section class="g2"><div class="card col" style="gap:8px">${cardH('ควรเพิ่มงบ (Scale)', 'ROAS ≥ 2.0 และงบ ≥ 1% ของทั้งหมด')}${sc.length ? sc.map(li).join('') : '<span class="sub">ยังไม่มีคู่เพจ × โปรแกรมที่เข้าเกณฑ์</span>'}</div>
+    <div class="card col" style="gap:8px">${cardH('ควรลดหรือแก้ (Fix)', 'ROAS &lt; 1.0 · เรียงตามงบที่ใช้')}${fx.length ? fx.map(li).join('') : '<span class="sub">ไม่มีคู่เพจ × โปรแกรมที่ขาดทุนค่าแอด 👍</span>'}</div></section>`;
+  return h;
+}
+function mkProg(a, b, rp) {
+  const G = SNAP.G || []; if (!SNAP.G) return empty('ข้อมูลหน้าการตลาดยังไม่พร้อม — Run <b>DASH_REBUILD</b>');
   const R = sumProg(a, b), RR = rp ? sumProg(rp[0], rp[1]) : null;
-  const rows = G.map((n, g) => { const o = R.out[g], r = RR && RR.has ? RR.out[g] : null;
-    return { n, sp: o[0], ch: o[1], on: o[2], bi: o[3], roas: o[0] ? o[2] / o[0] : 0, cpc: o[1] ? o[0] / o[1] : 0, rsp: r ? r[0] : null, ron: r ? r[2] : null, rroas: r && r[0] ? r[2] / r[0] : null }; })
-    .filter(x => x.sp || x.on).sort((x, y) => y.sp - x.sp);
-  const T = rows.reduce((o, x) => { o.sp += x.sp; o.ch += x.ch; o.on += x.on; return o; }, { sp: 0, ch: 0, on: 0 });
-  let h = `<h2>${esc(rangeTH(a, b))} · การตลาด <small>${nDays(a, b)} วัน · ข้อมูลถึง ${dTH(LAST)}${rp ? ` · เทียบ ${esc(rangeTH(rp[0], rp[1]))}` : ''}</small>${R.approx ? '<span class="approx">≈ ประมาณจากยอดรายเดือน</span>' : ''}</h2>`;
-  if (!SNAP.G) h += '<div class="card">ข้อมูลหน้าการตลาดยังไม่พร้อม — ต้องอัปเดต Apps Script <b>30_DASHBOARD_API</b> แล้ว Run <b>DASH_REBUILD</b> + Deploy New version</div>';
-  else if (!rows.length) h += '<div class="card">ยังไม่มีข้อมูลโปรแกรมในช่วงนี้</div>';
-  else {
-    h += `<div class="bsum"><div class="card"><div class="l">ค่าโฆษณา (Meta)</div><div class="n">${baht(T.sp)}</div><div class="l">${rows.length} โปรแกรม</div></div>
-      <div class="card"><div class="l">แชตใหม่</div><div class="n">${T.ch ? int(T.ch) : '—'}</div><div class="l">${T.ch ? '฿' + int(T.sp / T.ch) + ' / แชต' : ''}</div></div>
-      <div class="card"><div class="l">ROAS ออนไลน์</div><div class="n roas r${rLv(T.sp ? T.on / T.sp : 0)}">${T.sp ? (T.on / T.sp).toFixed(2) : '—'}</div><div class="l">ยอด ${baht(T.on)}</div></div></div>`;
-    h += '<h2>แยกตามโปรแกรม <small>เรียงตามค่าโฆษณา</small></h2><div class="pgl">' + rows.map(x => `<div class="card pcard">
-      <div class="top"><span class="nm">${esc(x.n)}</span><span class="pill p${rLv(x.roas)}">ROAS ออนไลน์ ${x.roas ? x.roas.toFixed(2) : '—'}</span></div>
-      <div class="big">${baht(x.sp)} <span class="sh">ค่าแอด · ${T.sp ? (x.sp / T.sp * 100).toFixed(0) : 0}% ของทั้งหมด</span></div>
-      <div class="bar"><i style="width:${T.sp ? x.sp / T.sp * 100 : 0}%;background:var(--brand)"></i></div>
-      <div class="row"><span>ยอดออนไลน์ <b>${baht(x.on)}</b> ${S.cmp !== 'none' && x.ron ? delta(x.on, x.ron) : ''}</span>${x.ch ? `<span>แชต <b>${int(x.ch)}</b></span><span>฿/แชต <b>${int(x.cpc)}</b></span>` : ''}${x.bi ? `<span>บิล <b>${int(x.bi)}</b></span>` : ''}
-      ${S.cmp !== 'none' && x.rsp ? `<span>ค่าแอด ${delta(x.sp, x.rsp, true)}</span>` : ''}</div></div>`).join('') + '</div>';
-  }
-  h += '<div class="note">ปี 2568 – เม.ย. 2569: ยอดรวมทุกโปรแกรม = Total Sale Monitoring (ค่าแอด · แชตใหม่ · ยอดออนไลน์) · สัดส่วนแยกโปรแกรมตามไฟล์ "สรุปยอดขายยิงAds" · เม.ย. 2569 ไม่มีไฟล์แยกโปรแกรม จึงแสดงยอดรวม TSM ก้อนเดียว · ตั้งแต่ พ.ค. 2569 รายโปรแกรมตาม Meta</div>';
-  $('app').innerHTML = h; drawChart(null);
+  const rows = G.map((n, g) => { const o = R.out[g], r = RR && RR.has ? RR.out[g] : null; return { n, sp: o[0], ch: o[1], on: o[2], bi: o[3], roas: o[0] ? o[2] / o[0] : 0, cpc: o[1] ? o[0] / o[1] : 0, ron: r ? r[2] : null }; })
+    .filter(x => x.sp || x.on);
+  const T = rows.reduce((o, x) => { o.sp += x.sp; o.on += x.on; return o; }, { sp: 0, on: 0 });
+  const paid = rows.filter(x => x.sp > 0).sort((x, y) => y.sp - x.sp), free = rows.filter(x => !x.sp && x.on > 0).sort((x, y) => y.on - x.on);
+  let h = `<section class="card col" style="gap:12px">${cardH('สรุปรายโปรแกรม', 'แท่งบน = สัดส่วนงบ · แท่งล่าง = สัดส่วนยอดขาย · ยอดยาวกว่างบ = คุ้ม' + (R.approx ? ' · <span class="approx">≈</span>' : ''))}
+    <div class="tw"><table class="tb"><tr><th>โปรแกรม</th><th>ค่าโฆษณา</th><th>ยอดขาย</th><th>ROAS</th><th>แชต</th><th>฿ / แชต</th><th>บิล</th><th class="l" style="min-width:200px">งบ vs ยอด</th></tr>`
+    + paid.map(x => `<tr><td><b>${esc(x.n)}</b></td><td>${baht(x.sp)}</td><td>${baht(x.on)} ${x.ron ? moDelta(x.on, x.ron) : ''}</td><td>${rc(x.roas)}</td><td>${x.ch ? int(x.ch) : '—'}</td><td>${x.cpc ? '฿' + int(x.cpc) : '—'}</td><td>${x.bi ? int(x.bi) : '—'}</td>
+      <td class="l"><span class="sbar" style="margin-bottom:4px"><i style="width:${T.sp ? x.sp / T.sp * 100 : 0}%;background:#D3D9C6"></i></span><span class="sbar"><i style="width:${T.on ? x.on / T.on * 100 : 0}%;background:var(--sage)"></i></span></td></tr>`).join('') + '</table></div></section>';
+  if (free.length) h += `<section class="card col" style="gap:8px">${cardH('โปรแกรมที่ขายได้แต่ไม่มีงบ', 'ยอดมาจากการ Upsell ในแชต · ทดลองเปิดแอดเล็ก ๆ ได้')}${free.map(x => `<div class="brl"><span>${esc(x.n)}</span><b class="num">${baht(x.on)}</b></div>`).join('')}</section>`;
+  return h;
 }
 
-/* ---------- หน้า แอดมิน (ผู้บริหาร + หัวหน้าแอดมิน) ---------- */
-function admSum(a, b) { const g = {}; for (let d = a; d <= b; d = addD(d, 1)) (ADM.D[d] || []).forEach(x => { const o = g[x[0]] || (g[x[0]] = { s: 0, b: 0, u: 0 }); o.s += x[1]; o.b += x[2]; o.u += x[3] || 0; }); return g; }
-/* แชต Zaapi ของช่วง [a,b]: เดือนที่มีไฟล์ → คิดตามสัดส่วนวันที่ทับกัน · CR% ใช้บิลในวันเดียวกับช่วงแชต */
-function admChat(a, b) {
-  const g = {}, per = []; if (!ADM.C) return { g, per };
-  for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) {
-    const c = ADM.C[m]; if (!c) continue; const s = maxS(a, c.f), e = minS(b, c.t); if (s > e) continue;
-    const f = nDays(s, e) / nDays(c.f, c.t); per.push([s, e]); const bs = admSum(s, e);
-    c.r.forEach(([i, ch, miss, r10w, frw, frn]) => { const o = g[i] || (g[i] = { ch: 0, miss: 0, r10: 0, fr: 0, frn: 0, bw: 0 });
-      o.ch += ch * f; o.miss += miss * f; o.r10 += r10w * f; o.fr += frw * f; o.frn += frn * f; });
-    Object.keys(bs).forEach(i => { if (g[i]) g[i].bw += bs[i].b; });
-  }
-  return { g, per };
-}
-const ADM_W = { s: 30, cr: 25, sp: 20, up: 15, vol: 10 }, ADM_MIN = 100;
-const med = a => { const v = a.filter(x => x > 0).sort((x, y) => x - y); if (!v.length) return 0; const k = v.length >> 1; return v.length % 2 ? v[k] : (v[k - 1] + v[k]) / 2; };
-function admScore(rows) {                        // เทียบค่ากลางทีม: เท่าค่ากลาง = 70 · สูงสุด 100
-  const R = rows.filter(x => x.rk && x.ch >= ADM_MIN); if (R.length < 3) return;
-  const M = { s: med(R.map(x => x.s)), cr: med(R.map(x => x.cr)), r10: med(R.map(x => x.r10)), fr: med(R.map(x => x.fr)), up: med(R.map(x => x.up)), vol: med(R.map(x => x.ch)) };
-  const sc = (v, m) => m && v != null ? Math.max(0, Math.min(100, 70 * v / m)) : 70;
-  R.forEach(x => { x.dim = { s: sc(x.s, M.s), cr: sc(x.cr, M.cr), sp: (sc(x.r10, M.r10) + (x.fr ? Math.max(0, Math.min(100, 70 * M.fr / x.fr)) : 70)) / 2, up: sc(x.up, M.up), vol: sc(x.ch, M.vol) };
-    x.score = Object.keys(ADM_W).reduce((t, k) => t + x.dim[k] * ADM_W[k], 0) / 100; });
-}
-function renderAdmins() {
-  const [a, b] = period(), rp = refPeriod(a, b);
-  const tf = target(a, b, -1).on / (SNAP.T.on || 1);
-  const g = admSum(a, b), gr = rp ? admSum(rp[0], rp[1]) : {}, Z = admChat(a, b);
-  const ids = [...new Set(Object.keys(g).concat(Object.keys(Z.g)))];
-  const all = ids.map(i => { const L = ADM.L[i] || {}, t = (L.t || 0) * tf, r = gr[i], x = g[i] || { s: 0, b: 0, u: 0 }, z = Z.g[i];
-    return { n: L.n || i, rk: L.rk, s: x.s, b: x.b, t, pct: t ? x.s / t : null, rs: r ? r.s : null, up: x.b ? x.u / x.b : null,
-      ch: z ? z.ch : 0, cr: z && z.ch ? z.bw / z.ch : null, r10: z && z.ch ? z.r10 / z.ch : null, fr: z && z.frn ? z.fr / z.frn : null, miss: z ? z.miss : 0, bw: z ? z.bw : 0, score: null }; });
-  admScore(all);
-  const key = { pct: x => x.pct != null ? x.pct : -1, score: x => x.score != null ? x.score : -1, s: x => x.s, cr: x => x.cr != null ? x.cr : -1 }[S.asort] || (x => x.pct);
-  const rows = all.filter(x => x.rk && (x.s || x.ch)).sort((x, y) => key(y) - key(x) || y.s - x.s);
-  const other = all.filter(x => !x.rk && (x.s || x.ch)).sort((x, y) => y.s - x.s);
-  const T = rows.reduce((o, x) => { o.s += x.s; o.b += x.b; o.t += x.t; o.ch += x.ch; o.bw += x.bw; o.r10 += (x.r10 || 0) * x.ch; o.u += (x.up || 0) * x.b; return o; }, { s: 0, b: 0, t: 0, ch: 0, bw: 0, r10: 0, u: 0 });
-  const onT = rows.filter(x => x.pct != null && x.pct >= 1).length, withT = rows.filter(x => x.pct != null).length;
-  const hasZ = Z.per.length > 0, zTxt = hasZ ? Z.per.map(([s, e]) => rangeTH(s, e)).join(' · ') : '';
-  let h = `<h2>${esc(rangeTH(a, b))} · แอดมิน <small>${nDays(a, b)} วัน · ข้อมูลถึง ${dTH(LAST)}${rp ? ` · เทียบ ${esc(rangeTH(rp[0], rp[1]))}` : ''}</small></h2>`;
-  if (!all.length) { $('app').innerHTML = h + '<div class="card">ยังไม่มีข้อมูลยอดขายรายแอดมินในช่วงนี้</div>'; drawChart(null); return; }
-  h += `<div class="bsum"><div class="card"><div class="l">ยอดขายทีมแอดมิน</div><div class="n">${baht(T.s)}</div><div class="l">${T.t ? (T.s / T.t * 100).toFixed(0) + '% ของเป้ารวม ' + baht(T.t) : ''}</div></div>
-    <div class="card"><div class="l">ถึงเป้า${S.mode === 'month' && S.m === CUR ? 'ตามจำนวนวัน' : ''}</div><div class="n">${onT}/${withT}</div><div class="l">คน</div></div>
-    <div class="card"><div class="l">บิล · ยอดเฉลี่ย/บิล</div><div class="n">${int(T.b)}</div><div class="l">${T.b ? baht(T.s / T.b) + ' / บิล' : ''}${T.b ? ` · Upsell ${(T.u / T.b * 100).toFixed(0)}%` : ''}</div></div></div>`;
-  if (hasZ) h += `<div class="bsum" style="margin-top:10px"><div class="card"><div class="l">แชตที่แอดมินรับ (Zaapi)</div><div class="n">${int(T.ch)}</div><div class="l">${esc(zTxt)}</div></div>
-    <div class="card"><div class="l">ปิดการขาย (บิล ÷ แชตรับ)</div><div class="n">${T.ch ? (T.bw / T.ch * 100).toFixed(1) + '%' : '—'}</div><div class="l">บิลในช่วงวันเดียวกับแชต</div></div>
-    <div class="card"><div class="l">ตอบภายใน 10 นาที</div><div class="n">${T.ch ? (T.r10 / T.ch * 100).toFixed(1) + '%' : '—'}</div><div class="l">เฉลี่ยถ่วงตามจำนวนแชต</div></div></div>`;
-  h += '<div class="sortbar" id="asort">' + [['pct', '% เป้า'], ['score', 'Admin Score'], ['s', 'ยอดขาย'], ['cr', 'ปิดการขาย %']].filter(x => hasZ || (x[0] !== 'score' && x[0] !== 'cr'))
-    .map(([k, l]) => `<button data-k="${k}" class="${S.asort === k ? 'on' : ''}">${l}</button>`).join('') + '</div>';
-  const card = (x, n) => { const pc = x.pct == null ? '' : x.pct >= 1 ? 'g' : x.pct >= .9 ? 'w' : 'b';
-    const sc = x.score == null ? '' : `<span class="sc ${x.score >= 70 ? 'g' : x.score >= 65 ? 'w' : 'b'}" title="Admin Score">${x.score.toFixed(0)}</span>`;
-    return `<div class="card acard"><div class="top"><div class="av">${esc(String(x.n).slice(0, 1))}</div><div class="nm">${esc(x.n)}<div class="rk">${n ? 'อันดับ ' + n : 'ไม่นับอันดับ'}${x.rk && hasZ && x.ch < ADM_MIN ? ' · แชต &lt; ' + ADM_MIN + ' ไม่คิดคะแนน' : ''}</div></div>
-      ${sc}<span class="pc ${pc}" style="font-weight:700">${x.pct != null ? (x.pct * 100).toFixed(0) + '%' : '—'}</span></div>
-      <div class="amt">${baht(x.s)} <small>/ เป้า ${x.t ? baht(x.t) : '—'}</small></div>
-      ${x.t ? `<div class="bar"><i style="width:${Math.min(100, x.pct * 100)}%;background:${pc === 'g' ? 'var(--sage)' : pc === 'w' ? 'var(--warn)' : 'var(--bad)'}"></i></div>` : ''}
-      <div class="row"><span>บิล <b>${int(x.b)}</b></span>${x.b ? `<span>ยอด/บิล <b>${baht(x.s / x.b)}</b></span><span>Upsell <b>${(x.up * 100).toFixed(0)}%</b></span>` : ''}${x.t && S.mode === 'month' && S.m === CUR ? `<span>ต้องได้อีก <b>${baht(Math.max(0, (x.t / tf) - x.s))}</b> ในเดือนนี้</span>` : ''}
-      ${S.cmp !== 'none' && x.rs ? `<span>${delta(x.s, x.rs)}</span>` : ''}</div>
-      ${x.ch ? `<div class="row"><span>แชตรับ <b>${int(x.ch)}</b></span><span>ปิดได้ <b>${x.cr != null ? (x.cr * 100).toFixed(1) + '%' : '—'}</b></span><span>ตอบใน 10 นาที <b>${x.r10 != null ? (x.r10 * 100).toFixed(0) + '%' : '—'}</b></span>${x.fr ? `<span>ตอบเฉลี่ย <b>${x.fr.toFixed(1)} นาที</b></span>` : ''}${x.miss >= 1 ? `<span>ไม่ได้ตอบ 12 ชม. <b>${int(x.miss)}</b></span>` : ''}</div>` : ''}</div>`; };
-  const help = rows.filter(x => x.score != null && x.score < 65);
-  if (help.length) h += `<div class="card" style="margin-top:12px;border-color:var(--warn)"><div class="sec-h b">ต้องช่วย (Admin Score &lt; 65)</div>${help.map(x => { const w = Object.keys(x.dim).sort((p, q) => x.dim[p] - x.dim[q])[0];
-    return `<div style="font-size:13.5px;padding:3px 0">${esc(x.n)} · ${x.score.toFixed(0)} คะแนน — จุดที่ควรโค้ช: <b>${{ s: 'ยอดขาย', cr: 'การปิดการขาย', sp: 'ความเร็วตอบแชต', up: 'Upsell', vol: 'จำนวนแชตที่รับ' }[w]}</b></div>`; }).join('')}</div>`;
-  h += `<h2>รายคน <small>เรียงตาม ${{ pct: '% เป้า', score: 'Admin Score', s: 'ยอดขาย', cr: 'ปิดการขาย %' }[S.asort]} · เป้าคิดตามจำนวนวันในช่วง</small></h2><div class="alist">` + rows.map((x, i) => card(x, i + 1)).join('') + '</div>';
-  if (other.length) h += '<h2>ไม่นับอันดับ <small>หัวหน้าแอดมิน / อดีตแอดมิน</small></h2><div class="alist">' + other.map(x => card(x, 0)).join('') + '</div>';
-  h += admHeat(a, b);
-  h += `<div class="note">ยอดขายออนไลน์รายบิลตามรหัสผู้ขาย (ยืนยันการโอน) · Upsell = บิลที่ซื้อ ≥ 2 รายการ ÷ บิลทั้งหมด · เป้ารายคนจาก dim_admin (SET_TARGETS)<br>
-    ${hasZ ? `แชตจาก Zaapi (FB + IG + LINE) ช่วง ${esc(zTxt)} · ปิดการขาย = บิลในช่วงวันเดียวกัน ÷ แชตรับ` : 'ยังไม่มีข้อมูลแชตจาก Zaapi ในช่วงนี้ — วางไฟล์ในโฟลเดอร์ Zaapi_Inbox แล้ว Run syncZaapiInbox'}<br>
-    Admin Score (เต็ม 100 · เท่าค่ากลางทีม = 70): ยอดขาย 30 · ปิดการขาย 25 · ความเร็วตอบ 20 · Upsell 15 · ปริมาณแชต 10 · แชตรับ &lt; ${ADM_MIN} ไม่คิดคะแนน · ต่ำกว่า 65 = ต้องช่วย · ข้อมูลรายแอดมินเห็นเฉพาะผู้บริหารและหัวหน้าแอดมิน</div>`;
-  $('app').innerHTML = h; drawChart(null);
-  $('asort').onclick = e => { const t = e.target.closest('button'); if (!t) return; S.asort = t.dataset.k; render(); };
-}
-/* heatmap แชตเข้า วัน × ช่วงเวลา (เฉลี่ยต่อสัปดาห์) — ใช้จัดกะ */
-function admHeat(a, b) {
-  if (!ADM.H) return ''; const sum = [...Array(7)].map(() => new Array(8).fill(0)); let wk = 0; const ps = [];
-  for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) { const hm = ADM.H[m]; if (!hm) continue; const s = maxS(a, hm.f), e = minS(b, hm.t); if (s > e) continue;
-    const f = nDays(s, e) / nDays(hm.f, hm.t); wk += nDays(s, e) / 7; ps.push(rangeTH(s, e)); hm.d.forEach((r, i) => r.forEach((v, j) => sum[i][j] += v * f)); }
-  if (!wk) return '';
-  const avg = sum.map(r => r.map(v => v / wk)), mx = Math.max(...avg.flat()) || 1, DN = ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'], SL = ['0–3', '3–6', '6–9', '9–12', '12–15', '15–18', '18–21', '21–24'];
-  const tot = avg.map(r => r.reduce((x, y) => x + y, 0));
-  return `<h2>จัดกะ: แชตเข้าตามวัน × ช่วงเวลา <small>เฉลี่ยต่อสัปดาห์ · ${esc(ps.join(' · '))} · ยิ่งเข้มยิ่งแชตเยอะ</small></h2><div class="card tbl mx heat"><table><tr><th>วัน</th>${SL.map(s => `<th>${s} น.</th>`).join('')}<th>ทั้งวัน</th></tr>` +
-    avg.map((r, i) => `<tr><td>${DN[i]}</td>${r.map(v => `<td style="background:rgba(107,119,87,${(0.04 + 0.6 * v / mx).toFixed(2)});${v / mx > 0.55 ? 'color:#fff;' : ''}">${int(v)}</td>`).join('')}<td><b>${int(tot[i])}</b></td></tr>`).join('') + '</table></div>';
-}
-/* ---------- หน้า เทียบรายเดือน ---------- */
-function moList() { const out = []; for (let i = 0; i < S.mo.n; i++) { const m = addM(CUR, -i); if (m < MONTHS[0]) break; out.push(m); } return out; }
-function moRange(m) { return [m + '-01', minS(mEnd(m), LAST)]; }
-function moRef(m) { const pm = addM(m, -1); if (m !== CUR) return [pm + '-01', mEnd(pm)]; return [pm + '-01', pm + '-' + pad(Math.min(+LAST.slice(8), dim(pm)))]; }
-function moK(a, b, pi) { const R = sumRange(a, b, pi), k = kpis(R.o), t = target(a, b, pi);
-  return { ...k, tot: k.online + k.branch, pOn: t.on ? k.online / t.on : null, pBr: t.br ? k.branch / t.br : null, pT: (t.on + t.br) ? (k.online + k.branch) / (t.on + t.br) : null, has: R.has, approx: R.approx }; }
-const MO_FMT = { b: v => baht(v), n: v => int(v), x: v => v ? v.toFixed(2) : '—', p: v => v == null ? '—' : (v * 100).toFixed(0) + '%', q: v => v ? (v * 100).toFixed(1) + '%' : '—' };
-const MO_ROWS = [
-  ['โฆษณา', [['ค่าโฆษณา (ไม่รวม VAT)', 'spend', 'b', 1], ['แชตใหม่', 'chats', 'n'], ['฿ / แชต', 'cpc', 'b', 1], ['ROAS ออนไลน์', 'roas', 'x']]],
-  ['ยอดขายออนไลน์', [['ยอดออนไลน์', 'online', 'b'], ['% เป้าออนไลน์', 'pOn', 'p'], ['บิลออนไลน์', 'bills', 'n'], ['ยอด / บิล', 'spb', 'b'], ['ปิดได้ % ของแชต', 'cr', 'q']]],
-  ['หน้าสาขา & ธุรกิจ', [['ยอดหน้าสาขา', 'branch', 'b'], ['% เป้าหน้าสาขา', 'pBr', 'p'], ['ยอดรวม (ออนไลน์ + สาขา)', 'tot', 'b'], ['% เป้ารวม', 'pT', 'p'], ['ลูกค้าใหม่', 'newp', 'n'], ['CAC', 'cac', 'b', 1], ['ROAS รวม', 'roasT', 'x']]]
-];
-const pcCls = v => v == null ? '' : v >= 1 ? 'g' : v >= .9 ? 'w' : 'b';
-function heat(v, lo, hi, inv) { if (!v || hi <= lo) return ''; let f = (v - lo) / (hi - lo); if (inv) f = 1 - f; return `background:rgba(107,119,87,${(0.05 + f * 0.3).toFixed(2)})`; }
-function moDelta(c, r, inv) { if (!r || !c || c / r > 20) return ''; const p = (c - r) / Math.abs(r), up = p >= 0, good = inv ? !up : up;
-  return `<div class="md ${good ? 'up' : 'dn'}">${up ? '▲' : '▼'}${Math.abs(p * 100).toFixed(0)}%</div>`; }
-function csvDown(name, rows) {
-  const s = '﻿' + rows.map(r => r.map(x => { x = x == null ? '' : String(x); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; }).join(',')).join('\n');
-  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([s], { type: 'text/csv;charset=utf-8' })); a.download = name; document.body.appendChild(a); a.click();
-  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-}
-function renderMonthly() {
-  const ms = moList(), pi = S.mo.tab === 'kpi' ? S.page : -1, tabs = [['kpi', 'ตัวชี้วัด'], ['br', 'สาขา × เดือน']].concat(ADM ? [['ad', 'แอดมิน × เดือน']] : []);
-  const head = ms.map(m => `<th>${monTH(m)}${m === CUR ? '*' : ''}</th>`).join('');
-  let h = `<h2>เทียบรายเดือน <small>${ms.length} เดือน · เดือนล่าสุดอยู่ซ้าย · * ${monTH(CUR)} ข้อมูลถึง ${dTH(LAST)} (เทียบกับช่วงวันเดียวกันของเดือนก่อน)</small></h2>
-    <div class="mobar"><div class="seg" id="moTab">${tabs.map(([k, l]) => `<button data-v="${k}" class="${S.mo.tab === k ? 'on' : ''}">${l}</button>`).join('')}</div>
-    <div class="seg" id="moN">${[6, 12].map(n => `<button data-v="${n}" class="${S.mo.n === n ? 'on' : ''}">${n} เดือน</button>`).join('')}</div>
-    <button class="more" id="moCsv">⬇︎ ดาวน์โหลด CSV</button></div>`;
-  const csv = [];
-  if (S.mo.tab === 'kpi') {
-    const K = ms.map(m => { const [a, b] = moRange(m); return moK(a, b, pi); }), KR = ms.map(m => { const [a, b] = moRef(m); return moK(a, b, pi); });
-    h += `<div class="card tbl mx"><table><tr><th>${esc(pi < 0 ? 'ทั้งเครือ' : SNAP.P[pi].n)}</th>${head}</tr>`;
-    csv.push(['ตัวชี้วัด · ' + (pi < 0 ? 'ทั้งเครือ' : SNAP.P[pi].n)].concat(ms.map(monTH)));
-    MO_ROWS.forEach(([g, rows]) => {
-      h += `<tr class="gh"><td colspan="${ms.length + 1}">${g}</td></tr>`;
-      rows.forEach(([l, k, f, inv]) => {
-        const vs = K.map(x => x[k]), nz = vs.filter(v => v), lo = Math.min(...nz), hi = Math.max(...nz);
-        h += `<tr><td>${l}</td>` + vs.map((v, i) => `<td style="${f === 'p' ? '' : heat(v, lo, hi, inv)}" class="${f === 'p' ? 'pc ' + pcCls(v) : ''}">${K[i].has ? MO_FMT[f](v) : '—'}${K[i].approx ? '<span class="approx">≈</span>' : ''}${f === 'p' ? '' : moDelta(v, KR[i][k], inv)}</td>`).join('') + '</tr>';
-        csv.push([l].concat(vs.map(v => v == null ? '' : f === 'p' || f === 'q' ? (v * 100).toFixed(1) + '%' : f === 'x' ? v.toFixed(2) : Math.round(v))));
-      });
-    });
-    h += '</table></div><div class="note">สีเขียวเข้ม = ดีที่สุดในแถว (ค่าโฆษณา · ฿/แชต · CAC ยิ่งต่ำยิ่งเข้ม) · ▲▼ เทียบเดือนก่อน · % เป้า: เขียว ≥ 100% · เหลือง 90–99% · แดง &lt; 90% · เดือนปัจจุบันคิดเป้าตามจำนวนวัน · เลือกเพจ/สาขาได้ที่ตัวกรองด้านบน</div>';
-  } else if (S.mo.tab === 'br') {
-    const MET = [['pBr', '% เป้าหน้าสาขา', 'p'], ['branch', 'ยอดหน้าสาขา', 'b'], ['online', 'ยอดออนไลน์', 'b'], ['roas', 'ROAS ออนไลน์', 'x'], ['roasT', 'ROAS รวม', 'x'], ['spend', 'ค่าโฆษณา', 'b']];
-    const [k, lab, f] = MET.find(x => x[0] === S.mo.bm) || MET[0];
-    const rows = SNAP.P.map((p, i) => ({ p, i })).filter(x => x.p.b).map(x => ({ n: x.p.n, v: ms.map(m => { const [a, b] = moRange(m); return moK(a, b, x.i); }) }));
-    rows.forEach(r => { const vs = r.v.map(x => x[k]).filter(v => v != null); r.avg = vs.length ? vs.reduce((s, v) => s + v, 0) / vs.length : 0; });
-    rows.sort((x, y) => y.avg - x.avg);
-    const all = rows.flatMap(r => r.v.map(x => x[k])).filter(v => v), lo = Math.min(...all), hi = Math.max(...all);
-    h += `<div class="sortbar" id="moBm">${MET.map(([c, l]) => `<button data-k="${c}" class="${k === c ? 'on' : ''}">${l}</button>`).join('')}</div>`;
-    h += `<div class="card tbl mx"><table><tr><th>สาขา · ${lab}</th>${head}</tr>` + rows.map(r => `<tr><td>${esc(r.n)}</td>` + r.v.map(x => { const v = x[k];
-      const st = f === 'p' ? '' : f === 'x' ? '' : heat(v, lo, hi); const cl = f === 'p' ? 'pc ' + pcCls(v) : f === 'x' && v ? 'roas r' + rLv(v) : '';
-      return `<td style="${st}" class="${cl}">${x.has ? MO_FMT[f](v) : '—'}</td>`; }).join('') + '</tr>').join('');
-    if (f === 'b') { const tot = ms.map((m, j) => rows.reduce((s, r) => s + (r.v[j][k] || 0), 0)); h += `<tr class="tot"><td>รวม ${rows.length} สาขา</td>${tot.map(v => `<td>${baht(v)}</td>`).join('')}</tr>`; }
-    h += `</table></div><div class="note">เรียงตามค่าเฉลี่ยของช่วงที่แสดง · ยอดออนไลน์รายสาขา${S.attr === 'page' ? 'ตามเพจที่ลูกค้าทัก' : 'ตามสาขาที่ใช้บริการ'} (สลับได้ที่ตัวกรองด้านบน) · ROAS: เขียว ≥ 2.0 · เขียวอ่อน ≥ 1.5 · เหลือง ≥ 1.0 · แดง &lt; 1.0</div>`;
-    csv.push(['สาขา · ' + lab].concat(ms.map(monTH)));
-    rows.forEach(r => csv.push([r.n].concat(r.v.map(x => x[k] == null ? '' : f === 'p' ? (x[k] * 100).toFixed(1) + '%' : f === 'x' ? x[k].toFixed(2) : Math.round(x[k])))));
-  } else {
-    const per = ms.map(m => { const [a, b] = moRange(m); return { g: admSum(a, b), tf: target(a, b, -1).on / (SNAP.T.on || 1) }; });
-    const ids = [...new Set(per.flatMap(p => Object.keys(p.g)))];
-    const rows = ids.map(i => { const L = ADM.L[i] || {}; return { n: L.n || i, rk: L.rk, v: per.map(p => { const x = p.g[i], t = (L.t || 0) * p.tf; return { s: x ? x.s : 0, b: x ? x.b : 0, pct: t && x ? x.s / t : null }; }) }; })
-      .filter(r => r.rk || r.v.some(x => x.s)).sort((x, y) => y.rk - x.rk || y.v.reduce((s, q) => s + q.s, 0) - x.v.reduce((s, q) => s + q.s, 0));
-    h += `<div class="card tbl mx"><table><tr><th>แอดมิน · ยอดขาย (% เป้า)</th>${head}</tr>` + rows.map(r => `<tr${r.rk ? '' : ' class="dim"'}><td>${esc(r.n)}${r.rk ? '' : ' <small>ไม่นับอันดับ</small>'}</td>` +
-      r.v.map(x => `<td>${x.s ? baht(x.s) : '—'}${x.pct != null ? `<div class="md pc ${pcCls(x.pct)}">${(x.pct * 100).toFixed(0)}%</div>` : ''}</td>`).join('') + '</tr>').join('');
-    const tot = ms.map((m, j) => rows.reduce((s, r) => s + r.v[j].s, 0));
-    h += `<tr class="tot"><td>รวมทีม</td>${tot.map(v => `<td>${baht(v)}</td>`).join('')}</tr></table></div>
-      <div class="note">ยอดขายออนไลน์ตามรหัสผู้ขาย · % เป้าจากเป้ารายคน (เดือนปัจจุบันคิดตามจำนวนวัน) · Admin Score (CR% · ความเร็วตอบ) จะเพิ่มเมื่อมีข้อมูล Zaapi</div>`;
-    csv.push(['แอดมิน'].concat(ms.flatMap(m => [monTH(m) + ' ยอด', monTH(m) + ' % เป้า'])));
-    rows.forEach(r => csv.push([r.n].concat(r.v.flatMap(x => [Math.round(x.s), x.pct == null ? '' : (x.pct * 100).toFixed(1) + '%']))));
-  }
-  $('app').innerHTML = h; drawChart(null);
-  $('moTab').onclick = e => { const b = e.target.closest('button'); if (!b) return; S.mo.tab = b.dataset.v; go(); };
-  $('moN').onclick = e => { const b = e.target.closest('button'); if (!b) return; S.mo.n = +b.dataset.v; render(); };
-  if ($('moBm')) $('moBm').onclick = e => { const b = e.target.closest('button'); if (!b) return; S.mo.bm = b.dataset.k; render(); };
-  $('moCsv').onclick = () => csvDown(`mersi_รายเดือน_${S.mo.tab}_${CUR}.csv`, csv);
-}
-document.querySelector('nav').addEventListener('click', e => {
-  const a = e.target.closest('a'); if (!a) return;
-  if (!a.dataset.v) { a.animate && a.animate([{ opacity: .45 }, { opacity: .9 }, { opacity: .45 }], 400); return; }
-  S.view = a.dataset.v; if (S.view === 'br') S.page = -1; go(); window.scrollTo(0, 0);
-});
-
-/* ---------- start ---------- */
+/* ================= เริ่ม ================= */
 $('whoName').textContent = BOOT.name; $('whoRole').textContent = BOOT.roleLabel;
-$('navAdm').style.display = ADM ? '' : 'none';
-(() => { const st = SNAP.st || [], fail = st.some(s => s.status === 'FAIL'), warn = st.some(s => s.status === 'WARN');
-  $('stat').innerHTML = `<i class="dot ${fail ? 'bad' : warn ? 'warn' : ''}"></i>ข้อมูลถึง ${dTH(LAST)}`; })();
-fillFilters(); render();
+if (!ADM) { $('navAdm').style.display = 'none'; $('bnAdm').style.display = 'none'; }
+(() => { const st = SNAP.st || [], fail = st.some(s => s.status === 'FAIL'), warn = st.some(s => s.status === 'WARN') || nDays(LAST, SNAP.today) > 2;
+  $('stat').className = 'chip' + (fail ? ' bad' : warn ? ' warn' : ''); $('stat').innerHTML = `<i class="dot"></i>ข้อมูลถึง ${dTH(LAST)}${fail ? ' · มีท่อข้อมูลล้มเหลว' : ''}`; })();
+render();
+
 
 }
 </script>
