@@ -98,7 +98,8 @@ main{padding:28px 40px 48px;display:flex;flex-direction:column;gap:20px;max-widt
 .tb tr.dim td{color:var(--mute2)}.tb tr.ck{cursor:pointer}.tb tr.ck:hover td{background:#FAF9F4}
 .stk th:first-child,.stk td:first-child{position:sticky;left:0;background:#fff;z-index:1;box-shadow:1px 0 0 var(--line2)}
 .stk tr.md td:first-child,.stk tr.gh td:first-child{background:var(--soft)}
-.avi{width:32px;height:32px;flex-shrink:0;border-radius:50%;background:var(--sage-l);color:var(--sage-d);display:inline-grid;place-items:center;font-weight:700;font-size:13px}
+.avi img,.pav img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.avi{overflow:hidden;width:32px;height:32px;flex-shrink:0;border-radius:50%;background:var(--sage-l);color:var(--sage-d);display:inline-grid;place-items:center;font-weight:700;font-size:13px}
 .an{display:flex;align-items:center;gap:10px}.an b{font-weight:600}.an .sub{font-size:12px}
 .sc{display:flex;align-items:center;gap:10px;min-width:130px}.sc b{width:26px}
 .c-g{color:var(--good)}.c-b{color:var(--bad)}.c-w{color:var(--amber)}
@@ -121,10 +122,10 @@ main{padding:28px 40px 48px;display:flex;flex-direction:column;gap:20px;max-widt
 .bcard .rw{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--mute)}.bcard .rw b{color:var(--ink);font-weight:600}
 /* แอดมินรายบุคคล */
 .prof{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:20px;align-items:center}
-.pav{width:96px;height:96px;border-radius:50%;background:var(--sage-l);color:var(--sage-d);display:grid;place-items:center;font-size:36px;font-weight:700;font-family:var(--serif)}
+.pav{overflow:hidden;width:96px;height:96px;border-radius:50%;background:var(--sage-l);color:var(--sage-d);display:grid;place-items:center;font-size:36px;font-weight:700;font-family:var(--serif)}
 .score{text-align:center}.score .v{font-size:48px;font-weight:700;line-height:1;font-family:var(--serif)}
-.dim{display:grid;grid-template-columns:150px minmax(0,1fr) 40px;gap:10px;align-items:center;font-size:14px}
-.dim .sbar{position:relative}.dim .sbar u{position:absolute;left:70%;top:-3px;width:2px;height:14px;background:var(--mute2)}
+.dimr{display:grid;grid-template-columns:150px minmax(0,1fr) 40px;gap:10px;align-items:center;font-size:14px}
+.dimr .sbar{position:relative}.dimr .sbar u{position:absolute;left:70%;top:-3px;width:2px;height:14px;background:var(--mute2)}
 .cmpk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .cmpk .mini .s{font-size:12px;margin-top:2px}
 /* ล็อกอิน / โหลด */
@@ -161,7 +162,7 @@ main{padding:28px 40px 48px;display:flex;flex-direction:column;gap:20px;max-widt
   .row3{grid-template-columns:78px minmax(0,1fr);}.row3>:last-child{grid-column:2;font-size:13px;color:var(--mute)}
   .big{font-size:24px}.stabs{gap:20px}
   .prof{grid-template-columns:auto minmax(0,1fr)}.prof .score{grid-column:1/-1;display:flex;align-items:center;gap:14px;text-align:left}.pav{width:72px;height:72px;font-size:28px}
-  .dim{grid-template-columns:110px minmax(0,1fr) 34px}.cmpk{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dimr{grid-template-columns:110px minmax(0,1fr) 34px}.cmpk{grid-template-columns:repeat(2,minmax(0,1fr))}
   .hm{grid-template-columns:30px repeat(8,minmax(0,1fr)) 40px;gap:2px;font-size:10.5px}.hm span{height:26px}
   .bnav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);justify-content:space-around;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:20}
   .bnav a{font-size:11px;color:var(--mute);text-align:center;padding:4px 6px;flex:1;cursor:pointer}.bnav a span{display:block;font-size:18px;line-height:1.1}.bnav a.on{color:var(--sage);font-weight:600}
@@ -693,7 +694,19 @@ function drawChart(T) {
 }
 
 /* ================= แอดมิน (ผู้บริหาร + หัวหน้าแอดมิน) ================= */
-function admSum(a, b) { const g = {}; if (!ADM) return g; for (let d = a; d <= b; d = addD(d, 1)) (ADM.D[d] || []).forEach(x => { const o = g[x[0]] || (g[x[0]] = { s: 0, b: 0, u: 0 }); o.s += x[1]; o.b += x[2]; o.u += x[3] || 0; }); return g; }
+function admSum(a, b) { const g = {}; if (!ADM) return g; for (let d = a; d <= b; d = addD(d, 1)) (ADM.D[d] || []).forEach(x => { const o = g[x[0]] || (g[x[0]] = { s: 0, b: 0, u: 0, p: {} }); o.s += x[1]; o.b += x[2]; o.u += x[3] || 0;
+  if (x[4]) x[4].split(',').forEach(t => { const j = t.indexOf(':'), k = j < 0 ? t : t.slice(0, j); o.p[k] = (o.p[k] || 0) + (j < 0 ? 1 : +t.slice(j + 1)); }); });
+  Object.keys(g).forEach(i => { const p = g[i].p, k = Object.keys(p); g[i].np = k.length; g[i].up = k.filter(z => p[z] >= 2).length; delete g[i].p; }); return g; }
+/* วันหยุด / ลา จากรอสเตอร์ในช่วง [a,b] */
+function admDays(a, b) { const g = {}; if (!ADM || !ADM.RO) return null; b = minS(b, LAST); for (let d = a; d <= b; d = addD(d, 1)) (ADM.RO[d] || []).forEach(([i, c]) => { const o = g[i] || (g[i] = { off: 0, lv: 0 }); if (c === 'l') o.lv++; else o.off++; }); return { g, n: nDays(a, b) }; }
+/* รูปโปรไฟล์ (โหลดแยกจากข้อมูลหลัก · เก็บในเครื่อง) */
+let PH = {}; try { PH = JSON.parse(localStorage.getItem('mersi_ph') || '{}'); } catch (e) {}
+let phLoaded = false;
+function loadPhotos() { if (phLoaded || !ADM) return; phLoaded = true;
+  api({ action: 'photos', token: LS.get('mersi_tok') }).then(r => { if (!r || !r.ok) return; PH = r.photos || {}; try { localStorage.setItem('mersi_ph', JSON.stringify(PH)); } catch (e) {} if (S.view === 'ad') render(); }).catch(() => {}); }
+const avatar = (x, cls) => { const L = ADM.L[x.i] || {}, u = L.id && PH[L.id]; return `<span class="${cls}">${u ? `<img src="${u}" alt="">` : esc(String(x.n).slice(0, 1))}</span>`; };
+function resizeImg(file, cb) { const rd = new FileReader(); rd.onload = () => { const im = new Image(); im.onload = () => { const z = 240, c = document.createElement('canvas'); c.width = c.height = z;
+  const k = Math.min(im.width, im.height), sx = (im.width - k) / 2, sy = (im.height - k) / 2; c.getContext('2d').drawImage(im, sx, sy, k, k, 0, 0, z, z); cb(c.toDataURL('image/jpeg', .82)); }; im.src = rd.result; }; rd.readAsDataURL(file); }
 /* แชต Zaapi ของช่วง [a,b]: เดือนที่มีไฟล์ → คิดตามสัดส่วนวันที่ทับกัน · CR% ใช้บิลในวันเดียวกับช่วงแชต */
 function admChat(a, b) {
   const g = {}, per = []; if (!ADM || !ADM.C) return { g, per };
@@ -707,20 +720,26 @@ function admChat(a, b) {
   return { g, per };
 }
 const ADM_W = { s: 30, cr: 25, sp: 20, up: 15, vol: 10 }, ADM_MIN = 100;
-const HAS_UP = !!ADM && Object.keys(ADM.D || {}).some(d => (ADM.D[d][0] || []).length >= 4);   // snapshot เก่าไม่มีข้อมูล Upsell
+const HAS_UP = !!ADM && Object.keys(ADM.D || {}).some(d => (ADM.D[d] || []).some(x => typeof x[4] === 'string'));   // Upsell รายคน (snapshot ใหม่)
 const DIM_N = { s: 'ยอดขาย', cr: 'CR% (บิล ÷ แชตรับ)', sp: 'ความเร็วตอบ', up: 'Upsell%', vol: 'ปริมาณแชตรับ' };
 const DIM_TIP = { s: 'ยอดขายต่ำกว่าทีม → ดูโปรแกรมที่ขายและการเสนอแพ็กเกจ', cr: 'ปิดการขายได้น้อย → ทบทวนสคริปต์ปิดการขาย / การนัดหมาย', sp: 'ตอบช้า → ตรวจภาระงานในกะและตั้งข้อความตอบกลับเร็ว',
   up: 'Upsell ต่ำ → ฝึกเสนอบริการคู่ (เช่น Pico + Botox) ในแชตที่ปิดการขายแล้ว', vol: 'รับแชตน้อย → ตรวจการกระจายแชตในกะ' };
 const DIM_GOOD = { s: 'ยอดขายสูงกว่าค่ากลางทีม', cr: 'ปิดการขายเก่ง', sp: 'ตอบแชตเร็ว', up: 'เสนอขายเพิ่ม (Upsell) ได้ดี', vol: 'รับแชตได้มาก' };
 const med = a => { const v = a.filter(x => x != null && x > 0).sort((x, y) => x - y); if (!v.length) return 0; const k = v.length >> 1; return v.length % 2 ? v[k] : (v[k - 1] + v[k]) / 2; };
+const pcP = x => x.pct == null ? '' : x.pct >= x.pace * .97 ? 'c-g' : x.pct >= x.pace * .9 ? 'c-w' : 'c-b';
 const scColor = s => s >= 80 ? '#2F5B2A' : s >= 65 ? '#3F4D35' : s >= 55 ? '#8A5A12' : '#A1342A';
 const barColor = s => s >= 65 ? '#5E6F50' : s >= 55 ? '#C9A24A' : '#C0694F';
 /* คะแนนตามดีไซน์: แต่ละมิติ = 70 + 60 × (ค่าของคน ÷ ค่ากลางทีม − 1) · ตัดที่ 0–100 */
 function admRows(a, b) {
-  const tf = target(a, b, -1).on / (SNAP.T.on || 1), g = admSum(a, b), Z = admChat(a, b);
+  // เป้า: ช่วงที่เป็นเดือนเต็ม/เดือนนี้ → เป้าเดือนเต็ม + "ควรถึง" ตามจำนวนวัน · ช่วงอื่น → เป้าตามจำนวนวัน
+  const aligned = a.slice(8) === '01' && (b === mEnd(b.slice(0, 7)) || b === LAST);
+  let tf = target(a, b, -1).on / (SNAP.T.on || 1), pace = 1;
+  if (aligned) { let nm = 0, dd = 0; for (let m = a.slice(0, 7); m <= b.slice(0, 7); m = addM(m, 1)) { nm++; dd += dim(m); } pace = nDays(a, b) / dd; tf = nm; }
+  const g = admSum(a, b), Z = admChat(a, b), W = admDays(a, b);
   const ids = [...new Set(Object.keys(g).concat(Object.keys(Z.g)))];
-  const all = ids.map(i => { const L = ADM.L[i] || {}, x = g[i] || { s: 0, b: 0, u: 0 }, z = Z.g[i], t = (L.t || 0) * tf;
-    return { i: +i, n: L.n || i, rk: L.rk, s: x.s, b: x.b, u: x.u, t, pct: t ? x.s / t : null, up: x.b && HAS_UP ? x.u / x.b : null, ch: z ? z.ch : 0, bw: z ? z.bw : 0,
+  const all = ids.map(i => { const L = ADM.L[i] || {}, x = g[i] || { s: 0, b: 0, u: 0, np: 0, up: 0 }, z = Z.g[i], t = (L.t || 0) * tf, w = W ? (W.g[i] || { off: 0, lv: 0 }) : null;
+    return { i: +i, n: L.n || i, fn: L.fn || '', id: L.id || '', rk: L.rk, s: x.s, b: x.b, u: x.up || 0, np: x.np || 0, t, pace, pct: t ? x.s / t : null, up: HAS_UP && x.np ? x.up / x.np : null,
+      wd: w ? W.n - w.off - w.lv : null, off: w ? w.off : null, lv: w ? w.lv : null, ch: z ? z.ch : 0, bw: z ? z.bw : 0,
       cr: z && z.ch ? z.bw / z.ch : null, r10: z && z.ch ? z.r10 / z.ch : null, fr: z && z.frn ? z.fr / z.frn : null, miss: z ? z.miss : 0, score: null, rank: null, dims: null }; })
     .filter(x => x.s || x.ch);
   const R = all.filter(x => x.rk && x.ch >= ADM_MIN);
@@ -733,8 +752,8 @@ function admRows(a, b) {
   } else all.filter(x => x.rk).sort((x, y) => (y.pct || 0) - (x.pct || 0) || y.s - x.s).forEach((x, i) => x.rank = i + 1);
   return { all, R, M, Z, hasZ: Z.per.length > 0, tf };
 }
-function admTot(all) { return all.reduce((o, x) => { o.s += x.s; o.b += x.b; o.u += x.u; o.t += x.t; o.ch += x.ch; o.bw += x.bw; o.miss += x.miss; o.r10 += (x.r10 || 0) * x.ch; if (x.fr) { o.fr += x.fr * x.ch; o.frn += x.ch; } return o; },
-  { s: 0, b: 0, u: 0, t: 0, ch: 0, bw: 0, miss: 0, r10: 0, fr: 0, frn: 0 }); }
+function admTot(all) { return all.reduce((o, x) => { o.s += x.s; o.b += x.b; o.u += x.u; o.np += x.np; o.t += x.t; o.ch += x.ch; o.bw += x.bw; o.miss += x.miss; o.r10 += (x.r10 || 0) * x.ch; if (x.fr) { o.fr += x.fr * x.ch; o.frn += x.ch; } return o; },
+  { s: 0, b: 0, u: 0, np: 0, t: 0, ch: 0, bw: 0, miss: 0, r10: 0, fr: 0, frn: 0 }); }
 const zTxt = Z => Z.per.map(([s, e]) => rangeTH(s, e)).join(' · ');
 function renderAdmins() {
   const [a, b] = period(), rp = refPeriod(a, b), A = admRows(a, b), AR = rp ? admRows(rp[0], rp[1]) : null;
@@ -743,6 +762,7 @@ function renderAdmins() {
     [A.hasZ ? '<span class="real">แชตจาก Zaapi</span>' : '<span class="mock">ยังไม่มีข้อมูล Zaapi ในช่วงนี้</span>', '<span class="real">เห็นเฉพาะผู้บริหาร · หัวหน้าแอดมิน</span>']);
   h += `<nav class="stabs" id="atab">${[['team', 'ภาพรวมทีม & อันดับ'], ['ind', 'ผลงานรายบุคคล'], ['shift', 'ช่วงเวลาแชตเข้า']].map(([k, l]) => `<a data-k="${k}" class="${S.atab === k ? 'on' : ''}">${l}</a>`).join('')}</nav>`;
   if (!A.all.length) { $('app').innerHTML = h + empty('ยังไม่มีข้อมูลยอดขายรายแอดมินในช่วงนี้'); bindAdm(); return; }
+  loadPhotos();
   h += S.atab === 'ind' ? admInd(A, AR, a, b) : S.atab === 'shift' ? admShift(a, b, true) : admTeam(A, AR);
   $('app').innerHTML = h; bindAdm();
 }
@@ -751,15 +771,20 @@ function bindAdm() {
   if ($('asort')) $('asort').onclick = e => { const t = e.target.closest('button'); if (!t) return; S.asort = t.dataset.k; render(); };
   document.querySelectorAll('[data-adm]').forEach(x => x.onclick = () => { S.aSel = +x.dataset.adm; S.atab = 'ind'; render(); window.scrollTo(0, 0); });
   if ($('aPick')) $('aPick').onchange = e => { S.aSel = +e.target.value; render(); };
+  const upd = (id, data) => api({ action: 'photo', token: LS.get('mersi_tok'), id, data }).then(r => { if (!r.ok) return alert(r.error || 'อัปโหลดไม่สำเร็จ');
+    if (data) PH[id] = data; else delete PH[id]; try { localStorage.setItem('mersi_ph', JSON.stringify(PH)); } catch (e) {} render(); }).catch(() => alert('เชื่อมต่อไม่ได้'));
+  const L = ADM && ADM.L[S.aSel];
+  if ($('phUp') && L) $('phUp').onchange = e => { const f = e.target.files[0]; if (f) resizeImg(f, d => upd(L.id, d)); };
+  if ($('phDel') && L) $('phDel').onclick = () => { if (confirm('ลบรูปโปรไฟล์นี้?')) upd(L.id, null); };
   document.querySelectorAll('[data-step]').forEach(x => x.onclick = () => { const o = [...$('aPick').options].map(z => +z.value), k = o.indexOf(S.aSel); S.aSel = o[(k + +x.dataset.step + o.length) % o.length]; render(); });
 }
 function admTeam(A, AR) {
   const T = admTot(A.all), TR = AR ? admTot(AR.all) : null, M = A.M, hasS = A.R.some(x => x.score != null);
   let h = '<section class="kpis">' + [
     kc('แชตรับ', T.ch ? int(T.ch) : '—', '', A.hasZ ? dl(T.ch, TR && TR.ch) : ''),
-    kc('บิล', int(T.b), '', dl(T.b, TR && TR.b)),
+    kc('บิล', int(T.b), HAS_UP && T.np ? `Upsell ${pct1(T.u / T.np)} ของลูกค้า` : '', dl(T.b, TR && TR.b)),
     kc('CR% บิล ÷ แชตรับ', T.ch ? pct1(T.bw / T.ch) : '—', '', A.hasZ && TR && TR.ch ? dlPt(T.bw / T.ch, TR.bw / TR.ch) : ''),
-    kc('ยอดขายออนไลน์', baht(T.s), T.t ? `${pct0(T.s / T.t)} ของเป้าทีม ${baht(T.t)}` : '', dl(T.s, TR && TR.s)),
+    kc('ยอดขายออนไลน์', baht(T.s), T.t ? `${pct0(T.s / T.t)} ของเป้าทีม ${baht(T.t)}${A.all[0] && A.all[0].pace < 1 ? ` · ควรถึง ${pct0(A.all[0].pace)}` : ''}` : '', dl(T.s, TR && TR.s)),
     kc('เวลาตอบเฉลี่ย', T.frn ? (T.fr / T.frn).toFixed(1) + ' นาที' : '—', T.ch ? `ตอบใน 10 นาที ${pct0(T.r10 / T.ch)}` : '', TR && TR.frn && T.frn ? dlAbs(T.fr / T.frn, TR.fr / TR.frn, 'นาที', true) : ''),
     kc('แชตพลาด (ไม่ตอบ 12 ชม.)', T.ch ? int(T.miss) : '—', '', TR && TR.ch && T.ch ? dlAbs(T.miss, TR.miss, 'แชต', true, 0) : '')
   ].join('') + '</section>';
@@ -770,23 +795,23 @@ function admTeam(A, AR) {
   const col = (v, m, inv) => v == null || !m ? '' : (inv ? v <= m : v >= m) ? 'c-g' : 'c-b';
   const tr = x => { const mom = refS[x.i] ? (x.s / refS[x.i] - 1) : null;
     return `<tr class="ck${x.rk ? '' : ' dim'}" data-adm="${x.i}"><td class="l num" style="font-weight:700">${x.rank || '—'}</td>
-    <td class="l"><span class="an"><span class="avi">${esc(String(x.n).slice(0, 1))}</span><span class="col" style="gap:0"><b>${esc(x.n)}</b><span class="sub">${x.rk ? (x.t ? 'เป้า ' + baht(x.t) : 'ยังไม่มีเป้า') : 'ไม่นับอันดับ'}${x.rk && A.hasZ && x.ch < ADM_MIN ? ' · แชต &lt; ' + ADM_MIN : ''}</span></span></span></td>
+    <td class="l"><span class="an">${avatar(x, 'avi')}<span class="col" style="gap:0"><b>${esc(x.n)}${x.fn ? ` <span class="sub" style="font-weight:400">${esc(x.fn)}</span>` : ''}</b><span class="sub">${x.rk ? (x.t ? (x.pace < 1 || x.t === (ADM.L[x.i] || {}).t ? 'เป้าเดือน ' : 'เป้าช่วงนี้ ') + baht(x.t) : 'ยังไม่มีเป้า') : 'ไม่นับอันดับ'}${x.rk && A.hasZ && x.ch < ADM_MIN ? ' · แชต &lt; ' + ADM_MIN : ''}</span></span></span></td>
     <td class="l">${x.score != null ? `<span class="sc"><b style="color:${scColor(x.score)}">${x.score}</b><span class="sbar"><i style="width:${x.score}%;background:${barColor(x.score)}"></i></span></span>` : '<span class="mute2">—</span>'}</td>
     <td>${x.ch ? int(x.ch) : '—'}</td><td>${int(x.b)}</td><td class="${col(x.cr, M.cr)}" style="font-weight:600">${pct1(x.cr)}</td><td>${baht(x.s)}</td>
-    <td class="${x.pct == null ? '' : x.pct >= 1 ? 'c-g' : x.pct >= .9 ? 'c-w' : 'c-b'}" style="font-weight:600">${pct0(x.pct)}</td><td>${x.b ? baht(x.s / x.b) : '—'}</td><td>${pct1(x.up)}</td>
+    <td class="${pcP(x)}" style="font-weight:600">${pct0(x.pct)}</td><td>${x.wd != null ? `${x.wd}<div class="sub" style="font-size:11px">หยุด ${x.off}${x.lv ? ' · ลา ' + x.lv : ''}</div>` : '—'}</td><td>${x.wd ? baht(x.s / x.wd) : '—'}</td><td>${x.b ? baht(x.s / x.b) : '—'}</td><td>${pct1(x.up)}</td>
     <td class="${col(x.fr, M.fr, true)}" style="font-weight:600">${x.fr ? x.fr.toFixed(1) + ' น.' : '—'}</td><td>${pct0(x.r10)}</td><td>${x.ch ? int(x.miss) : '—'}</td>
     <td class="${mom == null ? '' : mom >= 0 ? 'c-g' : 'c-b'}" style="font-weight:600">${mom == null ? '—' : (mom >= 0 ? '▲ ' : '▼ ') + Math.abs(mom * 100).toFixed(1) + '%'}</td></tr>`; };
-  h += `<section class="card col">${cardH('อันดับแอดมิน', '')}<div class="ch" style="margin-top:-8px"><span class="sub">สีของ CR% และเวลาตอบ = เทียบค่ากลางทีม · กดชื่อเพื่อดูผลงานรายบุคคล · แชตรับ &lt; ${ADM_MIN} = ไม่จัดอันดับ</span>
+  h += `<section class="card col">${cardH('อันดับแอดมิน', '')}<div class="ch" style="margin-top:-8px"><span class="sub">สีของ CR% และเวลาตอบ = เทียบค่ากลางทีม · % เป้า = ยอด ÷ เป้า${A.all[0] && A.all[0].pace < 1 ? ` (ควรถึง ${pct0(A.all[0].pace)} ตามจำนวนวัน)` : ''} · วันทำงานจากรอสเตอร์ · กดชื่อเพื่อดูผลงานรายบุคคล · แชตรับ &lt; ${ADM_MIN} = ไม่จัดอันดับ</span>
     <div class="pills" id="asort"><span class="sub" style="align-self:center;margin-right:4px">เรียงตาม</span>${[['score', 'Score'], ['s', 'ยอดขาย'], ['pct', '% เป้า'], ['cr', 'CR%'], ['up', 'Upsell%'], ['fr', 'ตอบเร็ว']].filter(z => hasS || !['score'].includes(z[0]))
       .map(([k, l]) => `<button class="pill sm${sk === k ? ' on' : ''}" data-k="${k}">${l}</button>`).join('')}</div></div>
-    <div class="tw"><table class="tb stk" style="min-width:1180px"><tr><th>#</th><th class="l">แอดมิน</th><th class="l">Admin Score</th><th>แชตรับ</th><th>บิล</th><th>CR%</th><th>ยอดขาย</th><th>% เป้า</th><th>ยอด/บิล</th><th>Upsell%</th><th>ตอบเฉลี่ย</th><th>≤ 10 นาที</th><th>พลาด</th><th>ยอด ${cmpLbl()}</th></tr>
+    <div class="tw"><table class="tb stk" style="min-width:1320px"><tr><th>#</th><th class="l">แอดมิน</th><th class="l">Admin Score</th><th>แชตรับ</th><th>บิล</th><th>CR%</th><th>ยอดขาย</th><th>% เป้า</th><th>วันทำงาน</th><th>ยอด/วันทำงาน</th><th>ยอด/บิล</th><th>Upsell%</th><th>ตอบเฉลี่ย</th><th>≤ 10 นาที</th><th>พลาด</th><th>ยอด ${cmpLbl()}</th></tr>
     ${ranked.map(tr).join('')}
-    <tr class="md"><td></td><td class="l">ค่ากลางทีม</td><td></td><td>${M.ch ? int(M.ch) : '—'}</td><td>${M.b ? int(M.b) : '—'}</td><td>${pct1(M.cr || null)}</td><td>${M.s ? baht(M.s) : '—'}</td><td>${pct0(M.pct || null)}</td><td>—</td><td>${pct1(M.up || null)}</td><td>${M.fr ? M.fr.toFixed(1) + ' น.' : '—'}</td><td>${pct0(M.r10 || null)}</td><td>—</td><td>—</td></tr>
+    <tr class="md"><td></td><td class="l">ค่ากลางทีม</td><td></td><td>${M.ch ? int(M.ch) : '—'}</td><td>${M.b ? int(M.b) : '—'}</td><td>${pct1(M.cr || null)}</td><td>${M.s ? baht(M.s) : '—'}</td><td>${pct0(M.pct || null)}</td><td>—</td><td>—</td><td>—</td><td>${pct1(M.up || null)}</td><td>${M.fr ? M.fr.toFixed(1) + ' น.' : '—'}</td><td>${pct0(M.r10 || null)}</td><td>—</td><td>—</td></tr>
     ${other.map(tr).join('')}</table></div></section>`;
   const helps = A.R.filter(x => x.score != null && x.score < 65).sort((x, y) => x.score - y.score);
   h += `<section class="g112"><div class="card col" style="gap:12px">${cardH('Admin Score คิดจาก')}<span class="sub">แต่ละมิติเทียบค่ากลางทีม = 70 คะแนน · สูงกว่าค่ากลาง 50% = 100</span>
       <div class="col" style="gap:10px;font-size:14px">${Object.keys(ADM_W).map(k => `<div class="ch"><span>${k === 'sp' ? 'ความเร็ว (เวลาตอบ + ≤10 นาที)' : DIM_N[k]}</span><b class="num">${ADM_W[k]}%</b></div>`).join('')}</div>
-      <span class="sub" style="font-size:12px">Upsell% = บิลที่ซื้อ ≥ 2 รายการ ÷ บิลทั้งหมด</span></div>
+      <span class="sub" style="font-size:12px">Upsell% = ลูกค้าที่ซื้อ ≥ 2 รายการในช่วง ÷ ลูกค้าทั้งหมดของแอดมินคนนั้น (นิยามเดียวกับรายงาน ROAS LINE)</span></div>
     <div class="card col" style="gap:12px">${cardH('ต้องช่วย (Score &lt; 65)')}${hasS ? (helps.length ? helps.map(x => { const w = Object.keys(x.dims).sort((p, q) => x.dims[p] - x.dims[q])[0];
       return `<div class="help" data-adm="${x.i}" style="cursor:pointer"><b>${esc(x.n)} · ${x.score}</b><span class="n">จุดอ่อน: ${DIM_N[w]} (${x.dims[w]}) — ${DIM_TIP[w]}</span></div>`; }).join('') : '<span class="sub">ไม่มีแอดมินที่คะแนนต่ำกว่า 65 ในช่วงนี้ 👍</span>')
       : '<span class="sub">คำนวณคะแนนได้เมื่อมีข้อมูลแชตจาก Zaapi ในช่วงที่เลือก (ตั้งแต่ ก.ค. 2569)</span>'}</div>
@@ -804,9 +829,10 @@ function admInd(A, AR, a, b) {
   const move = prev && prev.rank && x.rank ? prev.rank - x.rank : null;
   const verdict = x.score == null ? (x.rk ? 'ยังคิดคะแนนไม่ได้ (ต้องมีแชตรับจาก Zaapi ≥ 100)' : 'หัวหน้าแอดมิน / อดีตแอดมิน — ไม่นับอันดับ')
     : x.score >= 80 ? 'ผลงานโดดเด่น — เป็นตัวอย่างให้ทีมได้' : x.score >= 70 ? 'ผลงานดีกว่าค่ากลางทีม' : x.score >= 65 ? 'ใกล้ค่ากลางทีม — มีจุดให้พัฒนา' : 'ต้องช่วย — ควรคุยโค้ชสัปดาห์นี้';
-  h += `<section class="card prof"><div class="pav">${esc(String(x.n).slice(0, 1))}</div>
-    <div class="col" style="gap:4px"><span class="sub">ชื่อเล่น</span><span style="font-size:24px;font-weight:700;font-family:var(--serif)">${esc(x.n)}</span>
-      <span class="sub">ทีมออนไลน์ · ยอด ${baht(x.s)}${x.t ? ` / เป้า ${baht(x.t)} (${pct0(x.pct)})` : ''}</span><span style="font-weight:600;color:${x.score == null ? 'var(--mute)' : scColor(x.score)}">${verdict}</span></div>
+  const canUp = !!x.id;
+  h += `<section class="card prof"><div class="col" style="align-items:center;gap:6px">${avatar(x, 'pav')}${canUp ? `<label class="lnk" style="font-size:12px">${PH[x.id] ? 'เปลี่ยนรูป' : 'อัปโหลดรูป'}<input type="file" accept="image/*" id="phUp" hidden></label>${PH[x.id] ? '<button class="lnk" style="font-size:12px;color:var(--bad)" id="phDel">ลบรูป</button>' : ''}` : ''}</div>
+    <div class="col" style="gap:4px"><span class="sub">ชื่อเล่น</span><span style="font-size:24px;font-weight:700;font-family:var(--serif)">${esc(x.n)}</span>${x.fn ? `<span style="font-size:15px">${esc(x.fn)}</span>` : ''}
+      <span class="sub">ทีมออนไลน์ · ยอด ${baht(x.s)}${x.t ? ` / เป้า ${baht(x.t)} (<b class="${pcP(x)}">${pct0(x.pct)}</b>${x.pace < 1 ? ` · ควรถึง ${pct0(x.pace)}` : ''})` : ''}${x.wd != null ? ` · ทำงาน ${x.wd} วัน (หยุด ${x.off}${x.lv ? ' · ลา ' + x.lv : ''}) · เฉลี่ย ${x.wd ? baht(x.s / x.wd) : '—'}/วัน` : ''}</span><span style="font-weight:600;color:${x.score == null ? 'var(--mute)' : scColor(x.score)}">${verdict}</span></div>
     <div class="score">${x.score != null ? `<div class="v" style="color:${scColor(x.score)}">${x.score}</div><div class="col" style="gap:2px"><span class="sub">Admin Score / 100</span><b>อันดับ ${x.rank} จาก ${n}</b>${move ? `<span class="dl ${move > 0 ? 'up' : 'dn'}">${move > 0 ? '▲' : '▼'} ${Math.abs(move)} อันดับจากช่วงก่อน</span>` : ''}</div>` : `<div class="v mute2">—</div><span class="sub">Admin Score</span>`}</div></section>`;
   const cmp = (l, v, m, fmt, inv, unit) => { const dd = v != null && m ? (inv ? (m - v) / m : (v - m) / m) : null;
     return `<div class="mini"><div class="sub">${l}</div><div class="v num">${fmt(v)}</div><div class="s sub">ทีม ${m ? fmt(m) : '—'}${dd != null ? ` · <b class="${dd >= 0 ? 'c-g' : 'c-b'}">${dd >= 0 ? (inv ? 'เร็วกว่า' : 'ดีกว่า') : (inv ? 'ช้ากว่า' : 'แย่กว่า')}ทีม ${Math.abs(dd * 100).toFixed(0)}%</b>` : ''}</div></div>`; };
@@ -814,7 +840,7 @@ function admInd(A, AR, a, b) {
     ${cmp('ยอดขาย', x.s, M.s, v => v == null ? '—' : baht(v))}${cmp('CR% (บิล ÷ แชตรับ)', x.cr, M.cr, pct1)}${cmp('Upsell%', x.up, M.up, pct1)}
     ${cmp('เวลาตอบเฉลี่ย', x.fr, M.fr, v => v ? v.toFixed(1) + ' นาที' : '—', true)}${cmp('ตอบใน 10 นาที', x.r10, M.r10, pct0)}${cmp('แชตรับ', x.ch || null, M.ch, v => v ? int(v) : '—')}</div></section>`;
   // 5 มิติ + รายเดือน
-  const dims = x.dims ? `<div class="col" style="gap:12px">${Object.keys(ADM_W).sort((p, q) => x.dims[q] - x.dims[p]).map(k => `<div class="dim"><span>${DIM_N[k]} <span class="sub">· ${ADM_W[k]}%</span></span><span class="sbar"><i style="width:${x.dims[k]}%;background:${barColor(x.dims[k])}"></i><u></u></span><b class="num" style="color:${scColor(x.dims[k])}">${x.dims[k]}</b></div>`).join('')}
+  const dims = x.dims ? `<div class="col" style="gap:12px">${Object.keys(ADM_W).sort((p, q) => x.dims[q] - x.dims[p]).map(k => `<div class="dimr"><span>${DIM_N[k]} <span class="sub">· ${ADM_W[k]}%</span></span><span class="sbar"><i style="width:${x.dims[k]}%;background:${barColor(x.dims[k])}"></i><u></u></span><b class="num" style="color:${scColor(x.dims[k])}">${x.dims[k]}</b></div>`).join('')}
     <span class="sub" style="font-size:12px">เส้นเทา = ค่ากลางทีม (70)</span></div>` : '<span class="sub">ยังไม่มีคะแนนแยกมิติในช่วงนี้</span>';
   const ms = [0, 1, 2].map(i => addM(CUR, -i)), MA = ms.map(m => { const [p, q] = moRange(m); const r = admRows(p, q); return r.all.find(z => z.i === x.i) || null; });
   const mt = (l, f) => `<tr><td>${l}</td>${MA.map(z => `<td>${z ? f(z) : '—'}</td>`).join('')}</tr>`;
@@ -825,7 +851,7 @@ function admInd(A, AR, a, b) {
   // funnel + โค้ช
   const good = x.dims ? Object.keys(x.dims).filter(k => x.dims[k] >= 80).map(k => DIM_GOOD[k]) : [];
   const weak = x.dims ? Object.keys(x.dims).sort((p, q) => x.dims[p] - x.dims[q])[0] : null;
-  const fn = [['แชตรับ', x.ch, ''], ['บิลที่ปิดได้', x.b, x.ch ? pct1(x.bw / x.ch) + ' ของแชต' : ''], ['บิล Upsell (≥ 2 รายการ)', x.u, x.b ? pct1(x.u / x.b) + ' ของบิล' : '']];
+  const fn = [['แชตรับ', x.ch, ''], ['บิลที่ปิดได้', x.b, x.ch ? pct1(x.bw / x.ch) + ' ของแชต' : ''], ['ลูกค้าที่ซื้อ ≥ 2 รายการ (Upsell)', x.u, x.np ? pct1(x.u / x.np) + ` ของลูกค้า ${int(x.np)} คน` : '']];
   const fmax = Math.max(1, ...fn.map(f => f[1] || 0));
   h += `<section class="g2"><div class="card col">${cardH('Funnel ส่วนตัว')}${fn.map(([l, v, r]) => `<div class="col" style="gap:4px"><div class="ch" style="font-size:14px"><span>${l}</span><span><b class="num">${v ? int(v) : '—'}</b> <span class="sub">${r}</span></span></div><span class="sbar"><i style="width:${(v || 0) / fmax * 100}%;background:var(--sage)"></i></span></div>`).join('')}</div>
     <div class="card col">${cardH('สรุปสำหรับคุยกับแอดมิน')}<div><div class="sub" style="font-weight:600;color:var(--good)">จุดแข็ง</div><div style="font-size:14px;margin-top:4px">${good.length ? good.map(esc).join(' · ') : (x.dims ? 'ยังไม่มีมิติที่โดดเด่นเกิน 80 คะแนน' : '—')}</div></div>
@@ -927,7 +953,7 @@ function renderMonthly() {
     rows.sort((x, y) => ((y.v[0] || {}).score || -1) - ((x.v[0] || {}).score || -1) || ((y.v[0] || {}).s || 0) - ((x.v[0] || {}).s || 0));
     body = `<section class="card col" style="gap:12px">${cardH('Admin Score รายคน × เดือน', 'มีตั้งแต่ ก.ค. 2569 (เริ่มใช้ Zaapi) · เดือนก่อนหน้าแสดง % เป้ายอดขาย')}
       <div class="tw"><table class="tb stk"><tr><th>แอดมิน</th>${head}<th class="l">สัญญาณ</th></tr>` + rows.map(r => `<tr class="ck" data-adm="${r.v.find(Boolean) ? r.v.find(Boolean).i : ''}"><td><b>${esc(r.n)}</b></td>` + r.v.map(x => !x ? '<td>—</td>' : x.score != null
-        ? `<td><b style="color:${scColor(x.score)}">${x.score}</b><div class="sub" style="font-size:11px">${baht(x.s)}</div></td>` : `<td class="${pcCls(x.pct)}">${pct0(x.pct)}<div class="sub" style="font-size:11px">${baht(x.s)}</div></td>`).join('')
+        ? `<td><b style="color:${scColor(x.score)}">${x.score}</b><div class="sub" style="font-size:11px">${baht(x.s)}</div></td>` : `<td class="${pcP(x)}">${pct0(x.pct)}<div class="sub" style="font-size:11px">${baht(x.s)}</div></td>`).join('')
         + `<td class="l">${signal(r.v.map(x => x && x.score), 'score')}</td></tr>`).join('') + '</table></div></section>';
     csv.push(['แอดมิน'].concat(ms.flatMap(m => [monTH(m) + ' Score', monTH(m) + ' ยอด']))); rows.forEach(r => csv.push([r.n].concat(r.v.flatMap(x => x ? [x.score == null ? '' : x.score, Math.round(x.s)] : ['', '']))));
   }
