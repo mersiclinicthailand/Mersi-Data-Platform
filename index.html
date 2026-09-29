@@ -170,10 +170,10 @@ main{padding:28px var(--px) 48px;display:flex;flex-direction:column;gap:20px}
 .tbadge{margin-left:auto;flex-shrink:0;font-size:11.5px;font-weight:700;background:var(--badbg);color:var(--bad);border-radius:999px;padding:1px 8px;line-height:18px}
 .thint{display:none}
 /* ตารางรอสเตอร์เต็มเดือน */
-.rg{border-collapse:collapse;font-size:12px}.rg th,.rg td{padding:4px 2px;text-align:center;border-bottom:1px solid var(--line2);min-width:27px;white-space:nowrap}
+.rg{border-collapse:collapse;font-size:12px;width:100%;table-layout:fixed;min-width:1000px}.rg th,.rg td{padding:5px 0;text-align:center;border-bottom:1px solid var(--line2);white-space:nowrap;overflow:hidden}
 .rg th{font-weight:500;color:var(--mute);font-size:11px;line-height:1.25}.rg th b{display:block;font-size:12.5px;color:var(--ink)}
-.rg td:first-child,.rg th:first-child{text-align:left;padding-left:8px;min-width:96px;position:sticky;left:0;background:#fff;z-index:1;box-shadow:1px 0 0 var(--line2)}
-.rg .we{background:#F5F1F4}.rg .hol{background:#FBF1CC}.rg .fut{opacity:.6}.rg .tot{font-weight:600;min-width:38px}
+.rg td:first-child,.rg th:first-child{text-align:left;padding-left:10px;text-overflow:ellipsis;position:sticky;left:0;background:#fff;z-index:1;box-shadow:1px 0 0 var(--line2)}
+.rg .we{background:#F5F1F4}.rg .hol{background:#FBF1CC}.rg .fut{opacity:.6}.rg .tot{font-weight:600;background:var(--soft)}.rg tr.sm td{font-size:10.5px;font-weight:500;color:var(--mute)}.rg tr.sm td:first-child{color:var(--ink);font-weight:600}
 .rg .o,.rg .l{display:inline-block;width:20px;height:20px;border-radius:5px;color:#fff;font-size:11px;line-height:20px;font-weight:700}.rg .o{background:var(--sage)}.rg .l{background:var(--clay)}
 .rg tr.ft td{background:var(--soft);font-weight:600;font-size:11.5px}.rg tr.ft td:first-child{background:var(--soft)}.rg .lowd{color:#fff;background:var(--bad)!important;border-radius:5px}
 /* สวิตช์เปรียบเทียบ */
@@ -1039,12 +1039,12 @@ function admRosterTeam(m) {
       kc('ยอดขาย / คน-วัน', wdL ? baht(sTot / wdL) : '—', `ถึง ${dTH(live)} · ${int(wdL)} คน-วัน`),
       kc('แชตรับ / คน-วัน', chTot && wdL ? (chTot / wdL).toFixed(1) : '—', chTot ? `บิล/คน-วัน ${(bTot / wdL).toFixed(1)}` : 'ยังไม่มีข้อมูล Zaapi'),
       kc('หยุดเสาร์–อาทิตย์', offTot ? pct0(weTot / offTot) : '—', `${weTot} จาก ${offTot} วันหยุด`)].join('')}</div>
-    <div class="tw"><table class="rg"><tr><th>แอดมิน</th>${days.map(d => `<th class="${hol.has(d) ? 'hol' : dow(d) === 0 || dow(d) === 6 ? 'we' : ''}${d > live ? ' fut' : ''}"><b>${+d.slice(8)}</b>${DOW_TH[dow(d)]}</th>`).join('')}<th>ทำงาน</th><th>หยุด</th><th>ลา</th></tr>`
+    <div class="tw"><table class="rg"><colgroup><col style="width:118px">${days.map(() => '<col>').join('')}<col style="width:56px"><col style="width:46px"><col style="width:40px"></colgroup><tr><th>แอดมิน</th>${days.map(d => `<th class="${hol.has(d) ? 'hol' : dow(d) === 0 || dow(d) === 6 ? 'we' : ''}${d > live ? ' fut' : ''}"><b>${+d.slice(8)}</b>${DOW_TH[dow(d)]}</th>`).join('')}<th>ทำงาน</th><th>หยุด</th><th>ลา</th></tr>`
     + all.map(x => { const p = per[x.i]; return `<tr><td><b>${esc(x.L.n)}</b>${x.L.rk ? '' : ' <span class="sub" style="font-size:11px">หัวหน้า</span>'}</td>${days.map(d => { const r = (RM[d] || {})[x.i];
         return `<td class="${hol.has(d) ? 'hol' : dow(d) === 0 || dow(d) === 6 ? 'we' : ''}${d > live ? ' fut' : ''}"${r && r.t ? ` title="${esc(r.t)}"` : ''}>${r ? `<span class="${r.c}">${r.c === 'l' ? 'ล' : 'ห'}</span>` : ''}</td>`; }).join('')}
         <td class="tot">${p.wd}</td><td class="tot">${p.o}</td><td class="tot">${p.l || '—'}</td></tr>`; }).join('')
     + `<tr class="ft"><td>ทำงาน (คน)</td>${work.map((w, k) => `<td><span class="${w < lowTh ? 'lowd' : ''}" style="padding:1px 4px">${w}</span></td>`).join('')}<td class="tot">${int(wdTot)}</td><td></td><td></td></tr>`
-    + `<tr class="ft"><td>ยอดขาย (พันบาท)</td>${daySales.map(v => `<td>${v == null ? '' : Math.round(v / 1000)}</td>`).join('')}<td class="tot" colspan="3">${baht(sTot)}</td></tr></table></div>
+    + `<tr class="ft sm"><td>ยอดขาย (พันบาท)</td>${daySales.map(v => `<td>${v == null ? '' : Math.round(v / 1000)}</td>`).join('')}<td class="tot" colspan="3">${baht(sTot)}</td></tr></table></div>
     <div class="lg"><span><i class="rc4" style="background:var(--sage)"></i>ห = หยุดประจำ</span><span><i style="background:var(--clay)"></i>ล = ลา / หยุดเพิ่ม</span><span><i style="background:#F5F1F4;border:1px solid var(--line)"></i>เสาร์–อาทิตย์</span><span><i style="background:#FBF1CC;border:1px solid var(--line)"></i>นักขัตฤกษ์</span><span><i style="background:var(--bad)"></i>คนทำงานน้อยกว่า ${lowTh} คน</span>${cur ? '<span>สีจาง = วันที่ยังมาไม่ถึง (แผน)</span>' : ''}</div></section>`;
   // ผลงานต่อวันทำงาน
   const rows = P.map(x => { const p = per[x.i], s2 = S2[x.i] || { s: 0, b: 0 }, c = CH[x.i]; return { x, p, s: s2.s, b: s2.b, spd: p.wdL ? s2.s / p.wdL : 0, cpd: c && p.wdL ? c.ch / p.wdL : null, bpd: p.wdL ? s2.b / p.wdL : 0 }; }).sort((q, r) => r.spd - q.spd);
