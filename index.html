@@ -169,6 +169,13 @@ main{padding:28px var(--px) 48px;display:flex;flex-direction:column;gap:20px}
 .ttray .tl small{font-size:12px;color:var(--mute);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tbadge{margin-left:auto;flex-shrink:0;font-size:11.5px;font-weight:700;background:var(--badbg);color:var(--bad);border-radius:999px;padding:1px 8px;line-height:18px}
 .thint{display:none}
+/* ตารางรอสเตอร์เต็มเดือน */
+.rg{border-collapse:collapse;font-size:12px}.rg th,.rg td{padding:4px 2px;text-align:center;border-bottom:1px solid var(--line2);min-width:27px;white-space:nowrap}
+.rg th{font-weight:500;color:var(--mute);font-size:11px;line-height:1.25}.rg th b{display:block;font-size:12.5px;color:var(--ink)}
+.rg td:first-child,.rg th:first-child{text-align:left;padding-left:8px;min-width:96px;position:sticky;left:0;background:#fff;z-index:1;box-shadow:1px 0 0 var(--line2)}
+.rg .we{background:#F5F1F4}.rg .hol{background:#FBF1CC}.rg .fut{opacity:.6}.rg .tot{font-weight:600;min-width:38px}
+.rg .o,.rg .l{display:inline-block;width:20px;height:20px;border-radius:5px;color:#fff;font-size:11px;line-height:20px;font-weight:700}.rg .o{background:var(--sage)}.rg .l{background:var(--clay)}
+.rg tr.ft td{background:var(--soft);font-weight:600;font-size:11.5px}.rg tr.ft td:first-child{background:var(--soft)}.rg .lowd{color:#fff;background:var(--bad)!important;border-radius:5px}
 /* สวิตช์เปรียบเทียบ */
 #fCmp{flex-wrap:nowrap;gap:3px;background:var(--soft);border:1px solid var(--inp);border-radius:10px;padding:3px;height:44px;box-sizing:border-box}
 #fCmp .pill{height:36px;border:0;border-radius:7px;background:transparent;color:var(--mute);font-size:13px;padding:0 12px}
@@ -953,13 +960,13 @@ const LEAD_KPI = [
   { k: 'fr', g: 'บริการ', n: 'เวลาตอบเฉลี่ยของทีม', w: 5, d: 'down', th: [7, 6, 5, 4], f: v => v.toFixed(1) + ' นาที', tg: '≤ 5 นาที' },
   { k: 'low', g: 'พัฒนาทีม', n: 'แอดมินที่ Admin Score < 65', w: 10, d: 'down', th: [4, 3, 2, 1], f: v => v + ' คน', tg: '≤ 2 คน' },
   { k: 'coach', g: 'พัฒนาทีม', n: 'คนที่ "ต้องช่วย" เดือนก่อน คะแนนดีขึ้น', w: 5, d: 'up', th: [.3, .5, .7, .9], f: v => pct0(v), tg: '≥ 70%' },
-  { k: 'roster', g: 'บริหาร', n: 'รอสเตอร์ผิดโควตา / วันที่หยุดเกิน 3 คน', w: 5, d: 'down', th: [3, 2, 1, 0], f: v => v + ' จุด', tg: '0 จุด' },
+  { k: 'roster', g: 'บริหาร', n: 'รอสเตอร์ผิดกติกา (เกินโควตา · หยุดเกิน 3 คน/วัน · ติดกันเกิน 4 วัน)', w: 5, d: 'down', th: [3, 2, 1, 0], f: v => v + ' จุด', tg: '0 จุด' },
   { k: 'data', g: 'บริหาร', n: 'ยอดขายที่ระบุชื่อแอดมินได้ + ส่งไฟล์ Zaapi', w: 5, d: 'up', th: [.90, .95, .98, .9995], f: v => pct1(v), tg: '≥ 98%' }
 ];
 const LEAD_TIP = { sales: 'ยอดทีมต่ำกว่าเป้า → ดูแอดมินที่ % เป้าต่ำสุด 3 คน + โปรแกรมที่ขายได้น้อย', cr: 'ปิดการขายต่ำ → ทบทวนสคริปต์ปิด/นัด · ฟังแชตของคน CR ต่ำสุด', up: 'Upsell ลดลง → ตั้งชุดเสนอขายคู่ (เช่น Pico + Botox) ให้ทั้งทีม',
   r10: 'ตอบช้าเกิน 10 นาที → จัดคนช่วงแชตพีค (ดูแท็บช่วงเวลาแชตเข้า) + ข้อความตอบกลับเร็ว', miss: 'แชตหลุด → ตั้งคนเก็บตกแชตค้างทุกเช้า', fr: 'เวลาตอบเฉลี่ยสูง → ลดงานนอกแชตช่วงพีค',
   low: 'คนคะแนนต่ำหลายคน → โค้ชรายคนสัปดาห์ละครั้ง ตามจุดอ่อนในหน้า "ต้องช่วย"', coach: 'โค้ชแล้วไม่ดีขึ้น → เปลี่ยนวิธี: ประกบฟังแชต / ตั้งเป้ารายสัปดาห์',
-  roster: 'รอสเตอร์ผิดโควตา → ตรวจก่อนประกาศ ไม่ให้วันเดียวกันหยุดเกิน 3 คน', data: 'ยอดขายไม่ระบุชื่อแอดมิน / Zaapi ไม่ครบ → ตรวจชื่อผู้ขายในชีตยอดขายทุกวัน · ส่งไฟล์ Zaapi ภายในวันที่ 3' };
+  roster: 'รอสเตอร์ผิดกติกา → ตรวจก่อนประกาศ: ไม่เกินโควตา · วันเดียวกันหยุดไม่เกิน 3 คน · ไม่หยุดติดกันเกิน 4 วัน', data: 'ยอดขายไม่ระบุชื่อแอดมิน / Zaapi ไม่ครบ → ตรวจชื่อผู้ขายในชีตยอดขายทุกวัน · ส่งไฟล์ Zaapi ภายในวันที่ 3' };
 const kscore = (d, th, v) => v == null || !isFinite(v) ? null : 1 + th.filter(t => d === 'up' ? v >= t : v <= t).length;
 function leadCalc(m) {
   const [ma, mb] = moRange(m), A = admRows(ma, mb), T = admTot(A.all), pace = A.all.length ? A.all[0].pace : 1, V = {}, note = {};
@@ -985,12 +992,82 @@ function leadCalc(m) {
   const W = rows.filter(r => r.s != null).reduce((t, r) => t + r.w, 0), total = W ? rows.filter(r => r.s != null).reduce((t, r) => t + r.w * r.s / 5, 0) / W * 100 : null;
   return { m, rows, total, W, A };
 }
+/* ================= รอสเตอร์ (v26) ================= */
+const DOW_TH = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'], dow = d => new Date(d + 'T00:00:00Z').getUTCDay();
+const rosterPeriod = m => [addM(m, -1) + '-26', m + '-25'];          // รอบรอสเตอร์: 26 เดือนก่อน – 25 เดือนนี้ (ตรงกับระบบรอสเตอร์)
+const rkList = () => ADM.L.map((L, i) => ({ L, i })).filter(x => x.L.rk);
+function rosterMap(a, b) {   // วัน → { แอดมิน: {c:'o'|'l', t:ประเภท} } · ตัดซ้ำ (ถ้าวันเดียวกันมีทั้งหยุดและลา นับเป็นลา)
+  const M = {}; for (let d = a; d <= b; d = addD(d, 1)) { const r = ADM.RO[d]; if (!r) continue; const o = M[d] = {}; r.forEach(([i, c, t]) => { if (!o[i] || c === 'l') o[i] = { c, t }; }); } return M; }
+/* ตรวจโควตาตามรอบรอสเตอร์ 26–25: เกินโควตา · วันที่หยุดเกิน 3 คน · หยุดติดกันเกิน 4 วัน */
 function leadRoster(m) {
-  if (!ADM.RO) return null; const dim_ = dim(m), hol = (ADM.HOL || []).filter(d => d.slice(0, 7) === m).length, quota = 4 + hol, per = {}, days = [];
-  for (let d = m + '-01'; d <= mEnd(m); d = addD(d, 1)) { const r = ADM.RO[d] || []; r.forEach(([i, c]) => { const o = per[i] || (per[i] = { o: 0, l: 0 }); if (c === 'l') o.l++; else o.o++; }); if (r.length > 3) days.push(`${+d.slice(8)} (${r.length} คน)`); }
-  const rk = ADM.L.map((L, i) => ({ i, L })).filter(x => x.L.rk);
-  const bad = rk.filter(x => (per[x.i] || { o: 0 }).o !== quota).map(x => `${x.L.n} ${(per[x.i] || { o: 0 }).o}`);
-  return { viol: bad.length + days.length, quota, per, note: `โควตา ${quota} วัน/คน${hol ? ` (รวมนักขัตฤกษ์ ${hol})` : ''}${bad.length ? ' · ไม่ตรงโควตา: ' + bad.join(', ') : ''}${days.length ? ' · วันที่หยุดเกิน 3 คน: ' + days.join(', ') : ''}` + (bad.length || days.length ? '' : ' · ถูกต้อง') };
+  if (!ADM || !ADM.RO) return null; const [a, b] = rosterPeriod(m), RM = rosterMap(a, b), P = rkList();
+  if (!Object.keys(RM).length) return null;
+  const hol = (ADM.HOL || []).filter(d => d >= a && d <= b), quota = 4 + hol.length, per = {}, days = [], runs = [];
+  P.forEach(x => per[x.i] = { o: 0, l: 0, run: 0, best: 0 });
+  for (let d = a; d <= b; d = addD(d, 1)) { const r = RM[d] || {}; let n = 0;
+    P.forEach(x => { const p = per[x.i]; if (r[x.i]) { n++; r[x.i].c === 'l' ? p.l++ : p.o++; p.run++; p.best = Math.max(p.best, p.run); } else p.run = 0; });
+    if (n > 3) days.push(`${dTH(d)} (${n} คน)`); }
+  P.forEach(x => { if (per[x.i].best > 4) runs.push(`${x.L.n} ${per[x.i].best} วัน`); });
+  const over = P.filter(x => per[x.i].o > quota).map(x => `${x.L.n} ${per[x.i].o}`);
+  const viol = over.length + days.length + runs.length;
+  return { a, b, quota, hol, per, days, runs, over, viol,
+    note: `รอบ ${dTH(a)}–${dTH(b)} · โควตา ${quota} วัน/คน${hol.length ? ` (รวมนักขัตฤกษ์ ${hol.length})` : ''}${over.length ? ' · เกินโควตา: ' + over.join(', ') : ''}${days.length ? ' · วันที่หยุดเกิน 3 คน: ' + days.join(', ') : ''}${runs.length ? ' · หยุดติดกันเกิน 4 วัน: ' + runs.join(', ') : ''}${viol ? '' : ' · ถูกต้อง'}` };
+}
+/* วันทำงานทีม "เต็มเดือน 1–สิ้นเดือน" + ผลงานต่อวันทำงาน + ภาระแชตตามวันในสัปดาห์ */
+function admRosterTeam(m) {
+  if (!ADM || !ADM.RO) return '';
+  const a = m + '-01', e = mEnd(m), n = dim(m), live = minS(e, LAST), P = rkList(), lead = ADM.L.map((L, i) => ({ L, i })).filter(x => !x.L.rk);
+  const RM = rosterMap(a, e); if (!Object.keys(RM).length) return `<section class="card col">${cardH('วันทำงานทีม · ' + monTH(m))}<span class="sub">ยังไม่มีข้อมูลรอสเตอร์ของเดือนนี้ — Run SYNC_ROSTER</span></section>`;
+  const hol = new Set(ADM.HOL || []), days = []; for (let d = a; d <= e; d = addD(d, 1)) days.push(d);
+  const all = P.concat(lead.filter(x => days.some(d => RM[d] && RM[d][x.i]) || (ADM.D[a] || []).some(r => r[0] === x.i)));
+  const per = {}; all.forEach(x => per[x.i] = { o: 0, l: 0, we: 0, run: 0, best: 0, wd: 0, wdL: 0 });
+  const work = days.map(d => { let w = 0; all.forEach(x => { const r = (RM[d] || {})[x.i], p = per[x.i];
+      if (r) { r.c === 'l' ? p.l++ : p.o++; if (dow(d) === 0 || dow(d) === 6) p.we++; p.run++; p.best = Math.max(p.best, p.run); }
+      else { p.run = 0; p.wd++; if (d <= live) p.wdL++; if (x.L.rk) w++; } }); return w; });
+  const S2 = admSum(a, live), CH = admChat(a, live).g, isP = new Set(P.map(x => x.i));
+  const daySales = days.map(d => d > live ? null : (ADM.D[d] || []).reduce((t, x) => t + (isP.has(x[0]) ? x[1] : 0), 0));
+  const cap = P.length * n, wdTot = P.reduce((t, x) => t + per[x.i].wd, 0), wdL = P.reduce((t, x) => t + per[x.i].wdL, 0);
+  const avgW = work.reduce((t, v) => t + v, 0) / n, minW = Math.min(...work), minD = days[work.indexOf(minW)], lowTh = P.length - 3, low = days.filter((d, k) => work[k] < lowTh);
+  const sTot = P.reduce((t, x) => t + (S2[x.i] ? S2[x.i].s : 0), 0), bTot = P.reduce((t, x) => t + (S2[x.i] ? S2[x.i].b : 0), 0), chTot = P.reduce((t, x) => t + (CH[x.i] ? CH[x.i].ch : 0), 0);
+  const offTot = P.reduce((t, x) => t + per[x.i].o + per[x.i].l, 0), weTot = P.reduce((t, x) => t + per[x.i].we, 0);
+  const cur = m === CUR, ttl = `${monTH(m)} (1–${n})`;
+  let h = `<section class="card col" style="gap:16px">${cardH('วันทำงานทีม · เต็มเดือน ' + ttl, 'นับวันที่ 1 – สิ้นเดือน (ต่างจากระบบรอสเตอร์ที่ตัดรอบ 26–25) · แผนวันหยุดล่วงหน้านับรวมด้วย')}
+    <div class="kpis">${[
+      kc('วันทำงานรวมทีม', int(wdTot) + ' คน-วัน', `${pct0(cap ? wdTot / cap : 0)} ของ ${P.length} คน × ${n} วัน`),
+      kc('คนทำงานเฉลี่ย / วัน', avgW.toFixed(1) + ' คน', `น้อยสุด ${minW} คน · ${dTH(minD)}`),
+      kc('วันที่หยุดเกิน 3 คน', low.length + ' วัน', low.length ? low.slice(0, 5).map(d => +d.slice(8)).join(', ') + (low.length > 5 ? ' …' : '') : 'ไม่มี 👍'),
+      kc('ยอดขาย / คน-วัน', wdL ? baht(sTot / wdL) : '—', `ถึง ${dTH(live)} · ${int(wdL)} คน-วัน`),
+      kc('แชตรับ / คน-วัน', chTot && wdL ? (chTot / wdL).toFixed(1) : '—', chTot ? `บิล/คน-วัน ${(bTot / wdL).toFixed(1)}` : 'ยังไม่มีข้อมูล Zaapi'),
+      kc('หยุดเสาร์–อาทิตย์', offTot ? pct0(weTot / offTot) : '—', `${weTot} จาก ${offTot} วันหยุด`)].join('')}</div>
+    <div class="tw"><table class="rg"><tr><th>แอดมิน</th>${days.map(d => `<th class="${hol.has(d) ? 'hol' : dow(d) === 0 || dow(d) === 6 ? 'we' : ''}${d > live ? ' fut' : ''}"><b>${+d.slice(8)}</b>${DOW_TH[dow(d)]}</th>`).join('')}<th>ทำงาน</th><th>หยุด</th><th>ลา</th></tr>`
+    + all.map(x => { const p = per[x.i]; return `<tr><td><b>${esc(x.L.n)}</b>${x.L.rk ? '' : ' <span class="sub" style="font-size:11px">หัวหน้า</span>'}</td>${days.map(d => { const r = (RM[d] || {})[x.i];
+        return `<td class="${hol.has(d) ? 'hol' : dow(d) === 0 || dow(d) === 6 ? 'we' : ''}${d > live ? ' fut' : ''}"${r && r.t ? ` title="${esc(r.t)}"` : ''}>${r ? `<span class="${r.c}">${r.c === 'l' ? 'ล' : 'ห'}</span>` : ''}</td>`; }).join('')}
+        <td class="tot">${p.wd}</td><td class="tot">${p.o}</td><td class="tot">${p.l || '—'}</td></tr>`; }).join('')
+    + `<tr class="ft"><td>ทำงาน (คน)</td>${work.map((w, k) => `<td><span class="${w < lowTh ? 'lowd' : ''}" style="padding:1px 4px">${w}</span></td>`).join('')}<td class="tot">${int(wdTot)}</td><td></td><td></td></tr>`
+    + `<tr class="ft"><td>ยอดขาย (พันบาท)</td>${daySales.map(v => `<td>${v == null ? '' : Math.round(v / 1000)}</td>`).join('')}<td class="tot" colspan="3">${baht(sTot)}</td></tr></table></div>
+    <div class="lg"><span><i class="rc4" style="background:var(--sage)"></i>ห = หยุดประจำ</span><span><i style="background:var(--clay)"></i>ล = ลา / หยุดเพิ่ม</span><span><i style="background:#F5F1F4;border:1px solid var(--line)"></i>เสาร์–อาทิตย์</span><span><i style="background:#FBF1CC;border:1px solid var(--line)"></i>นักขัตฤกษ์</span><span><i style="background:var(--bad)"></i>คนทำงานน้อยกว่า ${lowTh} คน</span>${cur ? '<span>สีจาง = วันที่ยังมาไม่ถึง (แผน)</span>' : ''}</div></section>`;
+  // ผลงานต่อวันทำงาน
+  const rows = P.map(x => { const p = per[x.i], s2 = S2[x.i] || { s: 0, b: 0 }, c = CH[x.i]; return { x, p, s: s2.s, b: s2.b, spd: p.wdL ? s2.s / p.wdL : 0, cpd: c && p.wdL ? c.ch / p.wdL : null, bpd: p.wdL ? s2.b / p.wdL : 0 }; }).sort((q, r) => r.spd - q.spd);
+  const mS = med(rows.map(r => r.spd)), mC = med(rows.map(r => r.cpd)), col = (v, md) => !md || v == null ? '' : v >= md * 1.1 ? 'c-g' : v <= md * .9 ? 'c-b' : '';
+  h += `<section class="card col">${cardH('ผลงานต่อวันทำงาน · ' + (cur ? `1–${+live.slice(8)} ` : '') + monTH(m), 'ยอดและแชตหารด้วยวันที่มาทำงานจริง → เทียบคนหยุดมาก/น้อยได้ยุติธรรม · เขียว/แดง = สูง/ต่ำกว่าค่ากลางทีม 10%')}
+    <div class="tw"><table class="tb stk" style="min-width:860px"><tr><th>แอดมิน</th><th>วันทำงาน</th><th>ยอดขาย</th><th>ยอด / วันทำงาน</th><th>บิล / วันทำงาน</th><th>แชตรับ / วันทำงาน</th><th>หยุดเสาร์–อาทิตย์</th><th>หยุดติดกันยาวสุด</th></tr>`
+    + rows.map(r => `<tr><td><b>${esc(r.x.L.n)}</b></td><td>${r.p.wdL}</td><td>${baht(r.s)}</td><td class="${col(r.spd, mS)}" style="font-weight:600">${r.p.wdL ? baht(r.spd) : '—'}</td><td>${r.p.wdL ? r.bpd.toFixed(1) : '—'}</td><td class="${col(r.cpd, mC)}">${r.cpd == null ? '—' : r.cpd.toFixed(1)}</td><td>${r.p.we}</td><td class="${r.p.best > 4 ? 'c-b' : ''}">${r.p.best ? r.p.best + ' วัน' : '—'}</td></tr>`).join('')
+    + `<tr class="md"><td>ทีม</td><td>${int(wdL)}</td><td>${baht(sTot)}</td><td>${wdL ? baht(sTot / wdL) : '—'}</td><td>${wdL ? (bTot / wdL).toFixed(1) : '—'}</td><td>${chTot && wdL ? (chTot / wdL).toFixed(1) : '—'}</td><td>${weTot}</td><td></td></tr></table></div></section>`;
+  // ภาระแชตตามวันในสัปดาห์ (จันทร์–อาทิตย์)
+  const wk = [1, 2, 3, 4, 5, 6, 0].map(w => { const ds = days.filter(d => dow(d) === w); const k = ds.map(d => work[days.indexOf(d)]); return { w, n: k.length ? k.reduce((t, v) => t + v, 0) / k.length : 0 }; });
+  const hm = ADM.H && ADM.H[m], wks = hm ? nDays(hm.f, minS(hm.t, LAST)) / 7 : 0;
+  wk.forEach((x, j) => { x.ch = hm && wks ? hm.d[j].reduce((t, v) => t + v, 0) / wks : null; x.pp = x.ch != null && x.n ? x.ch / x.n : null; });
+  const mx = Math.max(...wk.map(x => x.pp || 0));
+  const Q = leadRoster(m);
+  h += `<section class="g2"><div class="card col">${cardH('ภาระแชตตามวันในสัปดาห์', hm ? `แชตเข้าเฉลี่ยต่อวัน ÷ คนที่ทำงานวันนั้น · ${rangeTH(hm.f, minS(hm.t, LAST))}` : 'ยังไม่มีข้อมูลแชตรายช่วงเวลาของเดือนนี้')}
+    <div class="tw"><table class="tb"><tr><th>วัน</th><th>คนทำงานเฉลี่ย</th><th>แชตเข้าเฉลี่ย</th><th>แชต / คน</th></tr>${wk.map(x => `<tr><td>${DOW_TH[x.w]}</td><td>${x.n.toFixed(1)}</td><td>${x.ch == null ? '—' : int(x.ch)}</td><td class="${x.pp && x.pp >= mx * .95 ? 'c-b' : ''}" style="font-weight:600">${x.pp == null ? '—' : x.pp.toFixed(1)}${x.pp && x.pp >= mx * .95 ? ' · หนักสุด' : ''}</td></tr>`).join('')}</table></div>
+    <span class="sub">วันที่ "แชต / คน" สูงสุด ควรจัดคนหยุดน้อยลง หรือย้ายวันหยุดไปวันที่แชตน้อย</span></div>`
+    + `<div class="card col">${cardH('ตรวจโควตาตามรอบรอสเตอร์', Q ? `รอบ ${dTH(Q.a)} – ${dTH(Q.b)} (ตรงกับระบบรอสเตอร์) · โควตาหยุดประจำ ${Q.quota} วัน/คน${Q.hol.length ? ` = 4 + นักขัตฤกษ์ ${Q.hol.length}` : ''}` : '')}`
+    + (Q ? `<div class="tw"><table class="tb"><tr><th>แอดมิน</th><th>หยุดประจำ</th><th>ลา / หยุดเพิ่ม</th><th>เทียบโควตา</th></tr>`
+      + rkList().map(x => { const p = Q.per[x.i], df = p.o - Q.quota; return `<tr><td>${esc(x.L.n)}</td><td>${p.o} / ${Q.quota}</td><td>${p.l || '—'}</td><td class="${df > 0 ? 'c-b' : df < 0 ? 'c-w' : 'c-g'}" style="font-weight:600">${df > 0 ? 'เกิน ' + df : df < 0 ? 'เหลือ ' + (-df) : '✓ ครบ'}</td></tr>`; }).join('') + '</table></div>'
+      + `<div class="help" style="background:${Q.viol ? '#FBF3EF' : 'var(--goodbg)'}"><b>${Q.viol ? `พบ ${Q.viol} จุดที่ผิดกติกา` : 'ไม่พบจุดผิดกติกา'}</b><span class="n">${esc(Q.days.length ? 'วันที่หยุดเกิน 3 คน: ' + Q.days.join(', ') : 'ไม่มีวันที่หยุดเกิน 3 คน')} · ${esc(Q.runs.length ? 'หยุดติดกันเกิน 4 วัน: ' + Q.runs.join(', ') : 'ไม่มีใครหยุดติดกันเกิน 4 วัน')}${Q.over.length ? ' · เกินโควตา: ' + esc(Q.over.join(', ')) : ''}</span></div>` : '<span class="sub">ยังไม่มีข้อมูลรอบนี้</span>')
+    + '</div></section>';
+  return h;
 }
 function admLead(a, b) {
   const m = S.mode === 'month' ? S.m : b.slice(0, 7), X = leadCalc(m);
@@ -1010,9 +1087,7 @@ function admLead(a, b) {
     <div class="card col">${cardH('แนวโน้ม 4 เดือน', 'คะแนนรายข้อ (1–5)')}<div class="tw"><table class="tb"><tr><th>KPI</th>${hist.map(x => `<th>${monTH(x.m)}${x.m === CUR ? '*' : ''}</th>`).join('')}</tr>`
     + LEAD_KPI.map((K, j) => `<tr><td>${K.n.split(' (')[0]}</td>${hist.map(x => `<td>${sc(x.rows[j].s)}</td>`).join('')}</tr>`).join('')
     + `<tr class="md"><td>คะแนนรวม</td>${hist.map(x => `<td>${x.total == null ? '—' : Math.round(x.total)}</td>`).join('')}</tr></table></div></div></section>`;
-  const R = leadRoster(m);
-  if (R) h += `<section class="card col">${cardH('รอสเตอร์ ' + monTH(m), `โควตาวันหยุดประจำ ${R.quota} วัน/คน · หยุดพร้อมกันได้สูงสุด 3 คน/วัน`)}<div class="tw"><table class="tb"><tr><th>แอดมิน</th><th>หยุดประจำ</th><th>ลา</th><th>ต่างจากโควตา</th></tr>`
-    + ADM.L.map((L, i) => ({ L, i })).filter(x => x.L.rk).map(x => { const p = R.per[x.i] || { o: 0, l: 0 }, df = p.o - R.quota; return `<tr><td>${esc(x.L.n)}</td><td>${p.o}</td><td>${p.l || '—'}</td><td class="${df ? 'c-b' : 'c-g'}" style="font-weight:600">${df ? (df > 0 ? '+' : '') + df : '✓'}</td></tr>`; }).join('') + '</table></div></section>';
+  h += admRosterTeam(m);
   h += `<div class="note">KPI หัวหน้าทีม = ผลงานของทั้งทีมแอดมิน (ไม่ใช่ยอดขายส่วนตัว) · เดือนปัจจุบันยอดขายคิดเทียบ "ควรถึง" ตามจำนวนวัน · Upsell เทียบค่าเฉลี่ย 3 เดือนก่อนหน้า · ติดตามผลโค้ชดูจากคะแนน Admin Score ของคนที่ &lt; 65 เดือนก่อน · ปรับน้ำหนัก/เกณฑ์ได้ในไฟล์แอป (LEAD_KPI)</div>`;
   return h;
 }
